@@ -17,7 +17,7 @@ public abstract class AbstractMetamorphicTest implements MetamorphicTest {
 	/**
 	 * logger that is used
 	 */
-	protected final static Logger LOGGER = Logger.getLogger(MetamorphicSameClassifierTest.class.getName());
+	protected final static Logger LOGGER = Logger.getLogger("atoml");
 
 	/**
 	 * data generator for the original data

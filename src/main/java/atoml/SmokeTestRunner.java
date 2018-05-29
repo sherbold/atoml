@@ -25,7 +25,7 @@ import atoml.smoke.UniformZeroToOne;
  */
 public class SmokeTestRunner {
 	
-	private final static Logger LOGGER = Logger.getLogger(SmokeTestRunner.class.getName());
+	private final static Logger LOGGER = Logger.getLogger("atoml");
 
 	private final static String TESTLOCATION = "smoke_testdata/";
 	

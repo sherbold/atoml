@@ -15,7 +15,7 @@ public class StringClassifierCreator implements ClassifierCreator {
 	/**
 	 * logger that is used
 	 */
-	private final static Logger LOGGER = Logger.getLogger(SmokeTestRunner.class.getName());
+	private final static Logger LOGGER = Logger.getLogger("atoml");
 
 	/**
 	 * name of the classifier (also used for classifier creation)

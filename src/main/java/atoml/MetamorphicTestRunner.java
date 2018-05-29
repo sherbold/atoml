@@ -22,7 +22,7 @@ import atoml.metamorphic.ScrambleData;
  */
 public class MetamorphicTestRunner {
 	
-	private final static Logger LOGGER = Logger.getLogger(MetamorphicTestRunner.class.getName());
+	private final static Logger LOGGER = Logger.getLogger("atoml");
 
 	private final static String TESTLOCATION = "metamorphic_testdata/";
 	
