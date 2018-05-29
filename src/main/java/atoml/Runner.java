@@ -75,10 +75,12 @@ public class Runner {
 				e.printStackTrace();
 			}
 			for( String classifier : classifiers ) {
-				ClassifierCreator classifierCreator = new StringClassifierCreator(classifier);
-				if( classifierCreator.createClassifier()!=null ) {
-					smokeTester.runSmokeTests(classifierCreator);
-					metamorphicTester.runMetamorphicTests(classifierCreator);
+				if( classifier.length()>0 ) {
+					ClassifierCreator classifierCreator = new StringClassifierCreator(classifier);
+					if( classifierCreator.createClassifier()!=null ) {
+						smokeTester.runSmokeTests(classifierCreator);
+						metamorphicTester.runMetamorphicTests(classifierCreator);
+					}
 				}
 			}
 		}
