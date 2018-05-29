@@ -10,6 +10,8 @@ import atoml.classifiers.ClassifierCreator;
 import atoml.data.ClassificationGenerator;
 import atoml.data.DataGenerator;
 import atoml.smoke.AllZeroes;
+import atoml.smoke.Outliers;
+import atoml.smoke.SpreadMixture;
 import atoml.smoke.SmokeTest;
 import atoml.smoke.UniformLarge;
 import atoml.smoke.UniformSmall;
@@ -70,6 +72,8 @@ public class SmokeTestRunner {
 		smokeTests.add(new UniformWholeDoubleRange(dataGenerator));
 		smokeTests.add(new UniformSmall(dataGenerator));
 		smokeTests.add(new UniformVerySmall(dataGenerator));
+		smokeTests.add(new SpreadMixture(dataGenerator));
+		smokeTests.add(new Outliers(dataGenerator));
 		
 		LOGGER.info("starting smoke tests for classifier " + classifierName);
 		for(SmokeTest smokeTest : smokeTests) {
