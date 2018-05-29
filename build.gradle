@@ -7,8 +7,6 @@ jar {
     version = '0.1.0'
 }
 
-
-
 repositories {
     mavenCentral()
 }
@@ -17,11 +15,19 @@ sourceCompatibility  = 1.8
 targetCompatibility  = 1.8
 
 dependencies {
-	compile group: 'nz.ac.waikato.cms.weka', name: 'weka-stable', version: '3.8.0'
+	// dependencies for atoml core logic
 	compile group: 'org.apache.commons', name: 'commons-math3', version: '3.6.1'
 	compile group: 'commons-cli', name: 'commons-cli', version: '1.4'
-    
-
+	// we are working against the latest dev version of Weka
+	compile group: 'nz.ac.waikato.cms.weka', name: 'weka-dev', version: '3.9.2'
+	
+	compile group: 'nz.ac.waikato.cms.weka', name: 'DTNB', version: '1.0.3'
+	compile group: 'nz.ac.waikato.cms.weka', name: 'multiLayerPerceptrons', version: '1.0.10'
+	compile group: 'nz.ac.waikato.cms.weka', name: 'alternatingModelTrees', version: '1.0.0'
+	compile group: 'nz.ac.waikato.cms.weka', name: 'RBFNetwork', version: '1.0.8'
+	compile group: 'nz.ac.waikato.cms.weka', name: 'alternatingDecisionTrees', version: '1.0.5'
+	compile group: 'nz.ac.waikato.cms.weka', name: 'simpleCART', version: '1.0.2'
+	
     // Use JUnit test framework
     testImplementation 'junit:junit:4.12'
 }
