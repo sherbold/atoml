@@ -26,7 +26,7 @@ public class UniformVeryLarge extends AbstractSmokeTest {
 	 */
 	@Override
 	protected Instances createData() {
-		return dataGenerator.randomUniformData(-1e20, 1e20);
+		return dataGenerator.randomUniformData(-1e200, 1e200);
 	}
 
 }
