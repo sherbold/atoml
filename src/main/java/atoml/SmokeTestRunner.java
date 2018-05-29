@@ -19,25 +19,47 @@ import atoml.smoke.UniformWholeDoubleRange;
 import atoml.smoke.UniformZeroToOne;
 
 /**
- * Implements smoke tests WEKA classifier classes
+ * Implements a test runner for smoke tests
  * @author sherbold
- *
  */
 public class SmokeTestRunner {
 	
+	/**
+	 * logger that is used
+	 */
 	private final static Logger LOGGER = Logger.getLogger("atoml");
 
+	/**
+	 * location where the data that was used for failed smoke tests is written
+	 */
 	private final static String TESTLOCATION = "smoke_testdata/";
 	
+	/**
+	 * number of iterations of the smoke tests
+	 */
 	private final int iterations;
 	
+	/**
+	 * generator for smoke test data
+	 */
 	private final DataGenerator dataGenerator;
 	
+	/**
+	 * creates a new smoke test runner
+	 * @param iterations number of iterations of the tests
+	 * @param numInstances number of instances generated for each data set
+	 * @param numFeatures number of features generated for each data set
+	 * @param classificationGenerator classification generator used by the internal {@link DataGenerator}
+	 */
 	public SmokeTestRunner(int iterations, int numInstances, int numFeatures, ClassificationGenerator classificationGenerator) {
 		this.iterations = iterations;
 		this.dataGenerator = new DataGenerator(numInstances, numFeatures, classificationGenerator);
 	}
 	
+	/**
+	 * run the smoke tests
+	 * @param classifierCreator generator for the classifier under test. 
+	 */
 	public void runSmokeTests(ClassifierCreator classifierCreator) {
 		String classifierName = classifierCreator.createClassifier().getClass().getSimpleName();
 		List<SmokeTest> smokeTests = new LinkedList<>();
