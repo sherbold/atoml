@@ -1,7 +1,5 @@
 package atoml.metamorphic;
 
-import org.apache.commons.math3.random.RandomDataGenerator;
-
 import atoml.data.DataGenerator;
 import weka.core.Instances;
 
