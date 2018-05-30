@@ -23,6 +23,7 @@ import atoml.junitgen.JUnitGenerator;
 import atoml.metamorphic.ConstantChange;
 import atoml.metamorphic.InvertedClass;
 import atoml.metamorphic.MetamorphicTest;
+import atoml.metamorphic.ReorderAttributes;
 import atoml.metamorphic.ScrambleInstances;
 import atoml.smoke.AllZeroes;
 import atoml.smoke.Outliers;
@@ -99,6 +100,7 @@ public class Runner {
 		metamorphicTests.add(new ConstantChange(dataGenerator));
 		metamorphicTests.add(new InvertedClass(dataGenerator));
 		metamorphicTests.add(new ScrambleInstances(dataGenerator));
+		metamorphicTests.add(new ReorderAttributes(dataGenerator));
 	    
 		SmokeTestRunner smokeTester = new SmokeTestRunner(iterations);
 		MetamorphicTestRunner metamorphicTester = new MetamorphicTestRunner(iterations);
