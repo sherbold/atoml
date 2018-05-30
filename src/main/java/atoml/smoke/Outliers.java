@@ -27,7 +27,7 @@ public class Outliers extends AbstractSmokeTest {
 	 * @see atoml.smoke.AbstractSmokeTest#createData()
 	 */
 	@Override
-	protected Instances createData() {
+	public Instances createData() {
 		Instances data = dataGenerator.randomUniformData(0, 1e-10);
 		for( int i=0; i<data.numAttributes() ; i++ ) {
 			if( i!=data.classIndex() ) {

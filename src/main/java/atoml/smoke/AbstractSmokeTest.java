@@ -38,7 +38,7 @@ public abstract class AbstractSmokeTest implements SmokeTest {
 	 * 
 	 * @return data
 	 */
-	abstract protected Instances createData();
+	public abstract Instances createData();
 
 	/*
 	 * (non-Javadoc)

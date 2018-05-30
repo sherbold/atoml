@@ -29,7 +29,7 @@ public class ScrambleData extends MetamorphicSameClassifierTest {
 	 * @see atoml.metamorphic.AbstractMetamorphicTest#createData()
 	 */
 	@Override
-	protected Instances createData() {
+	public Instances createData() {
 		return dataGenerator.randomUniformData(0, 1);
 	}
 
@@ -49,7 +49,7 @@ public class ScrambleData extends MetamorphicSameClassifierTest {
 	 * @see atoml.metamorphic.AbstractMetamorphicTest#morphData(weka.core.Instances)
 	 */
 	@Override
-	protected Instances morphData(Instances data) {
+	public Instances morphData(Instances data) {
 		Instances morphedData = new Instances(data);
 
 		RandomDataGenerator random = new RandomDataGenerator();

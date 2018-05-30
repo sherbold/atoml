@@ -25,12 +25,24 @@ public interface MetamorphicTest {
 	Instances getData();
 
 	/**
+	 * create new data
+	 * @return new data
+	 */
+	Instances createData();
+	
+	/**
 	 * get the morphed data
 	 * 
 	 * @return morphed data
 	 */
 	Instances getMorphedData();
 
+	/**
+	 * morphes data
+	 * @return morphed data
+	 */
+	Instances morphData(Instances data);
+	
 	/**
 	 * execute the test
 	 * 

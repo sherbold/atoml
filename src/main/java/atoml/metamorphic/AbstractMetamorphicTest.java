@@ -45,22 +45,6 @@ public abstract class AbstractMetamorphicTest implements MetamorphicTest {
 	}
 
 	/**
-	 * generates the original data
-	 * 
-	 * @return original data
-	 */
-	abstract protected Instances createData();
-
-	/**
-	 * morphs the data
-	 * 
-	 * @param data
-	 *            original data
-	 * @return morphed data
-	 */
-	abstract protected Instances morphData(Instances data);
-
-	/**
 	 * checks if the metamorphic relation holds
 	 * 
 	 * @param originalClass

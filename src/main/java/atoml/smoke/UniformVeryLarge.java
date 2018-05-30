@@ -25,7 +25,7 @@ public class UniformVeryLarge extends AbstractSmokeTest {
 	 * @see atoml.smoke.AbstractSmokeTest#createData()
 	 */
 	@Override
-	protected Instances createData() {
+	public Instances createData() {
 		return dataGenerator.randomUniformData(-1e200, 1e200);
 	}
 

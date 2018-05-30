@@ -25,7 +25,7 @@ public class UniformSmall extends AbstractSmokeTest {
 	 * @see atoml.smoke.AbstractSmokeTest#createData()
 	 */
 	@Override
-	protected Instances createData() {
+	public Instances createData() {
 		return dataGenerator.randomUniformData(0, 1e-5);
 	}
 

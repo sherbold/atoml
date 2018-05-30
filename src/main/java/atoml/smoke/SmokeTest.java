@@ -24,6 +24,12 @@ public interface SmokeTest {
 	 * @return original data
 	 */
 	Instances getData();
+	
+	/**
+	 * create new data
+	 * @return new data
+	 */
+	Instances createData();
 
 	/**
 	 * execute the test

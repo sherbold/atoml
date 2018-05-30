@@ -26,7 +26,7 @@ public class AllZeroes extends AbstractSmokeTest {
 	 * @see atoml.smoke.AbstractSmokeTest#createData()
 	 */
 	@Override
-	protected Instances createData() {
+	public Instances createData() {
 		return dataGenerator.allConstValue(0.0);
 	}
 }
