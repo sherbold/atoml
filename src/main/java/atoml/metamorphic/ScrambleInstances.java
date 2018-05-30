@@ -12,14 +12,14 @@ import weka.core.Instances;
  * @author sherbold
  *
  */
-public class ScrambleData extends MetamorphicSameClassifierTest {
+public class ScrambleInstances extends MetamorphicSameClassifierTest {
 
 	/**
 	 * creats a new ScampleData object
 	 * 
 	 * @param dataGenerator
 	 */
-	public ScrambleData(DataGenerator dataGenerator) {
+	public ScrambleInstances(DataGenerator dataGenerator) {
 		super(dataGenerator);
 	}
 
