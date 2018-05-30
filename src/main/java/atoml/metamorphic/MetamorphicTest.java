@@ -44,6 +44,12 @@ public interface MetamorphicTest {
 	Instances morphData(Instances data);
 	
 	/**
+	 * metamorphic relation described as a Java string to be used by unit test generator
+	 * @return the relation
+	 */
+	String relationAsString();
+	
+	/**
 	 * execute the test
 	 * 
 	 * @param classifierCreator

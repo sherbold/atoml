@@ -2,18 +2,11 @@ package atoml;
 
 import java.io.BufferedWriter;
 import java.io.FileWriter;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.logging.Logger;
 
 import atoml.classifiers.ClassifierCreator;
-import atoml.data.ClassificationGenerator;
-import atoml.data.DataGenerator;
-import atoml.metamorphic.ConstantChange;
-import atoml.metamorphic.InvertedClass;
 import atoml.metamorphic.MetamorphicTest;
-import atoml.metamorphic.ScrambleData;
-
 
 /**
  * Implements a testrunner for metamorphic tests
@@ -38,32 +31,19 @@ public class MetamorphicTestRunner {
 	private final int iterations;
 	
 	/**
-	 * data generator that is used by the tests
-	 */
-	private final DataGenerator dataGenerator;
-	
-	/**
-	 * creates a new metamorphic test runner
+	 * creates a new smoke test runner
 	 * @param iterations number of iterations of the tests
-	 * @param numInstances number of instances generated for each data set
-	 * @param numFeatures number of features generated for each data set
-	 * @param classificationGenerator classification generator used by the internal {@link DataGenerator}
 	 */
-	public MetamorphicTestRunner(int iterations, int numInstances, int numFeatures, ClassificationGenerator classificationGenerator) {
+	public MetamorphicTestRunner(int iterations) {
 		this.iterations = iterations;
-		this.dataGenerator = new DataGenerator(numInstances, numFeatures, classificationGenerator);
 	}
 	
 	/**
 	 * run the metamorphic tests
 	 * @param classifierCreator generator for the classifier under test. 
 	 */
-	public void runMetamorphicTests(ClassifierCreator classifierCreator) {
+	public void runMetamorphicTests(ClassifierCreator classifierCreator, List<MetamorphicTest> metamorphicTests) {
 		String classifierName = classifierCreator.createClassifier().getClass().getSimpleName();
-		List<MetamorphicTest> metamorphicTests = new LinkedList<>();
-		metamorphicTests.add(new ConstantChange(dataGenerator));
-		metamorphicTests.add(new InvertedClass(dataGenerator));
-		metamorphicTests.add(new ScrambleData(dataGenerator));
 		
 		LOGGER.info("starting metamorphic tests for classifier " + classifierName);
 		for(MetamorphicTest metamorphicTest : metamorphicTests) {

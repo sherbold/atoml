@@ -2,23 +2,11 @@ package atoml;
 
 import java.io.BufferedWriter;
 import java.io.FileWriter;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.logging.Logger;
 
 import atoml.classifiers.ClassifierCreator;
-import atoml.data.ClassificationGenerator;
-import atoml.data.DataGenerator;
-import atoml.smoke.AllZeroes;
-import atoml.smoke.Outliers;
-import atoml.smoke.SpreadMixture;
 import atoml.smoke.SmokeTest;
-import atoml.smoke.UniformLarge;
-import atoml.smoke.UniformSmall;
-import atoml.smoke.UniformVeryLarge;
-import atoml.smoke.UniformVerySmall;
-import atoml.smoke.UniformWholeDoubleRange;
-import atoml.smoke.UniformZeroToOne;
 
 /**
  * Implements a test runner for smoke tests
@@ -42,38 +30,20 @@ public class SmokeTestRunner {
 	private final int iterations;
 	
 	/**
-	 * generator for smoke test data
-	 */
-	private final DataGenerator dataGenerator;
-	
-	/**
 	 * creates a new smoke test runner
 	 * @param iterations number of iterations of the tests
-	 * @param numInstances number of instances generated for each data set
-	 * @param numFeatures number of features generated for each data set
-	 * @param classificationGenerator classification generator used by the internal {@link DataGenerator}
 	 */
-	public SmokeTestRunner(int iterations, int numInstances, int numFeatures, ClassificationGenerator classificationGenerator) {
+	public SmokeTestRunner(int iterations) {
 		this.iterations = iterations;
-		this.dataGenerator = new DataGenerator(numInstances, numFeatures, classificationGenerator);
 	}
 	
 	/**
 	 * run the smoke tests
 	 * @param classifierCreator generator for the classifier under test. 
+	 * @param smokeTests tests that are executed
 	 */
-	public void runSmokeTests(ClassifierCreator classifierCreator) {
+	public void runSmokeTests(ClassifierCreator classifierCreator, List<SmokeTest> smokeTests) {
 		String classifierName = classifierCreator.createClassifier().getClass().getSimpleName();
-		List<SmokeTest> smokeTests = new LinkedList<>();
-		smokeTests.add(new AllZeroes(dataGenerator));
-		smokeTests.add(new UniformZeroToOne(dataGenerator));
-		smokeTests.add(new UniformLarge(dataGenerator));
-		smokeTests.add(new UniformVeryLarge(dataGenerator));
-		smokeTests.add(new UniformWholeDoubleRange(dataGenerator));
-		smokeTests.add(new UniformSmall(dataGenerator));
-		smokeTests.add(new UniformVerySmall(dataGenerator));
-		smokeTests.add(new SpreadMixture(dataGenerator));
-		smokeTests.add(new Outliers(dataGenerator));
 		
 		LOGGER.info("starting smoke tests for classifier " + classifierName);
 		for(SmokeTest smokeTest : smokeTests) {

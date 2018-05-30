@@ -35,6 +35,16 @@ public class InvertedClass extends MetamorphicOrderedDataTest {
 	/*
 	 * (non-Javadoc)
 	 * 
+	 * @see atoml.metamorphic.MetamorphicTest#relationAsString()
+	 */
+	@Override
+	public String relationAsString() {
+		return "Double.compare(originalClass, morphedClass) != 0";
+	}
+	
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see atoml.metamorphic.AbstractMetamorphicTest#checkRelation(double, double)
 	 */
 	@Override

@@ -18,6 +18,22 @@ import org.apache.commons.cli.ParseException;
 import atoml.classifiers.ClassifierCreator;
 import atoml.classifiers.StringClassifierCreator;
 import atoml.data.ClassificationGenerator;
+import atoml.data.DataGenerator;
+import atoml.junitgen.JUnitGenerator;
+import atoml.metamorphic.ConstantChange;
+import atoml.metamorphic.InvertedClass;
+import atoml.metamorphic.MetamorphicTest;
+import atoml.metamorphic.ScrambleData;
+import atoml.smoke.AllZeroes;
+import atoml.smoke.Outliers;
+import atoml.smoke.SmokeTest;
+import atoml.smoke.SpreadMixture;
+import atoml.smoke.UniformLarge;
+import atoml.smoke.UniformSmall;
+import atoml.smoke.UniformVeryLarge;
+import atoml.smoke.UniformVerySmall;
+import atoml.smoke.UniformWholeDoubleRange;
+import atoml.smoke.UniformZeroToOne;
 
 public class Runner {
 		
@@ -39,6 +55,8 @@ public class Runner {
 	    String inputFileStr = cmd.getOptionValue("file");
 	    String classifierStr = cmd.getOptionValue("classifier");
 	    String iterationsStr = cmd.getOptionValue("iterations");
+	    String testSrcPath = cmd.getOptionValue("testpath");
+	    String testResourcePath = cmd.getOptionValue("resourcepath");
 	    
 	    if( inputFileStr==null && classifierStr==null ) {
 	    	System.out.println("Missing required option: must specify either classifier (-c) or input file (-f)");
@@ -51,20 +69,53 @@ public class Runner {
 	    	System.exit(1);
 	    }
 	    
+	    
 	    final int iterations;
 	    if( iterationsStr==null ) {
 	    	iterations = 1;
 	    } else {
 	    	iterations = Integer.parseInt(iterationsStr);
 	    }
+	    final boolean gentests = cmd.hasOption("gentests");
+	    if( testSrcPath==null ) {
+	    	testSrcPath = "src/test/java/";
+	    }
+	    if( testResourcePath==null ) {
+	    	testResourcePath = "src/test/resources/";
+	    }
 	    
-		SmokeTestRunner smokeTester = new SmokeTestRunner(iterations, 10, 100, new ClassificationGenerator(2));
-		MetamorphicTestRunner metamorphicTester = new MetamorphicTestRunner(iterations, 10, 100, new ClassificationGenerator(2));
+	    DataGenerator dataGenerator = new DataGenerator(10, 100, new ClassificationGenerator(2));
+	    List<SmokeTest> smokeTests = new LinkedList<>();
+		smokeTests.add(new AllZeroes(dataGenerator));
+		smokeTests.add(new UniformZeroToOne(dataGenerator));
+		smokeTests.add(new UniformLarge(dataGenerator));
+		smokeTests.add(new UniformVeryLarge(dataGenerator));
+		smokeTests.add(new UniformWholeDoubleRange(dataGenerator));
+		smokeTests.add(new UniformSmall(dataGenerator));
+		smokeTests.add(new UniformVerySmall(dataGenerator));
+		smokeTests.add(new SpreadMixture(dataGenerator));
+		smokeTests.add(new Outliers(dataGenerator));
+		List<MetamorphicTest> metamorphicTests = new LinkedList<>();
+		metamorphicTests.add(new ConstantChange(dataGenerator));
+		metamorphicTests.add(new InvertedClass(dataGenerator));
+		metamorphicTests.add(new ScrambleData(dataGenerator));
+	    
+		SmokeTestRunner smokeTester = new SmokeTestRunner(iterations);
+		MetamorphicTestRunner metamorphicTester = new MetamorphicTestRunner(iterations);
 		
 		if( classifierStr!=null ) {
 			ClassifierCreator classifierCreator = new StringClassifierCreator(classifierStr);
 			if( classifierCreator.createClassifier()!=null ) {
-				smokeTester.runSmokeTests(classifierCreator);
+				if( gentests ) {
+					List<ClassifierCreator> classifiersUnderTest = new LinkedList<>();
+					classifiersUnderTest.add(classifierCreator);
+					
+					JUnitGenerator junitGenerator = new JUnitGenerator(testSrcPath, testResourcePath);
+					junitGenerator.generateTests(classifiersUnderTest, smokeTests, metamorphicTests);
+				} else {
+					smokeTester.runSmokeTests(classifierCreator, smokeTests);
+					metamorphicTester.runMetamorphicTests(classifierCreator, metamorphicTests);
+				}
 			}
 		}
 		if( inputFileStr!=null ) {
@@ -74,13 +125,20 @@ public class Runner {
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
+			List<ClassifierCreator> classifiersUnderTest = new LinkedList<>();
 			for( String classifier : classifiers ) {
 				if( classifier.length()>0 ) {
 					ClassifierCreator classifierCreator = new StringClassifierCreator(classifier);
-					if( classifierCreator.createClassifier()!=null ) {
-						smokeTester.runSmokeTests(classifierCreator);
-						metamorphicTester.runMetamorphicTests(classifierCreator);
-					}
+					classifiersUnderTest.add(classifierCreator);
+				}
+			}
+			if( gentests ) {
+				JUnitGenerator junitGenerator = new JUnitGenerator(testSrcPath, testResourcePath);
+				junitGenerator.generateTests(classifiersUnderTest, smokeTests, metamorphicTests);
+			} else {
+				for( ClassifierCreator classifierUnderTest : classifiersUnderTest ) {
+					smokeTester.runSmokeTests(classifierUnderTest, smokeTests);
+					metamorphicTester.runMetamorphicTests(classifierUnderTest, metamorphicTests);
 				}
 			}
 		}
@@ -97,10 +155,22 @@ public class Runner {
 		inputFile.setRequired(false);
 		options.addOption(inputFile);
 		
-		Option iterations = new Option("i", "iterations", true, "number of iterations used by smoke tester");
+		Option iterations = new Option("i", "iterations", true, "number of iterations used by smoke tester (default: 1)");
 	    iterations.setRequired(false);
 	    options.addOption(iterations);
-
+	    
+	    Option gentests = new Option("g", "gentests", false, "generates unit tests, instead of direct execution of tests");
+	    gentests.setRequired(false);
+	    options.addOption(gentests);
+	    
+	    Option testpath = new Option("t", "testpath", true, "path where generated test cases are stored (default: src/test/java/)");
+	    testpath.setRequired(false);
+	    options.addOption(testpath);
+	    
+	    Option datapath = new Option("r", "resourcepath", true, "path where generated test data is stored (default: src/test/resources/)");
+	    testpath.setRequired(false);
+	    options.addOption(datapath);
+	    
 	    return options;
 	}
 

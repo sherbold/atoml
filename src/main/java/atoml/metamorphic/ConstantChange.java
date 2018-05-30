@@ -31,6 +31,16 @@ public class ConstantChange extends MetamorphicOrderedDataTest {
 	public Instances createData() {
 		return dataGenerator.randomUniformData(0, 1);
 	}
+	
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see atoml.metamorphic.MetamorphicTest#relationAsString()
+	 */
+	@Override
+	public String relationAsString() {
+		return "Double.compare(originalClass, morphedClass) == 0";
+	}
 
 	/*
 	 * (non-Javadoc)
