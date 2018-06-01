@@ -29,7 +29,7 @@ public class SpreadMixture extends AbstractSmokeTest {
 	 * @see atoml.smoke.AbstractSmokeTest#createData()
 	 */
 	@Override
-	public Instances createData() {
+	public void createData() {
 		Instances smallValues = dataGenerator.randomUniformData(0, 1e-10);
 		Instances largeValues = dataGenerator.randomUniformData(1e10, 1e11);
 		// mix data
@@ -42,7 +42,16 @@ public class SpreadMixture extends AbstractSmokeTest {
 				mixture.add(largeValues.instance(i));
 			}
 		}
-		return mixture;
+		this.data = mixture;
 	}
-
+	
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see atoml.smoke.AbstractSmokeTest#createTestdata()
+	 */
+	@Override
+	public void createTestdata() {
+		this.testdata = this.data;
+	}
 }

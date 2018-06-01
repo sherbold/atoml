@@ -26,10 +26,21 @@ public interface SmokeTest {
 	Instances getData();
 	
 	/**
-	 * create new data
-	 * @return new data
+	 * get the test data
+	 * 
+	 * @return test data
 	 */
-	Instances createData();
+	Instances getTestData();
+	
+	/**
+	 * create new data that is stored internally
+	 */
+	void createData();
+	
+	/**
+	 * creates new testdata that is stored internally
+	 */
+	void createTestdata();
 
 	/**
 	 * execute the test

@@ -1,7 +1,6 @@
 package atoml.smoke;
 
 import atoml.data.DataGenerator;
-import weka.core.Instances;
 
 /**
  * Data: uniformly distributed in [0,10^-5]
@@ -25,8 +24,17 @@ public class UniformSmall extends AbstractSmokeTest {
 	 * @see atoml.smoke.AbstractSmokeTest#createData()
 	 */
 	@Override
-	public Instances createData() {
-		return dataGenerator.randomUniformData(0, 1e-5);
+	public void createData() {
+		this.data = dataGenerator.randomUniformData(0, 1e-5);
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see atoml.smoke.AbstractSmokeTest#createTestdata()
+	 */
+	@Override
+	public void createTestdata() {
+		this.testdata = this.data;
+	}
 }

@@ -1,7 +1,6 @@
 package atoml.smoke;
 
 import atoml.data.DataGenerator;
-import weka.core.Instances;
 
 /**
  * Data: All values 0.0
@@ -26,7 +25,17 @@ public class AllZeroes extends AbstractSmokeTest {
 	 * @see atoml.smoke.AbstractSmokeTest#createData()
 	 */
 	@Override
-	public Instances createData() {
-		return dataGenerator.allConstValue(0.0);
+	public void createData() {
+		this.data = dataGenerator.allConstValue(0.0);
+	}
+	
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see atoml.smoke.AbstractSmokeTest#createTestdata()
+	 */
+	@Override
+	public void createTestdata() {
+		this.testdata = this.data;
 	}
 }

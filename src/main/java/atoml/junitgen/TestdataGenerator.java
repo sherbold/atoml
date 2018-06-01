@@ -54,8 +54,15 @@ public class TestdataGenerator {
 
 		// TODO make writing robust
 		for( SmokeTest smokeTest : smokeTests ) {
-			try(BufferedWriter writer = new BufferedWriter(new FileWriter(datapath + "smoketest_" + smokeTest.getName() + ".arff"));) {
-				writer.write(smokeTest.createData().toString());
+			try(BufferedWriter writer = new BufferedWriter(new FileWriter(datapath + "smoketest_" + smokeTest.getName() + "_training.arff"));) {
+				smokeTest.createData();
+				writer.write(smokeTest.getData().toString());
+			} catch(IOException e) {
+				throw new RuntimeException("could write data for smoke test " + smokeTest.getName(), e);
+			}
+			try(BufferedWriter writer = new BufferedWriter(new FileWriter(datapath + "smoketest_" + smokeTest.getName() + "_test.arff"));) {
+				smokeTest.createData();
+				writer.write(smokeTest.getData().toString());
 			} catch(IOException e) {
 				throw new RuntimeException("could write data for smoke test " + smokeTest.getName(), e);
 			}

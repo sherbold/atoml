@@ -21,7 +21,12 @@ public abstract class AbstractSmokeTest implements SmokeTest {
 	/**
 	 * smoke test data
 	 */
-	private Instances data = null;
+	protected Instances data = null;
+	
+	/**
+	 * test data that is used
+	 */
+	protected Instances testdata = null;
 
 	/**
 	 * creates a new AbstractSmokeTest
@@ -38,7 +43,14 @@ public abstract class AbstractSmokeTest implements SmokeTest {
 	 * 
 	 * @return data
 	 */
-	public abstract Instances createData();
+	public abstract void createData();
+	
+	/**
+	 * creates the test data for the smoke test
+	 * 
+	 * @return data
+	 */
+	public abstract void createTestdata();
 
 	/*
 	 * (non-Javadoc)
@@ -57,10 +69,11 @@ public abstract class AbstractSmokeTest implements SmokeTest {
 	 */
 	@Override
 	public void execute(ClassifierCreator classifierCreator) throws Exception {
-		data = createData();
+		createData();
+		createTestdata();
 		Classifier classifier = classifierCreator.createClassifier();
-		classifier.buildClassifier(data);
-		for (Instance instance : data) {
+		classifier.buildClassifier(this.data);
+		for (Instance instance : this.testdata) {
 			classifier.classifyInstance(instance);
 			classifier.distributionForInstance(instance);
 		}
@@ -74,5 +87,15 @@ public abstract class AbstractSmokeTest implements SmokeTest {
 	@Override
 	public Instances getData() {
 		return data;
+	}
+	
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see atoml.smoke.SmokeTest#getTestData()
+	 */
+	@Override
+	public Instances getTestData() {
+		return testdata;
 	}
 }

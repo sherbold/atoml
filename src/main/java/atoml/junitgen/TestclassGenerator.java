@@ -155,18 +155,29 @@ public class TestclassGenerator {
 		return "    public void " + smokeTest.getName() + "_SmokeTest() throws Exception {\n" +
 	           "        Instances data;\n" + 
 	           "        InputStreamReader file = new InputStreamReader(\n" + 
-	           "                this.getClass().getResourceAsStream(\"/smoketest_" + smokeTest.getName() + ".arff\"));\n" +
+	           "                this.getClass().getResourceAsStream(\"/smoketest_" + smokeTest.getName() + "_training.arff\"));\n" +
 	           "        try(BufferedReader reader = new BufferedReader(file);) {\n" + 
 	           "            data = new Instances(reader);\n" + 
 	           "            reader.close();\n" + 
 	           "        }\n" + 
 	           "        catch (IOException e) {\n" + 
-	           "            throw new RuntimeException(\"error reading file:  smoketest_" + smokeTest.getName() + ".arff\", e);\n" + 
-	           "        }\n" + 
+	           "            throw new RuntimeException(\"error reading file:  smoketest_" + smokeTest.getName() + "_training.arff\", e);\n" + 
+	           "        }\n" +
 	           "        data.setClassIndex(data.numAttributes()-1);\n" +
+	           "        Instances testdata;\n" + 
+	           "        InputStreamReader testfile = new InputStreamReader(\n" + 
+	           "                this.getClass().getResourceAsStream(\"/smoketest_" + smokeTest.getName() + "_test.arff\"));\n" +
+	           "        try(BufferedReader reader = new BufferedReader(testfile);) {\n" + 
+	           "            testdata = new Instances(reader);\n" + 
+	           "            reader.close();\n" + 
+	           "        }\n" + 
+	           "        catch (IOException e) {\n" + 
+	           "            throw new RuntimeException(\"error reading file:  smoketest_" + smokeTest.getName() + "_test.arff\", e);\n" + 
+	           "        }\n" + 
+	           "        testdata.setClassIndex(testdata.numAttributes()-1);\n" +
 		       "        Classifier classifier = new " +  classifierUnderTest.createClassifier().getClass().getSimpleName() + "();\n" + 
 		       "        classifier.buildClassifier(data);\n" + 
-		       "        for (Instance instance : data) {\n" + 
+		       "        for (Instance instance : testdata) {\n" + 
 		       "            classifier.classifyInstance(instance);\n" + 
 		       "            classifier.distributionForInstance(instance);\n" + 
 		       "        }\n";

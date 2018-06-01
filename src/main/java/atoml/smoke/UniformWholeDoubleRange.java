@@ -1,7 +1,6 @@
 package atoml.smoke;
 
 import atoml.data.DataGenerator;
-import weka.core.Instances;
 
 /**
  * Data: Uniformly distributed in [Double.MIN_VALUE, Double.MAX_VALUE
@@ -26,8 +25,17 @@ public class UniformWholeDoubleRange extends AbstractSmokeTest {
 	 * @see atoml.smoke.AbstractSmokeTest#createData()
 	 */
 	@Override
-	public Instances createData() {
-		return dataGenerator.randomUniformData(Double.MIN_VALUE, Double.MAX_VALUE);
+	public void createData() {
+		this.data = dataGenerator.randomUniformData(Double.MIN_VALUE, Double.MAX_VALUE);
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see atoml.smoke.AbstractSmokeTest#createTestdata()
+	 */
+	@Override
+	public void createTestdata() {
+		this.testdata = this.data;
+	}
 }

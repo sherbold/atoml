@@ -1,7 +1,6 @@
 package atoml.smoke;
 
 import atoml.data.DataGenerator;
-import weka.core.Instances;
 
 /**
  * Data: Generates uniformly distributed small values [0, 10^-10] and one outlier 10^10. 
@@ -27,14 +26,22 @@ public class Outliers extends AbstractSmokeTest {
 	 * @see atoml.smoke.AbstractSmokeTest#createData()
 	 */
 	@Override
-	public Instances createData() {
-		Instances data = dataGenerator.randomUniformData(0, 1e-10);
+	public void createData() {
+		this.data = dataGenerator.randomUniformData(0, 1e-10);
 		for( int i=0; i<data.numAttributes() ; i++ ) {
 			if( i!=data.classIndex() ) {
 				data.instance(0).setValue(i, 10e10);
 			}
 		}
-		return data;
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see atoml.smoke.AbstractSmokeTest#createTestdata()
+	 */
+	@Override
+	public void createTestdata() {
+		this.testdata = this.data;
+	}
 }
