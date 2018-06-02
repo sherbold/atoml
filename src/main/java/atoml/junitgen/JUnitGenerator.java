@@ -36,11 +36,11 @@ public class JUnitGenerator {
 	 * @param smokeTests smoke tests that are generated
 	 * @param metamorphicTests metamorphic tests that are generated
 	 */
-	public void generateTests(List<ClassifierCreator> classifiersUnderTest, List<SmokeTest> smokeTests, List<MetamorphicTest> metamorphicTests) {
-		TestdataGenerator testdataGenerator = new TestdataGenerator(smokeTests, metamorphicTests);
+	public void generateTests(List<ClassifierCreator> classifiersUnderTest, List<SmokeTest> smokeTests, List<MetamorphicTest> metamorphicTests, int iterations) {
+		TestdataGenerator testdataGenerator = new TestdataGenerator(smokeTests, metamorphicTests, iterations);
 		testdataGenerator.generateTestdata(testResourcePath);
 		for(ClassifierCreator classifierUnderTest : classifiersUnderTest ) {
-			TestclassGenerator testclassGenerator = new TestclassGenerator(classifierUnderTest, smokeTests, metamorphicTests);
+			TestclassGenerator testclassGenerator = new TestclassGenerator(classifierUnderTest, smokeTests, metamorphicTests, iterations);
 			String testclassCode = testclassGenerator.generateTestclass();
 
 			Path path = Paths.get(testJavaPath + testclassGenerator.getPackageName().replaceAll("\\.", "/") + "/" + testclassGenerator.getClassName() + ".java");

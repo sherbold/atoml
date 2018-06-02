@@ -17,17 +17,22 @@ public class TestclassGenerator {
 	/**
 	 * classifier that is tested
 	 */
-	protected ClassifierCreator classifierUnderTest;
+	private final ClassifierCreator classifierUnderTest;
 	
 	/**
 	 * smoke tests that are generated
 	 */
-	protected List<SmokeTest> smokeTests;
+	private final List<SmokeTest> smokeTests;
 	
 	/**
 	 * metamorphic tests that are generated
 	 */
-	protected List<MetamorphicTest> metamorphicTests;
+	private final List<MetamorphicTest> metamorphicTests;
+	
+	/**
+	 * number of iterations for each test
+	 */
+	private final int iterations;
 	
 	/**
 	 * creates a new TestclassGenerator
@@ -35,10 +40,11 @@ public class TestclassGenerator {
 	 * @param smokeTest list of smoke tests
 	 * @param metamorphicTests list of metamorphic tests
 	 */
-	public TestclassGenerator(ClassifierCreator classifierUnderTest, List<SmokeTest> smokeTest, List<MetamorphicTest> metamorphicTests) {
+	public TestclassGenerator(ClassifierCreator classifierUnderTest, List<SmokeTest> smokeTest, List<MetamorphicTest> metamorphicTests, int iterations) {
 		this.classifierUnderTest = classifierUnderTest;
 		this.smokeTests = smokeTest;
 		this.metamorphicTests = metamorphicTests;
+		this.iterations = iterations;
 	}
 	
 	/**
@@ -153,33 +159,35 @@ public class TestclassGenerator {
 	 */
 	private String smoketestBody(SmokeTest smokeTest) {
 		return "    public void " + smokeTest.getName() + "_SmokeTest() throws Exception {\n" +
-	           "        Instances data;\n" + 
-	           "        InputStreamReader file = new InputStreamReader(\n" + 
-	           "                this.getClass().getResourceAsStream(\"/smoketest_" + smokeTest.getName() + "_training.arff\"));\n" +
-	           "        try(BufferedReader reader = new BufferedReader(file);) {\n" + 
-	           "            data = new Instances(reader);\n" + 
-	           "            reader.close();\n" + 
-	           "        }\n" + 
-	           "        catch (IOException e) {\n" + 
-	           "            throw new RuntimeException(\"error reading file:  smoketest_" + smokeTest.getName() + "_training.arff\", e);\n" + 
-	           "        }\n" +
-	           "        data.setClassIndex(data.numAttributes()-1);\n" +
-	           "        Instances testdata;\n" + 
-	           "        InputStreamReader testfile = new InputStreamReader(\n" + 
-	           "                this.getClass().getResourceAsStream(\"/smoketest_" + smokeTest.getName() + "_test.arff\"));\n" +
-	           "        try(BufferedReader reader = new BufferedReader(testfile);) {\n" + 
-	           "            testdata = new Instances(reader);\n" + 
-	           "            reader.close();\n" + 
-	           "        }\n" + 
-	           "        catch (IOException e) {\n" + 
-	           "            throw new RuntimeException(\"error reading file:  smoketest_" + smokeTest.getName() + "_test.arff\", e);\n" + 
-	           "        }\n" + 
-	           "        testdata.setClassIndex(testdata.numAttributes()-1);\n" +
-		       "        Classifier classifier = new " +  classifierUnderTest.createClassifier().getClass().getSimpleName() + "();\n" + 
-		       "        classifier.buildClassifier(data);\n" + 
-		       "        for (Instance instance : testdata) {\n" + 
-		       "            classifier.classifyInstance(instance);\n" + 
-		       "            classifier.distributionForInstance(instance);\n" + 
+			   "        for(int iter=1; iter<=" + iterations + "; iter++) {\n" +
+	           "            Instances data;\n" + 
+	           "            InputStreamReader file = new InputStreamReader(\n" + 
+	           "                    this.getClass().getResourceAsStream(\"/smoketest_" + smokeTest.getName() + "_\" + iter + \"_training.arff\"));\n" +
+	           "            try(BufferedReader reader = new BufferedReader(file);) {\n" + 
+	           "                data = new Instances(reader);\n" + 
+	           "                reader.close();\n" + 
+	           "            }\n" + 
+	           "            catch (IOException e) {\n" + 
+	           "                throw new RuntimeException(\"error reading file:  smoketest_" + smokeTest.getName() + "_\" + iter + \"_training.arff\", e);\n" + 
+	           "            }\n" +
+	           "            data.setClassIndex(data.numAttributes()-1);\n" +
+	           "            Instances testdata;\n" + 
+	           "            InputStreamReader testfile = new InputStreamReader(\n" + 
+	           "                    this.getClass().getResourceAsStream(\"/smoketest_" + smokeTest.getName() + "_\" + iter + \"_test.arff\"));\n" +
+	           "            try(BufferedReader reader = new BufferedReader(testfile);) {\n" + 
+	           "                testdata = new Instances(reader);\n" + 
+	           "                reader.close();\n" + 
+	           "            }\n" + 
+	           "            catch (IOException e) {\n" + 
+	           "                throw new RuntimeException(\"error reading file:  smoketest_" + smokeTest.getName() + "_\" + iter + \"_test.arff\", e);\n" + 
+	           "            }\n" + 
+	           "            testdata.setClassIndex(testdata.numAttributes()-1);\n" +
+		       "            Classifier classifier = new " +  classifierUnderTest.createClassifier().getClass().getSimpleName() + "();\n" + 
+		       "            classifier.buildClassifier(data);\n" + 
+		       "            for (Instance instance : testdata) {\n" + 
+		       "                classifier.classifyInstance(instance);\n" + 
+		       "                classifier.distributionForInstance(instance);\n" + 
+		       "            }\n" +
 		       "        }\n";
 	}
 	
@@ -199,43 +207,45 @@ public class TestclassGenerator {
 		}
 		
 		return "    public void " + metamorphicTest.getName() + "_MorphTest() throws Exception {\n" +
-		           "        Instances data;\n" + 
-		           "        InputStreamReader originalFile = new InputStreamReader(\n" + 
-		           "                this.getClass().getResourceAsStream(\"/morphtest_" + metamorphicTest.getName() + "_original.arff\"));\n" +
-		           "        try(BufferedReader reader = new BufferedReader(originalFile);) {\n" + 
-		           "            data = new Instances(reader);\n" + 
-		           "            reader.close();\n" + 
-		           "        }\n" + 
-		           "        catch (IOException e) {\n" + 
-		           "            throw new RuntimeException(\"error reading file:  morphtest_" + metamorphicTest.getName() + "_original.arff\", e);\n" + 
-		           "        }\n" + 
-		           "        data.setClassIndex(data.numAttributes()-1);\n" +
-		           "        Instances morphedData;\n" + 
-		           "        InputStreamReader morphedFile = new InputStreamReader(\r\n" + 
-		           "                this.getClass().getResourceAsStream(\"/morphtest_" + metamorphicTest.getName() + "_morphed.arff\"));\n" +
-		           "        try(BufferedReader reader = new BufferedReader(morphedFile);) {\n" + 
-		           "            morphedData = new Instances(reader);\n" + 
-		           "            reader.close();\n" + 
-		           "        }\n" + 
-		           "        catch (IOException e) {\n" + 
-		           "            throw new RuntimeException(\"error reading file:  morphtest_" + metamorphicTest.getName() + "_morphed.arff\", e);\n" + 
-		           "        }\n" +
-		           "        morphedData.setClassIndex(morphedData.numAttributes()-1);\n" +
-		           "        Classifier classifier = new " +  classifierUnderTest.createClassifier().getClass().getSimpleName() + "();\n" + 
-		           "		classifier.buildClassifier(data);\n" + 
-		           "        Classifier morphedClassifier = new " +  classifierUnderTest.createClassifier().getClass().getSimpleName() + "();\n" + 
-		           "		morphedClassifier.buildClassifier(morphedData);\n" + 
-		           "		int violations = 0;\n" + 
-		           "		for (int i = 0; i < data.size(); i++) {\n" + 
-		           "			double originalClass = classifier.classifyInstance(data.instance(i));\n" + 
+		           "        for(int iter=1; iter<=" + iterations + "; iter++) {\n" +
+		           "            Instances data;\n" + 
+		           "            InputStreamReader originalFile = new InputStreamReader(\n" + 
+		           "                     this.getClass().getResourceAsStream(\"/morphtest_" + metamorphicTest.getName() + "_\" + iter + \"_original.arff\"));\n" +
+		           "            try(BufferedReader reader = new BufferedReader(originalFile);) {\n" + 
+		           "                data = new Instances(reader);\n" + 
+		           "                reader.close();\n" + 
+		           "            }\n" + 
+		           "            catch (IOException e) {\n" + 
+		           "                throw new RuntimeException(\"error reading file:  morphtest_" + metamorphicTest.getName() + "_\" + iter + \"_original.arff\", e);\n" + 
+		           "            }\n" + 
+		           "            data.setClassIndex(data.numAttributes()-1);\n" +
+		           "            Instances morphedData;\n" + 
+		           "            InputStreamReader morphedFile = new InputStreamReader(\r\n" + 
+		           "                     this.getClass().getResourceAsStream(\"/morphtest_" + metamorphicTest.getName() + "_\" + iter + \"_morphed.arff\"));\n" +
+		           "            try(BufferedReader reader = new BufferedReader(morphedFile);) {\n" + 
+		           "                morphedData = new Instances(reader);\n" + 
+		           "                reader.close();\n" + 
+		           "            }\n" + 
+		           "            catch (IOException e) {\n" + 
+		           "                throw new RuntimeException(\"error reading file:  morphtest_" + metamorphicTest.getName() + "_\" + iter + \"_morphed.arff\", e);\n" + 
+		           "            }\n" +
+		           "            morphedData.setClassIndex(morphedData.numAttributes()-1);\n" +
+		           "            Classifier classifier = new " +  classifierUnderTest.createClassifier().getClass().getSimpleName() + "();\n" + 
+		           "		    classifier.buildClassifier(data);\n" + 
+		           "            Classifier morphedClassifier = new " +  classifierUnderTest.createClassifier().getClass().getSimpleName() + "();\n" + 
+		           "            morphedClassifier.buildClassifier(morphedData);\n" + 
+		           "            int violations = 0;\n" + 
+		           "            for (int i = 0; i < data.size(); i++) {\n" + 
+		           "                double originalClass = classifier.classifyInstance(data.instance(i));\n" + 
 		           morphClass + 
-		           "			if (!(" + metamorphicTest.relationAsString() + ")) {\n" +
-		           "				violations++;\n" + 
-		           "			}\n" + 
-		           "		}\n" + 
-		           "		if (violations > 0) {\n" + 
-		           "			assertEquals(\"metamorphic relation broken: \" + violations + \" violations\",0, violations);\n" + 
-		           "		}\n";
+		           "                if (!(" + metamorphicTest.relationAsString() + ")) {\n" +
+		           "                    violations++;\n" + 
+		           "                }\n" + 
+		           "            }\n" + 
+		           "            if (violations > 0) {\n" + 
+		           "                assertEquals(\"metamorphic relation broken: \" + violations + \" violations\",0, violations);\n" + 
+		           "            }\n" +
+		           "        }\n";
 	}
 	
 }

@@ -29,13 +29,20 @@ public class TestdataGenerator {
 	private List<MetamorphicTest> metamorphicTests;
 	
 	/**
+	 * number of iterations for the test data generation
+	 */
+	private final int iterations;
+	
+	/**
 	 * creates a new TestdataGenerator
 	 * @param smokeTests smoke tests for which data is generated
 	 * @param metamorphicTests metamorphic tests for which data is generated
+	 * @param iterations number of iterations for the test data generation
 	 */
-	public TestdataGenerator(List<SmokeTest> smokeTests, List<MetamorphicTest> metamorphicTests) {
+	public TestdataGenerator(List<SmokeTest> smokeTests, List<MetamorphicTest> metamorphicTests, int iterations) {
 		this.smokeTests = smokeTests;
 		this.metamorphicTests = metamorphicTests;
+		this.iterations = iterations;
 	}
 	
 	/**
@@ -52,34 +59,35 @@ public class TestdataGenerator {
 			throw new RuntimeException("could not create folder for test data", e);
 		}
 
-		// TODO make writing robust
-		for( SmokeTest smokeTest : smokeTests ) {
-			try(BufferedWriter writer = new BufferedWriter(new FileWriter(datapath + "smoketest_" + smokeTest.getName() + "_training.arff"));) {
-				smokeTest.createData();
-				writer.write(smokeTest.getData().toString());
-			} catch(IOException e) {
-				throw new RuntimeException("could write data for smoke test " + smokeTest.getName(), e);
+		for( int iteration=1; iteration<=this.iterations; iteration++) {
+			for( SmokeTest smokeTest : smokeTests ) {
+				try(BufferedWriter writer = new BufferedWriter(new FileWriter(datapath + "smoketest_" + smokeTest.getName() + "_" + iteration + "_training.arff"));) {
+					smokeTest.createData();
+					writer.write(smokeTest.getData().toString());
+				} catch(IOException e) {
+					throw new RuntimeException("could write data for smoke test " + smokeTest.getName(), e);
+				}
+				try(BufferedWriter writer = new BufferedWriter(new FileWriter(datapath + "smoketest_" + smokeTest.getName() + "_" + iteration + "_test.arff"));) {
+					smokeTest.createData();
+					writer.write(smokeTest.getData().toString());
+				} catch(IOException e) {
+					throw new RuntimeException("could write data for smoke test " + smokeTest.getName(), e);
+				}
 			}
-			try(BufferedWriter writer = new BufferedWriter(new FileWriter(datapath + "smoketest_" + smokeTest.getName() + "_test.arff"));) {
-				smokeTest.createData();
-				writer.write(smokeTest.getData().toString());
-			} catch(IOException e) {
-				throw new RuntimeException("could write data for smoke test " + smokeTest.getName(), e);
-			}
-		}
-		
-		for(MetamorphicTest metamorphicTest : metamorphicTests) {
-			Instances originalData = metamorphicTest.createData();
-			Instances morphedData = metamorphicTest.morphData(originalData);
-			try (BufferedWriter writer = new BufferedWriter(new FileWriter(datapath + "morphtest_" + metamorphicTest.getName() + "_original.arff"));) {
-				writer.write(originalData.toString());
-			} catch(Exception e) {
-				throw new RuntimeException("could write data for metamorphic test " + metamorphicTest.getName(), e);
-			}
-			try (BufferedWriter writer = new BufferedWriter(new FileWriter(datapath + "morphtest_" + metamorphicTest.getName() + "_morphed.arff"));) {
-				writer.write(morphedData.toString());
-			} catch(Exception e) {
-				throw new RuntimeException("could write data for metamorphic test " + metamorphicTest.getName(), e);
+			
+			for(MetamorphicTest metamorphicTest : metamorphicTests) {
+				Instances originalData = metamorphicTest.createData();
+				Instances morphedData = metamorphicTest.morphData(originalData);
+				try (BufferedWriter writer = new BufferedWriter(new FileWriter(datapath + "morphtest_" + metamorphicTest.getName() + "_" + iteration + "_original.arff"));) {
+					writer.write(originalData.toString());
+				} catch(Exception e) {
+					throw new RuntimeException("could write data for metamorphic test " + metamorphicTest.getName(), e);
+				}
+				try (BufferedWriter writer = new BufferedWriter(new FileWriter(datapath + "morphtest_" + metamorphicTest.getName() + "_" + iteration + "_morphed.arff"));) {
+					writer.write(morphedData.toString());
+				} catch(Exception e) {
+					throw new RuntimeException("could write data for metamorphic test " + metamorphicTest.getName(), e);
+				}
 			}
 		}
 	}

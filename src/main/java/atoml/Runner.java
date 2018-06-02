@@ -121,7 +121,7 @@ public class Runner {
 					classifiersUnderTest.add(classifierCreator);
 					
 					JUnitGenerator junitGenerator = new JUnitGenerator(testSrcPath, testResourcePath);
-					junitGenerator.generateTests(classifiersUnderTest, smokeTests, metamorphicTests);
+					junitGenerator.generateTests(classifiersUnderTest, smokeTests, metamorphicTests, iterations);
 				} else {
 					smokeTester.runSmokeTests(classifierCreator, smokeTests);
 					metamorphicTester.runMetamorphicTests(classifierCreator, metamorphicTests);
@@ -144,7 +144,7 @@ public class Runner {
 			}
 			if( gentests ) {
 				JUnitGenerator junitGenerator = new JUnitGenerator(testSrcPath, testResourcePath);
-				junitGenerator.generateTests(classifiersUnderTest, smokeTests, metamorphicTests);
+				junitGenerator.generateTests(classifiersUnderTest, smokeTests, metamorphicTests, iterations);
 			} else {
 				for( ClassifierCreator classifierUnderTest : classifiersUnderTest ) {
 					smokeTester.runSmokeTests(classifierUnderTest, smokeTests);
