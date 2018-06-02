@@ -3,7 +3,7 @@ package atoml.smoke;
 import atoml.data.DataGenerator;
 
 /**
- * Data: Uniformly distributed in [0,10^-20]
+ * Data: Uniformly distributed in [0,10^-10]
  * 
  * @author sherbold
  *
@@ -26,7 +26,7 @@ public class UniformVerySmall extends AbstractSmokeTest {
 	 */
 	@Override
 	public void createData() {
-		this.data = dataGenerator.randomUniformData(0, 1e-20);
+		this.data = dataGenerator.randomUniformData(0, 1e-10);
 	}
 
 	/*

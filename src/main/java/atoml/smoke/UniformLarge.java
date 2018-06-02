@@ -3,7 +3,7 @@ package atoml.smoke;
 import atoml.data.DataGenerator;
 
 /**
- * Data: uniformly distributed in [-10^6,10^6]
+ * Data: uniformly distributed in [-10^10,10^10]
  * 
  * @author sherbold
  */

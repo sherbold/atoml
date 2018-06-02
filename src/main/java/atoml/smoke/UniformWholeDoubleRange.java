@@ -3,10 +3,10 @@ package atoml.smoke;
 import atoml.data.DataGenerator;
 
 /**
- * Data: Uniformly distributed in [Double.MIN_VALUE, Double.MAX_VALUE
+ * Data: Uniformly distributed in [0, {@link Double#MAX_VALUE]
  * 
  * @author sherbold
- *
+
  */
 public class UniformWholeDoubleRange extends AbstractSmokeTest {
 
@@ -26,7 +26,7 @@ public class UniformWholeDoubleRange extends AbstractSmokeTest {
 	 */
 	@Override
 	public void createData() {
-		this.data = dataGenerator.randomUniformData(Double.MIN_VALUE, Double.MAX_VALUE);
+		this.data = dataGenerator.randomUniformData(0, Double.MAX_VALUE);
 	}
 
 	/*
