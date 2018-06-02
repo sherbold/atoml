@@ -32,6 +32,7 @@ import atoml.smoke.Outliers;
 import atoml.smoke.SingleInstanceMinorityClass;
 import atoml.smoke.SmokeTest;
 import atoml.smoke.SpreadMixture;
+import atoml.smoke.UniformDoubleMachinePrecision;
 import atoml.smoke.UniformLarge;
 import atoml.smoke.UniformSmall;
 import atoml.smoke.UniformVeryLarge;
@@ -97,6 +98,7 @@ public class Runner {
 		smokeTests.add(new UniformWholeDoubleRange(dataGenerator));
 		smokeTests.add(new UniformSmall(dataGenerator));
 		smokeTests.add(new UniformVerySmall(dataGenerator));
+		smokeTests.add(new UniformDoubleMachinePrecision(dataGenerator));
 		smokeTests.add(new SpreadMixture(dataGenerator));
 		smokeTests.add(new Outliers(dataGenerator));
 		smokeTests.add(new SingleInstanceMinorityClass(dataGenerator));
