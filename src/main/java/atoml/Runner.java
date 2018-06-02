@@ -27,6 +27,7 @@ import atoml.metamorphic.MetamorphicTest;
 import atoml.metamorphic.ReorderAttributes;
 import atoml.metamorphic.ScrambleInstances;
 import atoml.smoke.AllZeroes;
+import atoml.smoke.NonoverlappingTrainingAndTestData;
 import atoml.smoke.Outliers;
 import atoml.smoke.SingleInstanceMinorityClass;
 import atoml.smoke.SmokeTest;
@@ -99,6 +100,7 @@ public class Runner {
 		smokeTests.add(new SpreadMixture(dataGenerator));
 		smokeTests.add(new Outliers(dataGenerator));
 		smokeTests.add(new SingleInstanceMinorityClass(dataGenerator));
+		smokeTests.add(new NonoverlappingTrainingAndTestData(dataGenerator));
 		List<MetamorphicTest> metamorphicTests = new LinkedList<>();
 		metamorphicTests.add(new ConstantChange(dataGenerator));
 		metamorphicTests.add(new InvertedClass(dataGenerator));
