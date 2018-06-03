@@ -2,7 +2,6 @@ package atoml.classifiers;
 
 import java.util.logging.Logger;
 
-import atoml.SmokeTestRunner;
 import weka.classifiers.Classifier;
 
 /**
