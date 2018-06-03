@@ -5,6 +5,7 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.function.Consumer;
 import java.util.stream.Stream;
 
 import org.apache.commons.cli.ParseException;
@@ -55,7 +56,6 @@ public class Runner {
 	    final String testSrcPath = cmdParameters.getStringValue("testpath");
 	    final String testResourcePath = cmdParameters.getStringValue("resourcepath");
 	    
-	    
 	    DataGenerator dataGenerator = new DataGenerator(numFeatures, numInstances, new ClassificationGenerator(2));
 	    List<SmokeTest> smokeTests = new LinkedList<>();
 		smokeTests.add(new AllZeroes(dataGenerator));
@@ -77,46 +77,34 @@ public class Runner {
 		metamorphicTests.add(new ReorderAttributes(dataGenerator));
 		metamorphicTests.add(new DuplicateData(dataGenerator));
 	    
-		SmokeTestRunner smokeTester = new SmokeTestRunner(iterations);
-		MetamorphicTestRunner metamorphicTester = new MetamorphicTestRunner(iterations);
-		
+		List<ClassifierCreator> classifiersUnderTest = new LinkedList<>();
 		if( classifierStr!=null ) {
-			ClassifierCreator classifierCreator = new StringClassifierCreator(classifierStr);
-			if( classifierCreator.createClassifier()!=null ) {
-				if( gentests ) {
-					List<ClassifierCreator> classifiersUnderTest = new LinkedList<>();
-					classifiersUnderTest.add(classifierCreator);
-					
-					JUnitGenerator junitGenerator = new JUnitGenerator(testSrcPath, testResourcePath);
-					junitGenerator.generateTests(classifiersUnderTest, smokeTests, metamorphicTests, iterations);
-				} else {
-					smokeTester.runSmokeTests(classifierCreator, smokeTests);
-					metamorphicTester.runMetamorphicTests(classifierCreator, metamorphicTests);
-				}
-			}
+			classifiersUnderTest.add(new StringClassifierCreator(classifierStr));
 		}
 		if( inputFileStr!=null ) {
-			List<String> classifiers = new LinkedList<>();
 			try(Stream<String> stream = Files.lines(Paths.get(inputFileStr))) {
-				stream.forEach(classifiers::add);
+				stream.forEach(new Consumer<String>() {
+					@Override
+					public void accept(String line) {
+						classifiersUnderTest.add(new StringClassifierCreator(line));
+					}
+				});
 			} catch (IOException e) {
-				e.printStackTrace();
+				System.out.println("problem reading " + inputFileStr + ": " + e.getMessage());
+				return;
 			}
-			List<ClassifierCreator> classifiersUnderTest = new LinkedList<>();
-			for( String classifier : classifiers ) {
-				if( classifier.length()>0 ) {
-					ClassifierCreator classifierCreator = new StringClassifierCreator(classifier);
-					classifiersUnderTest.add(classifierCreator);
-				}
-			}
-			if( gentests ) {
-				JUnitGenerator junitGenerator = new JUnitGenerator(testSrcPath, testResourcePath);
-				junitGenerator.generateTests(classifiersUnderTest, smokeTests, metamorphicTests, iterations);
-			} else {
-				for( ClassifierCreator classifierUnderTest : classifiersUnderTest ) {
-					smokeTester.runSmokeTests(classifierUnderTest, smokeTests);
-					metamorphicTester.runMetamorphicTests(classifierUnderTest, metamorphicTests);
-				}
+		}
+		
+		if( gentests ) {
+			JUnitGenerator junitGenerator = new JUnitGenerator(testSrcPath, testResourcePath);
+			junitGenerator.generateTests(classifiersUnderTest, smokeTests, metamorphicTests, iterations);
+		} else {
+			for( ClassifierCreator classifierUnderTest : classifiersUnderTest ) {
+				SmokeTestRunner smokeTester = new SmokeTestRunner(iterations);
+				MetamorphicTestRunner metamorphicTester = new MetamorphicTestRunner(iterations);
+				
+				smokeTester.runSmokeTests(classifierUnderTest, smokeTests);
+				metamorphicTester.runMetamorphicTests(classifierUnderTest, metamorphicTests);
 			}
 		}
 	}
