@@ -118,4 +118,62 @@ public class DataGenerator {
 		
 		return data;
 	}
+	
+	public Instances randomNormalizedGammaData(final double shape, final double scale) {
+		Instances data = createInstances();
+		RandomDataGenerator rand = new RandomDataGenerator();
+		double maxValues[] = new double[numAttributes];
+		double[][] attValues = new double[numInstances][numAttributes];
+		for( int i=0; i<numInstances; i++ ) {
+			for( int j=0; j<numFeatures; j++ ) {
+				double nextValue = rand.nextGamma(shape, scale);
+				if( nextValue>maxValues[j]) {
+					maxValues[j] = nextValue;
+				}
+				attValues[i][j] = nextValue;
+			}
+			if(classificationGenerator!=null) {
+				attValues[i][numFeatures] = classificationGenerator.getGeneratedClassValue();
+			}
+		}
+		for( int i=0; i<numInstances; i++ ) {
+			for( int j=0; j<numFeatures; j++ ) {
+				attValues[i][j] = attValues[i][j]/maxValues[j];
+			}
+		}
+		for( int i=0; i<numInstances; i++ ) {
+			data.add(new DenseInstance(1.0, attValues[i]));
+		}
+		
+		return data;
+	}
+	
+	public Instances randomInvertedNormalizedGammaData(final double shape, final double scale) {
+		Instances data = createInstances();
+		RandomDataGenerator rand = new RandomDataGenerator();
+		double maxValues[] = new double[numAttributes];
+		double[][] attValues = new double[numInstances][numAttributes];
+		for( int i=0; i<numInstances; i++ ) {
+			for( int j=0; j<numFeatures; j++ ) {
+				double nextValue = rand.nextGamma(shape, scale);
+				if( nextValue>maxValues[j]) {
+					maxValues[j] = nextValue;
+				}
+				attValues[i][j] = nextValue;
+			}
+			if(classificationGenerator!=null) {
+				attValues[i][numFeatures] = classificationGenerator.getGeneratedClassValue();
+			}
+		}
+		for( int i=0; i<numInstances; i++ ) {
+			for( int j=0; j<numFeatures; j++ ) {
+				attValues[i][j] = (maxValues[j]-attValues[i][j])/maxValues[j];
+			}
+		}
+		for( int i=0; i<numInstances; i++ ) {
+			data.add(new DenseInstance(1.0, attValues[i]));
+		}
+		
+		return data;
+	}
 }
