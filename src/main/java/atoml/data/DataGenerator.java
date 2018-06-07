@@ -101,4 +101,21 @@ public class DataGenerator {
 		return data;
 	}
 
+	public Instances randomExponentialData(final double mean) {
+		Instances data = createInstances();
+		RandomDataGenerator rand = new RandomDataGenerator();
+		
+		for( int i=0; i<numInstances; i++ ) {
+			double[] attValues = new double[numAttributes];
+			for( int j=0; j<numFeatures; j++ ) {
+				attValues[j] = rand.nextExponential(mean);
+			}
+			if(classificationGenerator!=null) {
+				attValues[numFeatures] = classificationGenerator.getGeneratedClassValue();
+			}
+			data.add(new DenseInstance(1.0, attValues));
+		}
+		
+		return data;
+	}
 }
