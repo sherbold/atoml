@@ -1,0 +1,21 @@
+package <<<PACKAGENAME>>>;
+
+import static org.junit.Assert.*;
+import org.junit.Test;
+
+import javax.annotation.Generated;
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
+import java.io.IOException;
+import weka.classifiers.Classifier;
+import weka.core.Instances;
+import weka.core.Instance;
+
+/**
+ * Automatically generated smoke and metamorphic tests.
+ */
+@Generated("atoml.testgen.TestclassGenerator")
+public class <<<CLASSNAME>>> {
+
+<<<METHODS>>>
+}
