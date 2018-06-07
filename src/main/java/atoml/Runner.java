@@ -36,8 +36,16 @@ import atoml.smoke.UniformVerySmall;
 import atoml.smoke.UniformWholeDoubleRange;
 import atoml.smoke.UniformZeroToOne;
 
+/**
+ * Application object that executes the main function.
+ * @author sherbold
+ */
 public class Runner {
 	
+	/**
+	 * Main function
+	 * @param args command line arguments
+	 */
 	public static void main(String[] args) {
 	    CmdParameters cmdParameters;
 		try {
