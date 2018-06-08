@@ -3,7 +3,7 @@ package atoml.junitgen;
 import java.util.List;
 import java.util.Scanner;
 
-import atoml.classifiers.ClassifierCreator;
+import atoml.classifiers.WekaClassifierCreator;
 import atoml.metamorphic.MetamorphicOrderedDataTest;
 import atoml.metamorphic.MetamorphicSameClassifierTest;
 import atoml.metamorphic.MetamorphicTest;
@@ -18,7 +18,7 @@ public class TestclassGenerator {
 	/**
 	 * classifier that is tested
 	 */
-	private final ClassifierCreator classifierUnderTest;
+	private final WekaClassifierCreator classifierUnderTest;
 	
 	/**
 	 * smoke tests that are generated
@@ -41,7 +41,7 @@ public class TestclassGenerator {
 	 * @param smokeTest list of smoke tests
 	 * @param metamorphicTests list of metamorphic tests
 	 */
-	public TestclassGenerator(ClassifierCreator classifierUnderTest, List<SmokeTest> smokeTest, List<MetamorphicTest> metamorphicTests, int iterations) {
+	public TestclassGenerator(WekaClassifierCreator classifierUnderTest, List<SmokeTest> smokeTest, List<MetamorphicTest> metamorphicTests, int iterations) {
 		this.classifierUnderTest = classifierUnderTest;
 		this.smokeTests = smokeTest;
 		this.metamorphicTests = metamorphicTests;
@@ -85,7 +85,7 @@ public class TestclassGenerator {
 	 * @return class name
 	 */
 	public String getClassName() {
-		return classifierUnderTest.createClassifier().getClass().getSimpleName() + "AtomlTest";
+		return classifierUnderTest.getClassifierName() + "_AtomlTest";
 	}
 
 	/**
@@ -97,7 +97,8 @@ public class TestclassGenerator {
 		String methodBody = new Scanner(this.getClass().getResourceAsStream("/junit-smoketest.template"), "UTF-8").useDelimiter("\\A").next();
 		
 		methodBody = methodBody.replaceAll("<<<NAME>>>", smokeTest.getName());
-		methodBody = methodBody.replaceAll("<<<CLASSIFIER>>>", classifierUnderTest.createClassifier().getClass().getSimpleName());
+		methodBody = methodBody.replaceAll("<<<CLASSIFIER>>>", classifierUnderTest.getClassifierClassName());
+		methodBody = methodBody.replaceAll("<<<PARAMETERS>>>", classifierParametersString());
 		methodBody = methodBody.replaceAll("<<<ITERATIONS>>>", Integer.toString(iterations));
 		return methodBody;
 	}
@@ -122,10 +123,28 @@ public class TestclassGenerator {
 		
 		methodBody = methodBody.replaceAll("<<<NAME>>>", metamorphicTest.getName());
 		methodBody = methodBody.replaceAll("<<<CLASSIFIER>>>", classifierUnderTest.createClassifier().getClass().getSimpleName());
+		methodBody = methodBody.replaceAll("<<<PARAMETERS>>>", classifierParametersString());
 		methodBody = methodBody.replaceAll("<<<ITERATIONS>>>", Integer.toString(iterations));
 		methodBody = methodBody.replaceAll("<<<MORPHCLASS>>>", morphClass);
 		methodBody = methodBody.replaceAll("<<<MORPHRELATION>>>", metamorphicTest.relationAsString());
 		return methodBody;
 	}
 	
+	/**
+	 * creates a string to initialize a new string array for the parameters
+	 * @return parameters string
+	 */
+	private String classifierParametersString() {
+		StringBuilder parameters = new StringBuilder();
+		if( classifierUnderTest.getClassifierParameters().length>0 ) {
+			parameters.append("{");
+			for( String param : classifierUnderTest.getClassifierParameters()) {
+				parameters.append("\"" + param + "\",");
+			}
+			parameters.replace(parameters.length()-1, parameters.length(), "}");
+		} else {
+			parameters.append("{}");
+		}
+		return parameters.toString();
+	}
 }

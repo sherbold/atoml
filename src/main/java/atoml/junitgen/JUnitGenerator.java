@@ -6,8 +6,10 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.List;
+import java.util.logging.Logger;
 
 import atoml.classifiers.ClassifierCreator;
+import atoml.classifiers.WekaClassifierCreator;
 import atoml.metamorphic.MetamorphicTest;
 import atoml.smoke.SmokeTest;
 
@@ -16,6 +18,11 @@ import atoml.smoke.SmokeTest;
  * @author sherbold
  */
 public class JUnitGenerator {
+	
+	/**
+	 * logger that is used
+	 */
+	private final static Logger LOGGER = Logger.getLogger("atoml");
 	
 	final String testJavaPath;
 	final String testResourcePath;
@@ -37,27 +44,34 @@ public class JUnitGenerator {
 	 * @param metamorphicTests metamorphic tests that are generated
 	 */
 	public void generateTests(List<ClassifierCreator> classifiersUnderTest, List<SmokeTest> smokeTests, List<MetamorphicTest> metamorphicTests, int iterations) {
+		LOGGER.info("creating test data...");
 		TestdataGenerator testdataGenerator = new TestdataGenerator(smokeTests, metamorphicTests, iterations);
+		LOGGER.info("test data creation finished");
 		testdataGenerator.generateTestdata(testResourcePath);
 		for(ClassifierCreator classifierUnderTest : classifiersUnderTest ) {
-			TestclassGenerator testclassGenerator = new TestclassGenerator(classifierUnderTest, smokeTests, metamorphicTests, iterations);
-			String testclassCode = testclassGenerator.generateTestclass();
-
-			Path path = Paths.get(testJavaPath + testclassGenerator.getPackageName().replaceAll("\\.", "/") + "/" + testclassGenerator.getClassName() + ".java");
-
-			try {
-				Files.createDirectories(path.getParent());
-			} catch (IOException e) {
-				throw new RuntimeException("could not create folder for test cases", e);
+			if( classifierUnderTest instanceof WekaClassifierCreator ) {
+				LOGGER.info("creating tests for " + classifierUnderTest.getClassifierName() + "...");
+				TestclassGenerator testclassGenerator = new TestclassGenerator((WekaClassifierCreator) classifierUnderTest, smokeTests, metamorphicTests, iterations);
+				String testclassCode = testclassGenerator.generateTestclass();
+	
+				Path path = Paths.get(testJavaPath + testclassGenerator.getPackageName().replaceAll("\\.", "/") + "/" + testclassGenerator.getClassName() + ".java");
+	
+				try {
+					Files.createDirectories(path.getParent());
+				} catch (IOException e) {
+					throw new RuntimeException("could not create folder for test cases", e);
+				}
+				
+				try (BufferedWriter writer = Files.newBufferedWriter(path))
+				{
+				    writer.write(testclassCode);
+				} catch (IOException e) {
+					throw new RuntimeException("could write test case: ", e);
+				}
+				LOGGER.info("finished creating tests for " + classifierUnderTest.getClassifierName());
+			} else {
+				LOGGER.info("could not create tests for " + classifierUnderTest.getClassifierName() + ": not a WekaClassiferCreator");
 			}
-			
-			try (BufferedWriter writer = Files.newBufferedWriter(path))
-			{
-			    writer.write(testclassCode);
-			} catch (IOException e) {
-				throw new RuntimeException("could write test case: ", e);
-			}
-			
 		}
 	}
 }

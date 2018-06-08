@@ -23,7 +23,7 @@
                 throw new RuntimeException("error reading file:  smoketest_<<<NAME>>>_" + iter + "_test.arff", e);
             }
             testdata.setClassIndex(testdata.numAttributes()-1);
-            Classifier classifier = new <<<CLASSIFIER>>>();
+            Classifier classifier = AbstractClassifier.forName("<<<CLASSIFIER>>>", new String[]<<<PARAMETERS>>>);
             classifier.buildClassifier(data);
             for (Instance instance : testdata) {
                 classifier.classifyInstance(instance);

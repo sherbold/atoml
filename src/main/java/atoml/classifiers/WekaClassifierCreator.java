@@ -61,7 +61,7 @@ public class WekaClassifierCreator implements ClassifierCreator {
 	@Override
 	public Classifier createClassifier() {
 		try {
-			return AbstractClassifier.forName(this.classifierClassName, this.classifierParameters);
+			return AbstractClassifier.forName(this.classifierClassName, Arrays.copyOf(this.classifierParameters, this.classifierParameters.length));
 		} catch (Exception e) {
 			e.printStackTrace();
 			LOGGER.severe("could not initialize classifier " + classifierName + ": " + e.getMessage());
@@ -75,5 +75,21 @@ public class WekaClassifierCreator implements ClassifierCreator {
 	@Override
 	public String getClassifierName() {
 		return classifierName;
+	}
+	
+	/**
+	 * name of the classifier class
+	 * @return class name
+	 */
+	public String getClassifierClassName() {
+		return classifierClassName;
+	}
+	
+	/**
+	 * classifier parameters
+	 * @return classifier parameters
+	 */
+	public String[] getClassifierParameters() {
+		return classifierParameters;
 	}
 }
