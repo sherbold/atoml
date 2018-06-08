@@ -18,6 +18,8 @@ dependencies {
 	// dependencies for atoml core logic
 	compile group: 'org.apache.commons', name: 'commons-math3', version: '3.6.1'
 	compile group: 'commons-cli', name: 'commons-cli', version: '1.4'
+	compile group: 'org.apache.ant', name: 'ant', version: '1.10.3'
+	
 	// we are working against the latest dev version of Weka
 	compile group: 'nz.ac.waikato.cms.weka', name: 'weka-dev', version: '3.9.2'
 	

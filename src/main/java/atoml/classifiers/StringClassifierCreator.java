@@ -1,7 +1,11 @@
 package atoml.classifiers;
 
+import java.util.Arrays;
 import java.util.logging.Logger;
 
+import org.apache.tools.ant.types.Commandline;
+
+import weka.classifiers.AbstractClassifier;
 import weka.classifiers.Classifier;
 
 /**
@@ -20,6 +24,16 @@ public class StringClassifierCreator implements ClassifierCreator {
 	 * name of the classifier (also used for classifier creation)
 	 */
 	private final String classifierName;
+	
+	/**
+	 * name of the classifiers Class
+	 */
+	private final String classifierClassName;
+	
+	/**
+	 * array with the classifiers parameters
+	 */
+	private final String[] classifierParameters;
 
 	/**
 	 * creates a new StringClassifierCreator
@@ -27,8 +41,16 @@ public class StringClassifierCreator implements ClassifierCreator {
 	 * @param classifierName
 	 *            qualified name of the classifier
 	 */
-	public StringClassifierCreator(String classifierName) {
-		this.classifierName = classifierName;
+	public StringClassifierCreator(String classifierDescription) {
+		String[] args = Commandline.translateCommandline(classifierDescription);
+		this.classifierName = args[0];
+		if( args.length==1 ) {
+			this.classifierClassName = args[0];
+			this.classifierParameters = new String[0];
+		} else {
+			this.classifierClassName = args[1];
+			this.classifierParameters = Arrays.copyOfRange(args, 2, args.length);
+		}
 	}
 
 	/**
@@ -39,12 +61,19 @@ public class StringClassifierCreator implements ClassifierCreator {
 	@Override
 	public Classifier createClassifier() {
 		try {
-			Class<?> c = Class.forName(this.classifierName);
-			return (Classifier) c.newInstance();
+			return AbstractClassifier.forName(this.classifierClassName, this.classifierParameters);
 		} catch (Exception e) {
-			LOGGER.severe("could not initialize classifier: " + classifierName);
+			e.printStackTrace();
+			LOGGER.severe("could not initialize classifier " + classifierName + ": " + e.getMessage());
 			return null;
 		}
 	}
-
+	
+	/* (non-Javadoc)
+	 * @see atoml.classifiers.ClassifierCreator#getClassifierName()
+	 */
+	@Override
+	public String getClassifierName() {
+		return classifierName;
+	}
 }

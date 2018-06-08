@@ -15,4 +15,11 @@ public interface ClassifierCreator {
 	 * @return classifier
 	 */
 	Classifier createClassifier();
+	
+	/**
+	 * returns the name of the classifier
+	 * 
+	 * @return classifier name
+	 */
+	public String getClassifierName();
 }
