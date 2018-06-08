@@ -43,7 +43,7 @@ public class MetamorphicTestRunner {
 	 * @param classifierCreator generator for the classifier under test. 
 	 */
 	public void runMetamorphicTests(ClassifierCreator classifierCreator, List<MetamorphicTest> metamorphicTests) {
-		String classifierName = classifierCreator.createClassifier().getClass().getSimpleName();
+		String classifierName = classifierCreator.getClassifierName();
 		
 		LOGGER.info("starting metamorphic tests for classifier " + classifierName);
 		for(MetamorphicTest metamorphicTest : metamorphicTests) {

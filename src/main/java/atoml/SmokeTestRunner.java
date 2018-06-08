@@ -43,7 +43,7 @@ public class SmokeTestRunner {
 	 * @param smokeTests tests that are executed
 	 */
 	public void runSmokeTests(ClassifierCreator classifierCreator, List<SmokeTest> smokeTests) {
-		String classifierName = classifierCreator.createClassifier().getClass().getSimpleName();
+		String classifierName = classifierCreator.getClassifierName();
 		
 		LOGGER.info("starting smoke tests for classifier " + classifierName);
 		for(SmokeTest smokeTest : smokeTests) {
