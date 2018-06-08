@@ -11,7 +11,7 @@ import java.util.stream.Stream;
 import org.apache.commons.cli.ParseException;
 
 import atoml.classifiers.ClassifierCreator;
-import atoml.classifiers.StringClassifierCreator;
+import atoml.classifiers.WekaClassifierCreator;
 import atoml.data.ClassificationGenerator;
 import atoml.data.DataGenerator;
 import atoml.junitgen.JUnitGenerator;
@@ -93,14 +93,14 @@ public class Runner {
 	    
 		List<ClassifierCreator> classifiersUnderTest = new LinkedList<>();
 		if( classifierStr!=null ) {
-			classifiersUnderTest.add(new StringClassifierCreator(classifierStr));
+			classifiersUnderTest.add(new WekaClassifierCreator(classifierStr));
 		}
 		if( inputFileStr!=null ) {
 			try(Stream<String> stream = Files.lines(Paths.get(inputFileStr))) {
 				stream.forEach(new Consumer<String>() {
 					@Override
 					public void accept(String line) {
-						classifiersUnderTest.add(new StringClassifierCreator(line));
+						classifiersUnderTest.add(new WekaClassifierCreator(line));
 					}
 				});
 			} catch (IOException e) {

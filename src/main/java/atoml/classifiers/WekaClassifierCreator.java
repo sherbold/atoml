@@ -13,7 +13,7 @@ import weka.classifiers.Classifier;
  * 
  * @author sherbold
  */
-public class StringClassifierCreator implements ClassifierCreator {
+public class WekaClassifierCreator implements ClassifierCreator {
 
 	/**
 	 * logger that is used
@@ -41,7 +41,7 @@ public class StringClassifierCreator implements ClassifierCreator {
 	 * @param classifierName
 	 *            qualified name of the classifier
 	 */
-	public StringClassifierCreator(String classifierDescription) {
+	public WekaClassifierCreator(String classifierDescription) {
 		String[] args = Commandline.translateCommandline(classifierDescription);
 		this.classifierName = args[0];
 		if( args.length==1 ) {
