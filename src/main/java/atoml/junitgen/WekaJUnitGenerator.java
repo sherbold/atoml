@@ -17,7 +17,7 @@ import atoml.smoke.SmokeTest;
  * Generates JUnit tests for a list of classifiers
  * @author sherbold
  */
-public class JUnitGenerator {
+public class WekaJUnitGenerator {
 	
 	/**
 	 * logger that is used
@@ -32,7 +32,7 @@ public class JUnitGenerator {
 	 * @param testJavaPath path of the source folder for the test cases
 	 * @param testResourcePath path where resources should be stored (i.e. the data)
 	 */
-	public JUnitGenerator(String testJavaPath, String testResourcePath) {
+	public WekaJUnitGenerator(String testJavaPath, String testResourcePath) {
 		this.testJavaPath = testJavaPath;
 		this.testResourcePath = testResourcePath;
 	}
@@ -51,7 +51,7 @@ public class JUnitGenerator {
 		for(ClassifierCreator classifierUnderTest : classifiersUnderTest ) {
 			if( classifierUnderTest instanceof WekaClassifierCreator ) {
 				LOGGER.info("creating tests for " + classifierUnderTest.getClassifierName() + "...");
-				TestclassGenerator testclassGenerator = new TestclassGenerator((WekaClassifierCreator) classifierUnderTest, smokeTests, metamorphicTests, iterations);
+				WekaTestclassGenerator testclassGenerator = new WekaTestclassGenerator((WekaClassifierCreator) classifierUnderTest, smokeTests, metamorphicTests, iterations);
 				String testclassCode = testclassGenerator.generateTestclass();
 	
 				Path path = Paths.get(testJavaPath + testclassGenerator.getPackageName().replaceAll("\\.", "/") + "/" + testclassGenerator.getClassName() + ".java");

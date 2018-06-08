@@ -14,7 +14,7 @@ import atoml.classifiers.ClassifierCreator;
 import atoml.classifiers.WekaClassifierCreator;
 import atoml.data.ClassificationGenerator;
 import atoml.data.DataGenerator;
-import atoml.junitgen.JUnitGenerator;
+import atoml.junitgen.WekaJUnitGenerator;
 import atoml.metamorphic.ConstantChange;
 import atoml.metamorphic.DuplicateData;
 import atoml.metamorphic.InvertedClass;
@@ -110,7 +110,7 @@ public class Runner {
 		}
 		
 		if( gentests ) {
-			JUnitGenerator junitGenerator = new JUnitGenerator(testSrcPath, testResourcePath);
+			WekaJUnitGenerator junitGenerator = new WekaJUnitGenerator(testSrcPath, testResourcePath);
 			junitGenerator.generateTests(classifiersUnderTest, smokeTests, metamorphicTests, iterations);
 		} else {
 			for( ClassifierCreator classifierUnderTest : classifiersUnderTest ) {

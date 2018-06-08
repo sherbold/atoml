@@ -13,7 +13,7 @@ import atoml.smoke.SmokeTest;
  * Generates the source code for JUnit tests
  * @author sherbold
  */
-public class TestclassGenerator {
+public class WekaTestclassGenerator {
 	
 	/**
 	 * classifier that is tested
@@ -41,7 +41,7 @@ public class TestclassGenerator {
 	 * @param smokeTest list of smoke tests
 	 * @param metamorphicTests list of metamorphic tests
 	 */
-	public TestclassGenerator(WekaClassifierCreator classifierUnderTest, List<SmokeTest> smokeTest, List<MetamorphicTest> metamorphicTests, int iterations) {
+	public WekaTestclassGenerator(WekaClassifierCreator classifierUnderTest, List<SmokeTest> smokeTest, List<MetamorphicTest> metamorphicTests, int iterations) {
 		this.classifierUnderTest = classifierUnderTest;
 		this.smokeTests = smokeTest;
 		this.metamorphicTests = metamorphicTests;
