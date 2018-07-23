@@ -110,12 +110,24 @@ public class WekaTestclassGenerator {
 	private String metamorphictestBody(MetamorphicTest metamorphicTest) {
 		String morphClass;
 		if( metamorphicTest instanceof MetamorphicOrderedDataTest ) {
-			morphClass = "			double morphedClass = morphedClassifier.classifyInstance(morphedData.instance(i));\n";
+			morphClass = "double morphedClass = morphedClassifier.classifyInstance(morphedData.instance(i));\n";
 		}
 		else if( metamorphicTest instanceof MetamorphicSameClassifierTest ) {
-			morphClass = "			double morphedClass = morphedClassifier.classifyInstance(data.instance(i));\n";
+			morphClass = "double morphedClass = morphedClassifier.classifyInstance(data.instance(i));\n";
 		} else {
 			throw new RuntimeException("could not generate unit tests, unknown morph test class");
+		}
+		
+		String morphRelation;
+		switch(metamorphicTest.getPredictionRelation()) {
+		case EQUAL:
+			morphRelation = "Double.compare(originalClass, morphedClass) == 0";
+			break;
+		case INVERTED:
+			morphRelation = "Double.compare(originalClass, morphedClass) != 0";
+			break;
+		default:
+			throw new RuntimeException("could not generate tests, unknown morph prediction relation type");
 		}
 		
 		@SuppressWarnings("resource")
@@ -126,7 +138,7 @@ public class WekaTestclassGenerator {
 		methodBody = methodBody.replaceAll("<<<PARAMETERS>>>", classifierParametersString());
 		methodBody = methodBody.replaceAll("<<<ITERATIONS>>>", Integer.toString(iterations));
 		methodBody = methodBody.replaceAll("<<<MORPHCLASS>>>", morphClass);
-		methodBody = methodBody.replaceAll("<<<MORPHRELATION>>>", metamorphicTest.relationAsString());
+		methodBody = methodBody.replaceAll("<<<MORPHRELATION>>>", morphRelation);
 		return methodBody;
 	}
 	
