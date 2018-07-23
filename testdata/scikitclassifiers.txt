@@ -1,0 +1,2 @@
+DT_DEFAULT sklearn.tree.DecisionTreeClassifier()
+DT_DEPTH2 sklearn.tree.DecisionTreeClassifier(max_depth=2)

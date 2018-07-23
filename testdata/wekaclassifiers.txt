@@ -1,0 +1,20 @@
+BayesNet_Default weka.classifiers.bayes.BayesNet -num-decimal-places 3
+NaiveBayes_Default weka.classifiers.bayes.NaiveBayes
+Logistic_Default weka.classifiers.functions.Logistic
+MLPClassifier_Default weka.classifiers.functions.MLPClassifier
+RBFNetwork_Default weka.classifiers.functions.RBFNetwork
+SMO_Default weka.classifiers.functions.SMO
+VotedPerceptron_Default weka.classifiers.functions.VotedPerceptron
+IBk_Default weka.classifiers.lazy.IBk
+DecisionTable_Default weka.classifiers.rules.DecisionTable
+JRip_Default weka.classifiers.rules.JRip
+OneR_Default weka.classifiers.rules.OneR
+PART_Default weka.classifiers.rules.PART
+ZeroR_Default weka.classifiers.rules.ZeroR
+ADTree_Default weka.classifiers.trees.ADTree
+DecisionStump_Default weka.classifiers.trees.DecisionStump
+J48_Default weka.classifiers.trees.J48
+HoeffdingTree_Default weka.classifiers.trees.HoeffdingTree
+RandomForest_Default weka.classifiers.trees.RandomForest
+RandomTree_Default weka.classifiers.trees.RandomTree
+SimpleCart_Default weka.classifiers.trees.SimpleCart
