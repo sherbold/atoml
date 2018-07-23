@@ -80,7 +80,7 @@ public class ScikitTestclassGenerator {
 	 * @return class name
 	 */
 	public String getClassName() {
-		return classifierUnderTest.getClassifierName() + "_AtomlTest";
+		return "test_" + classifierUnderTest.getClassifierName();
 	}
 
 	/**
