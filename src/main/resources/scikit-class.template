@@ -1,0 +1,13 @@
+import unittest
+import pandas as pd
+
+from scipy.io.arff import loadarff
+from sklearn.preprocessing import LabelEncoder
+<<<IMPORTCLASSIFIER>>>
+
+class <<<CLASSNAME>>>(unittest.TestCase):
+
+<<<METHODS>>>
+
+if __name__ == '__main__':
+    unittest.main()

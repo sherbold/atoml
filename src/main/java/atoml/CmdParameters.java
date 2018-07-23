@@ -108,6 +108,12 @@ public class CmdParameters {
 		testpath.setRequired(false);
 		options.addOption(datapath);
 		defaults.put("resourcepath", "src/test/resources/");
+		
+		Option mllib = new Option("l", "mllib", true,
+				"ML library for which tests are generated (default: weka, allowed: weka, scikit)");
+		mllib.setRequired(false);
+		options.addOption(mllib);
+		defaults.put("mllib", "weka");
 	}
 
 	/**
@@ -123,6 +129,9 @@ public class CmdParameters {
 		}
 		if (cmd.getOptionValue("file") != null && cmd.getOptionValue("classifier") != null) {
 			throw new ParseException("Duplicate options: must specify both classifier (-c) and input file (-f)");
+		}
+		if( !("weka".equals(getStringValue("mllib")) || "scikit".equals(getStringValue("mllib")))) {
+			throw new ParseException("Disallowed value: --mllib (-l) must either be weka or scikit");
 		}
 	}
 

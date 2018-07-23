@@ -11,9 +11,11 @@ import java.util.stream.Stream;
 import org.apache.commons.cli.ParseException;
 
 import atoml.classifiers.ClassifierCreator;
+import atoml.classifiers.ScikitClassifier;
 import atoml.classifiers.WekaClassifierCreator;
 import atoml.data.ClassificationGenerator;
 import atoml.data.DataGenerator;
+import atoml.junitgen.ScikitUnittestGenerator;
 import atoml.junitgen.WekaJUnitGenerator;
 import atoml.metamorphic.ConstantChange;
 import atoml.metamorphic.DuplicateData;
@@ -67,6 +69,8 @@ public class Runner {
 	    final String testSrcPath = cmdParameters.getStringValue("testpath");
 	    final String testResourcePath = cmdParameters.getStringValue("resourcepath");
 	    
+	    final String mllib = cmdParameters.getStringValue("mllib");
+	    
 	    DataGenerator dataGenerator = new DataGenerator(numFeatures, numInstances, new ClassificationGenerator(2));
 	    List<SmokeTest> smokeTests = new LinkedList<>();
 		smokeTests.add(new AllZeroes(dataGenerator));
@@ -93,14 +97,28 @@ public class Runner {
 	    
 		List<ClassifierCreator> classifiersUnderTest = new LinkedList<>();
 		if( classifierStr!=null ) {
-			classifiersUnderTest.add(new WekaClassifierCreator(classifierStr));
+			if( "weka".equals(mllib) ) {
+				classifiersUnderTest.add(new WekaClassifierCreator(classifierStr));
+			}
+			else if( "scikit".equals(mllib) ) {
+				classifiersUnderTest.add(new ScikitClassifier(classifierStr));
+			} else {
+				throw new RuntimeException("invalid option for mllib: " + mllib);
+			}
 		}
 		if( inputFileStr!=null ) {
 			try(Stream<String> stream = Files.lines(Paths.get(inputFileStr))) {
 				stream.forEach(new Consumer<String>() {
 					@Override
 					public void accept(String line) {
-						classifiersUnderTest.add(new WekaClassifierCreator(line));
+						if( "weka".equals(mllib) ) {
+							classifiersUnderTest.add(new WekaClassifierCreator(line));
+						}
+						else if( "scikit".equals(mllib) ) {
+							classifiersUnderTest.add(new ScikitClassifier(line));
+						} else {
+							throw new RuntimeException("invalid option for mllib: " + mllib);
+						}
 					}
 				});
 			} catch (IOException e) {
@@ -110,9 +128,18 @@ public class Runner {
 		}
 		
 		if( gentests ) {
-			WekaJUnitGenerator junitGenerator = new WekaJUnitGenerator(testSrcPath, testResourcePath);
-			junitGenerator.generateTests(classifiersUnderTest, smokeTests, metamorphicTests, iterations);
+			if( "weka".equals(mllib) ) {
+				WekaJUnitGenerator junitGenerator = new WekaJUnitGenerator(testSrcPath, testResourcePath);
+				junitGenerator.generateTests(classifiersUnderTest, smokeTests, metamorphicTests, iterations);
+			}
+			else if( "scikit".equals(mllib) ) {
+				ScikitUnittestGenerator scikitGenerator = new ScikitUnittestGenerator(testSrcPath, testResourcePath);
+				scikitGenerator.generateTests(classifiersUnderTest, smokeTests, metamorphicTests, iterations);
+			} else {
+				throw new RuntimeException("invalid option for mllib: " + mllib);
+			}
 		} else {
+			// XXX deprecated and should be removed
 			for( ClassifierCreator classifierUnderTest : classifiersUnderTest ) {
 				SmokeTestRunner smokeTester = new SmokeTestRunner(iterations);
 				MetamorphicTestRunner metamorphicTester = new MetamorphicTestRunner(iterations);

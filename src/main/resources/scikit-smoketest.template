@@ -1,0 +1,13 @@
+    def test_<<<NAME>>>(self):
+        for iter in range(1,<<<ITERATIONS>>>+1):
+            data, meta = loadarff('smoketest_<<<NAME>>>_%i_training.arff' % iter)
+            testdata, testmeta = loadarff('smoketest_<<<NAME>>>_%i_test.arff' % iter)
+            data_df = pd.DataFrame(data)
+            testdata_df = pd.DataFrame(data)
+            nfeatures = data_df.shape[1]
+            lb_make = LabelEncoder()
+            data_df["classAtt"] = lb_make.fit_transform(data_df["classAtt"])
+            classifier = <<<CLASSIFIER>>>
+            classifier.fit(data_df.values[:,0:nfeatures-1],data_df.values[:,nfeatures-1])
+            classifier.predict(testdata_df.values[:,0:nfeatures-1])
+
