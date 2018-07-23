@@ -35,6 +35,16 @@ public class InvertedClass extends MetamorphicOrderedDataTest {
 	/*
 	 * (non-Javadoc)
 	 * 
+	 * @see atoml.metamorphic.MetamorphicTest#getPredictionRelation()
+	 */
+	@Override
+	public RelationType getPredictionRelation() {
+		return RelationType.INVERTED;
+	}
+	
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see atoml.metamorphic.MetamorphicTest#relationAsString()
 	 */
 	@Override

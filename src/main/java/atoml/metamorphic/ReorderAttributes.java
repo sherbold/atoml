@@ -40,6 +40,16 @@ public class ReorderAttributes extends MetamorphicOrderedDataTest {
 	/*
 	 * (non-Javadoc)
 	 * 
+	 * @see atoml.metamorphic.MetamorphicTest#getPredictionRelation()
+	 */
+	@Override
+	public RelationType getPredictionRelation() {
+		return RelationType.EQUAL;
+	}
+	
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see atoml.metamorphic.MetamorphicTest#relationAsString()
 	 */
 	@Override

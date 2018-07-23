@@ -32,6 +32,16 @@ public class ScrambleInstances extends MetamorphicSameClassifierTest {
 	public Instances createData() {
 		return dataGenerator.randomUniformData(0, 1);
 	}
+	
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see atoml.metamorphic.MetamorphicTest#getPredictionRelation()
+	 */
+	@Override
+	public RelationType getPredictionRelation() {
+		return RelationType.EQUAL;
+	}
 
 	/*
 	 * (non-Javadoc)

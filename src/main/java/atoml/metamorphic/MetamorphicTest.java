@@ -10,6 +10,8 @@ import weka.core.Instances;
  */
 public interface MetamorphicTest {
 
+	public enum RelationType {EQUAL, INVERTED};
+	
 	/**
 	 * name of the test
 	 * 
@@ -42,6 +44,12 @@ public interface MetamorphicTest {
 	 * @return morphed data
 	 */
 	Instances morphData(Instances data);
+	
+	/**
+	 * the type of the relationship between original and morphed prediction
+	 * @return the relation type
+	 */
+	RelationType getPredictionRelation();
 	
 	/**
 	 * metamorphic relation described as a Java string to be used by unit test generator
