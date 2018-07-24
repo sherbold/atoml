@@ -44,17 +44,6 @@ public abstract class AbstractMetamorphicTest implements MetamorphicTest {
 		this.dataGenerator = dataGenerator;
 	}
 
-	/**
-	 * checks if the metamorphic relation holds
-	 * 
-	 * @param originalClass
-	 *            original class assignment
-	 * @param morphedClass
-	 *            morphed class assignment
-	 * @return
-	 */
-	abstract protected boolean checkRelation(double originalClass, double morphedClass);
-
 	/*
 	 * (non-Javadoc)
 	 * 

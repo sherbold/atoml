@@ -1,9 +1,6 @@
 package atoml.smoke;
 
-import atoml.classifiers.ClassifierCreator;
 import atoml.data.DataGenerator;
-import weka.classifiers.Classifier;
-import weka.core.Instance;
 import weka.core.Instances;
 
 /**
@@ -60,23 +57,6 @@ public abstract class AbstractSmokeTest implements SmokeTest {
 	@Override
 	public String getName() {
 		return this.getClass().getSimpleName();
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see atoml.smoke.SmokeTest#execute(atoml.classifiers.ClassifierCreator)
-	 */
-	@Override
-	public void execute(ClassifierCreator classifierCreator) throws Exception {
-		createData();
-		createTestdata();
-		Classifier classifier = classifierCreator.createClassifier();
-		classifier.buildClassifier(this.data);
-		for (Instance instance : this.testdata) {
-			classifier.classifyInstance(instance);
-			classifier.distributionForInstance(instance);
-		}
 	}
 
 	/*

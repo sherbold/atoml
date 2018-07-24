@@ -46,16 +46,6 @@ public class ScrambleInstances extends MetamorphicSameClassifierTest {
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see atoml.metamorphic.AbstractMetamorphicTest#checkRelation(double, double)
-	 */
-	@Override
-	protected boolean checkRelation(double originalClass, double morphedClass) {
-		return Double.compare(originalClass, morphedClass) == 0;
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
 	 * @see atoml.metamorphic.AbstractMetamorphicTest#morphData(weka.core.Instances)
 	 */
 	@Override

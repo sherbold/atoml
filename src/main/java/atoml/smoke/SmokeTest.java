@@ -1,6 +1,5 @@
 package atoml.smoke;
 
-import atoml.classifiers.ClassifierCreator;
 import weka.core.Instances;
 
 /**
@@ -41,14 +40,4 @@ public interface SmokeTest {
 	 * creates new testdata that is stored internally
 	 */
 	void createTestdata();
-
-	/**
-	 * execute the test
-	 * 
-	 * @param classifierCreator
-	 *            creates the classifier for the test
-	 * @throws Exception
-	 *             thrown in case of problems
-	 */
-	void execute(ClassifierCreator classifierCreator) throws Exception;
 }

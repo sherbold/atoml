@@ -1,6 +1,5 @@
 package atoml.metamorphic;
 
-import atoml.classifiers.ClassifierCreator;
 import weka.core.Instances;
 
 /**
@@ -50,14 +49,4 @@ public interface MetamorphicTest {
 	 * @return the relation type
 	 */
 	RelationType getPredictionRelation();
-	
-	/**
-	 * execute the test
-	 * 
-	 * @param classifierCreator
-	 *            creates the classifier for the test
-	 * @throws Exception
-	 *             thrown in case of problems
-	 */
-	void execute(ClassifierCreator classifierCreator) throws Exception;
 }
