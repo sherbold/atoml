@@ -20,7 +20,7 @@ public class WekaTestgenerationTest {
 			deleteFileOrFolder(outdir.toPath());
 		}
 		outdir.mkdirs();
-		String[] args = "-f testdata/wekaclassifiers.txt -g -i 5 --testpath testres/weka/src/test/java/ --resourcepath testres/weka/src/test/resources/".split(" ");
+		String[] args = "-f testdata/wekaclassifiers.txt -i 5 --testpath testres/weka/src/test/java/ --resourcepath testres/weka/src/test/resources/".split(" ");
 		Runner.main(args);
 	}
 	

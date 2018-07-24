@@ -20,7 +20,7 @@ public class ScikitTestgenerationTest {
 			deleteFileOrFolder(outdir.toPath());
 		}
 		outdir.mkdirs();
-		String[] args = "-l scikit -f testdata/scikitclassifiers.txt -g -i 5 --testpath testres/scikittests/ --resourcepath testres/scikittests/"
+		String[] args = "-l scikit -f testdata/scikitclassifiers.txt -i 5 --testpath testres/scikittests/ --resourcepath testres/scikittests/"
 				.split(" ");
 		Runner.main(args);
 	}

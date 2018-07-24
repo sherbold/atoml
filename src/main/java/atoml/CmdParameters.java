@@ -92,11 +92,6 @@ public class CmdParameters {
 		options.addOption(numFeatures);
 		defaults.put("nfeat", "10");
 
-		Option gentests = new Option("g", "gentests", false,
-				"generates unit tests, instead of direct execution of tests");
-		gentests.setRequired(false);
-		options.addOption(gentests);
-
 		Option testpath = new Option("t", "testpath", true,
 				"path where generated test cases are stored (default: src/test/java/)");
 		testpath.setRequired(false);

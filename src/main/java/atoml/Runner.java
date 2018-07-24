@@ -65,7 +65,6 @@ public class Runner {
 	    final int numInstances = cmdParameters.getIntegerValue("ninst");
 	    final int numFeatures = cmdParameters.getIntegerValue("nfeat");
 	    
-	    final boolean gentests = cmdParameters.hasOption("gentests");
 	    final String testSrcPath = cmdParameters.getStringValue("testpath");
 	    final String testResourcePath = cmdParameters.getStringValue("resourcepath");
 	    
@@ -127,26 +126,15 @@ public class Runner {
 			}
 		}
 		
-		if( gentests ) {
-			if( "weka".equals(mllib) ) {
-				WekaJUnitGenerator junitGenerator = new WekaJUnitGenerator(testSrcPath, testResourcePath);
-				junitGenerator.generateTests(classifiersUnderTest, smokeTests, metamorphicTests, iterations);
-			}
-			else if( "scikit".equals(mllib) ) {
-				ScikitUnittestGenerator scikitGenerator = new ScikitUnittestGenerator(testSrcPath, testResourcePath);
-				scikitGenerator.generateTests(classifiersUnderTest, smokeTests, metamorphicTests, iterations);
-			} else {
-				throw new RuntimeException("invalid option for mllib: " + mllib);
-			}
+		if( "weka".equals(mllib) ) {
+			WekaJUnitGenerator junitGenerator = new WekaJUnitGenerator(testSrcPath, testResourcePath);
+			junitGenerator.generateTests(classifiersUnderTest, smokeTests, metamorphicTests, iterations);
+		}
+		else if( "scikit".equals(mllib) ) {
+			ScikitUnittestGenerator scikitGenerator = new ScikitUnittestGenerator(testSrcPath, testResourcePath);
+			scikitGenerator.generateTests(classifiersUnderTest, smokeTests, metamorphicTests, iterations);
 		} else {
-			// XXX deprecated and should be removed
-			for( ClassifierCreator classifierUnderTest : classifiersUnderTest ) {
-				SmokeTestRunner smokeTester = new SmokeTestRunner(iterations);
-				MetamorphicTestRunner metamorphicTester = new MetamorphicTestRunner(iterations);
-				
-				smokeTester.runSmokeTests(classifierUnderTest, smokeTests);
-				metamorphicTester.runMetamorphicTests(classifierUnderTest, metamorphicTests);
-			}
+			throw new RuntimeException("invalid option for mllib: " + mllib);
 		}
 	}
 }
