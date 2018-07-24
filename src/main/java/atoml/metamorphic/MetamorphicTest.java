@@ -21,26 +21,6 @@ public interface MetamorphicTest {
 	String getName();
 
 	/**
-	 * get the original data
-	 * 
-	 * @return original data
-	 */
-	Instances getData();
-
-	/**
-	 * create new data
-	 * @return new data
-	 */
-	Instances createData();
-	
-	/**
-	 * get the morphed data
-	 * 
-	 * @return morphed data
-	 */
-	Instances getMorphedData();
-
-	/**
 	 * morphes data
 	 * @return morphed data
 	 */

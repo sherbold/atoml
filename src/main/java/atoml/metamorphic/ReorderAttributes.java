@@ -2,41 +2,19 @@ package atoml.metamorphic;
 
 import java.util.ArrayList;
 
-import atoml.data.DataGenerator;
 import weka.core.Attribute;
 import weka.core.DenseInstance;
 import weka.core.Instance;
 import weka.core.Instances;
 
 /**
- * Original data: Uniformly distributed in [0,1] 
  * Morphed data: inverted attribute order
  * Expectation: classification equal
  * 
  * @author sherbold
- *
  */
 public class ReorderAttributes extends AbstractMetamorphicTest {
 
-	/**
-	 * creates a new ConstantChange object
-	 * 
-	 * @param dataGenerator
-	 */
-	public ReorderAttributes(DataGenerator dataGenerator) {
-		super(dataGenerator);
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see atoml.metamorphic.AbstractMetamorphicTest#createData()
-	 */
-	@Override
-	public Instances createData() {
-		return dataGenerator.randomUniformData(0, 1);
-	}
-	
 	/*
 	 * (non-Javadoc)
 	 * 

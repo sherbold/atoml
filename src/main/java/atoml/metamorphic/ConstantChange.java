@@ -1,36 +1,16 @@
 package atoml.metamorphic;
 
-import atoml.data.DataGenerator;
 import weka.core.Instance;
 import weka.core.Instances;
 
 /**
- * Original data: Uniformly distributed in [0,1] Morphed data: original data + 1
+ * Morphed data: original data + 1
  * Expectation: classification equal
  * 
  * @author sherbold
  *
  */
 public class ConstantChange extends AbstractMetamorphicTest {
-
-	/**
-	 * creates a new ConstantChange object
-	 * 
-	 * @param dataGenerator
-	 */
-	public ConstantChange(DataGenerator dataGenerator) {
-		super(dataGenerator);
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see atoml.metamorphic.AbstractMetamorphicTest#createData()
-	 */
-	@Override
-	public Instances createData() {
-		return dataGenerator.randomUniformData(0, 1);
-	}
 
 	/*
 	 * (non-Javadoc)

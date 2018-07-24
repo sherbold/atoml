@@ -87,12 +87,12 @@ public class Runner {
 		smokeTests.add(new LeftSkewed(dataGenerator));
 		smokeTests.add(new RightSkewed(dataGenerator));
 		List<MetamorphicTest> metamorphicTests = new LinkedList<>();
-		metamorphicTests.add(new ConstantChange(dataGenerator));
-		metamorphicTests.add(new InvertedClass(dataGenerator));
-		metamorphicTests.add(new ScrambleInstances(dataGenerator));
-		metamorphicTests.add(new ReorderAttributes(dataGenerator));
-		metamorphicTests.add(new DuplicateData(dataGenerator));
-		metamorphicTests.add(new SameData(dataGenerator));
+		metamorphicTests.add(new ConstantChange());
+		metamorphicTests.add(new InvertedClass());
+		metamorphicTests.add(new ScrambleInstances());
+		metamorphicTests.add(new ReorderAttributes());
+		metamorphicTests.add(new DuplicateData());
+		metamorphicTests.add(new SameData());
 	    
 		List<ClassifierCreator> classifiersUnderTest = new LinkedList<>();
 		if( classifierStr!=null ) {

@@ -1,10 +1,8 @@
 package atoml.metamorphic;
 
-import atoml.data.DataGenerator;
 import weka.core.Instances;
 
 /**
- * Original data: uniformly distributed in [0,1] 
  * Morphed data: same as original
  * Expectation: Same classifications
  * 
@@ -13,25 +11,6 @@ import weka.core.Instances;
  */
 public class SameData extends AbstractMetamorphicTest {
 
-	/**
-	 * creats a new SameData object
-	 * 
-	 * @param dataGenerator
-	 */
-	public SameData(DataGenerator dataGenerator) {
-		super(dataGenerator);
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see atoml.metamorphic.AbstractMetamorphicTest#createData()
-	 */
-	@Override
-	public Instances createData() {
-		return dataGenerator.randomUniformData(0, 1);
-	}
-	
 	/*
 	 * (non-Javadoc)
 	 * 
