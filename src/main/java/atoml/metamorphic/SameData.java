@@ -59,6 +59,7 @@ public class SameData extends AbstractMetamorphicTest {
 	@Override
 	public Instances morphData(Instances data) {
 		Instances morphedData = new Instances(data);
+		morphedData.setRelationName(data.relationName()+"_"+this.getClass().getSimpleName());
 		return morphedData;
 	}
 

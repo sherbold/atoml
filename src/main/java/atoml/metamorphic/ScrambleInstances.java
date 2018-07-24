@@ -60,7 +60,8 @@ public class ScrambleInstances extends AbstractMetamorphicTest {
 	@Override
 	public Instances morphData(Instances data) {
 		Instances morphedData = new Instances(data);
-
+		morphedData.setRelationName(data.relationName()+"_"+this.getClass().getSimpleName());
+		
 		RandomDataGenerator random = new RandomDataGenerator();
 		// Fisher-Yates shuffle
 		for (int i = morphedData.size() - 1; i > 0; i--) {

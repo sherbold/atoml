@@ -59,6 +59,7 @@ public class DuplicateData extends AbstractMetamorphicTest {
 	@Override
 	public Instances morphData(Instances data) {
 		Instances morphedData = new Instances(data);
+		morphedData.setRelationName(data.relationName()+"_"+this.getClass().getSimpleName());
 		morphedData.addAll(data);
 		return morphedData;
 	}

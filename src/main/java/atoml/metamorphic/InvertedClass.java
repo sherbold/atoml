@@ -59,8 +59,9 @@ public class InvertedClass extends AbstractMetamorphicTest {
 	@Override
 	public Instances morphData(Instances data) {
 		Instances morphedData = new Instances(data);
+		morphedData.setRelationName(data.relationName()+"_"+this.getClass().getSimpleName());
 		int numAttributes = morphedData.numAttributes();
-		int classIndex = morphedData.classIndex();
+		int classIndex = morphedData.numAttributes()-1;
 		for (Instance instance : morphedData) {
 			for (int i = 0; i < numAttributes; i++) {
 				if (i == classIndex) {
