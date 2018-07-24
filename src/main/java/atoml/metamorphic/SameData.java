@@ -11,7 +11,7 @@ import weka.core.Instances;
  * @author sherbold
  *
  */
-public class SameData extends MetamorphicSameClassifierTest {
+public class SameData extends AbstractMetamorphicTest {
 
 	/**
 	 * creats a new SameData object
@@ -40,6 +40,15 @@ public class SameData extends MetamorphicSameClassifierTest {
 	@Override
 	public RelationType getPredictionRelation() {
 		return RelationType.EQUAL;
+	}
+	
+	/*
+	 * (non-Javadoc)
+	 * @see atoml.metamorphic.MetamorphicTest#getPredictionType()
+	 */
+	@Override
+	public PredictionType getPredictionType() {
+		return PredictionType.SAME_CLASSIFIER;
 	}
 
 	/*

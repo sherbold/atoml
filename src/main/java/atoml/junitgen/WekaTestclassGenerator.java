@@ -4,8 +4,6 @@ import java.util.List;
 import java.util.Scanner;
 
 import atoml.classifiers.WekaClassifierCreator;
-import atoml.metamorphic.MetamorphicOrderedDataTest;
-import atoml.metamorphic.MetamorphicSameClassifierTest;
 import atoml.metamorphic.MetamorphicTest;
 import atoml.smoke.SmokeTest;
 
@@ -109,12 +107,14 @@ public class WekaTestclassGenerator {
 	 */
 	private String metamorphictestBody(MetamorphicTest metamorphicTest) {
 		String morphClass;
-		if( metamorphicTest instanceof MetamorphicOrderedDataTest ) {
+		switch(metamorphicTest.getPredictionType()) {
+		case ORDERED_DATA:
 			morphClass = "double morphedClass = morphedClassifier.classifyInstance(morphedData.instance(i));\n";
-		}
-		else if( metamorphicTest instanceof MetamorphicSameClassifierTest ) {
+			break;
+		case SAME_CLASSIFIER:
 			morphClass = "double morphedClass = morphedClassifier.classifyInstance(data.instance(i));\n";
-		} else {
+			break;
+		default:
 			throw new RuntimeException("could not generate unit tests, unknown morph test class");
 		}
 		

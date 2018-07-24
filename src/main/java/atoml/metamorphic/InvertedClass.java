@@ -11,7 +11,7 @@ import weka.core.Instances;
  * @author sherbold
  *
  */
-public class InvertedClass extends MetamorphicOrderedDataTest {
+public class InvertedClass extends AbstractMetamorphicTest {
 
 	/**
 	 * creates a new InvertedClass object
@@ -40,6 +40,15 @@ public class InvertedClass extends MetamorphicOrderedDataTest {
 	@Override
 	public RelationType getPredictionRelation() {
 		return RelationType.INVERTED;
+	}
+	
+	/*
+	 * (non-Javadoc)
+	 * @see atoml.metamorphic.MetamorphicTest#getPredictionType()
+	 */
+	@Override
+	public PredictionType getPredictionType() {
+		return PredictionType.ORDERED_DATA;
 	}
 	
 	/*

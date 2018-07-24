@@ -12,7 +12,7 @@ import weka.core.Instances;
  * @author sherbold
  *
  */
-public class ScrambleInstances extends MetamorphicSameClassifierTest {
+public class ScrambleInstances extends AbstractMetamorphicTest {
 
 	/**
 	 * creats a new ScampleData object
@@ -43,6 +43,15 @@ public class ScrambleInstances extends MetamorphicSameClassifierTest {
 		return RelationType.EQUAL;
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * @see atoml.metamorphic.MetamorphicTest#getPredictionType()
+	 */
+	@Override
+	public PredictionType getPredictionType() {
+		return PredictionType.ORDERED_DATA;
+	}
+	
 	/*
 	 * (non-Javadoc)
 	 * 

@@ -4,8 +4,6 @@ import java.util.List;
 import java.util.Scanner;
 
 import atoml.classifiers.ScikitClassifier;
-import atoml.metamorphic.MetamorphicOrderedDataTest;
-import atoml.metamorphic.MetamorphicSameClassifierTest;
 import atoml.metamorphic.MetamorphicTest;
 import atoml.smoke.SmokeTest;
 
@@ -103,12 +101,14 @@ public class ScikitTestclassGenerator {
 	 */
 	private String metamorphictestBody(MetamorphicTest metamorphicTest) {
 		String morphTestdata;
-		if( metamorphicTest instanceof MetamorphicOrderedDataTest ) {
+		switch(metamorphicTest.getPredictionType()) {
+		case ORDERED_DATA:
 			morphTestdata = "data_morph_df";
-		}
-		else if( metamorphicTest instanceof MetamorphicSameClassifierTest ) {
+			break;
+		case SAME_CLASSIFIER:
 			morphTestdata = "data_original_df";
-		} else {
+			break;
+		default:
 			throw new RuntimeException("could not generate tests, unknown morph test class");
 		}
 		

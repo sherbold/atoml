@@ -11,6 +11,8 @@ public interface MetamorphicTest {
 
 	public enum RelationType {EQUAL, INVERTED};
 	
+	public enum PredictionType {ORDERED_DATA, SAME_CLASSIFIER};
+	
 	/**
 	 * name of the test
 	 * 
@@ -49,4 +51,10 @@ public interface MetamorphicTest {
 	 * @return the relation type
 	 */
 	RelationType getPredictionRelation();
+	
+	/**
+	 * the way the prediction is evaluated
+	 * @return the prediction type
+	 */
+	PredictionType getPredictionType();
 }

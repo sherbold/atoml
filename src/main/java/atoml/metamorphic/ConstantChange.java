@@ -11,7 +11,7 @@ import weka.core.Instances;
  * @author sherbold
  *
  */
-public class ConstantChange extends MetamorphicOrderedDataTest {
+public class ConstantChange extends AbstractMetamorphicTest {
 
 	/**
 	 * creates a new ConstantChange object
@@ -40,6 +40,15 @@ public class ConstantChange extends MetamorphicOrderedDataTest {
 	@Override
 	public RelationType getPredictionRelation() {
 		return RelationType.EQUAL;
+	}
+	
+	/*
+	 * (non-Javadoc)
+	 * @see atoml.metamorphic.MetamorphicTest#getPredictionType()
+	 */
+	@Override
+	public PredictionType getPredictionType() {
+		return PredictionType.ORDERED_DATA;
 	}
 
 	/*
