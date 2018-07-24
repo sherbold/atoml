@@ -34,16 +34,23 @@ public class WekaTestclassGenerator {
 	private final int iterations;
 	
 	/**
+	 * names of the data sets used for the morph tests
+	 */
+	private final List<String> morphtestDataNames;
+	
+	/**
 	 * creates a new TestclassGenerator
 	 * @param classifierUnderTest classifier that is tested
 	 * @param smokeTest list of smoke tests
 	 * @param metamorphicTests list of metamorphic tests
+	 * @param morphtestDataNames names of the data sets used by morph tests
 	 */
-	public WekaTestclassGenerator(WekaClassifierCreator classifierUnderTest, List<SmokeTest> smokeTest, List<MetamorphicTest> metamorphicTests, int iterations) {
+	public WekaTestclassGenerator(WekaClassifierCreator classifierUnderTest, List<SmokeTest> smokeTest, List<MetamorphicTest> metamorphicTests, int iterations, List<String> morphtestDataNames) {
 		this.classifierUnderTest = classifierUnderTest;
 		this.smokeTests = smokeTest;
 		this.metamorphicTests = metamorphicTests;
 		this.iterations = iterations;
+		this.morphtestDataNames = morphtestDataNames;
 	}
 	
 	/**
@@ -57,7 +64,9 @@ public class WekaTestclassGenerator {
 		StringBuilder testmethods = new StringBuilder();
 		
 		for( MetamorphicTest metamorphicTest : metamorphicTests) {
-			testmethods.append(metamorphictestBody(metamorphicTest));
+			for( String morphtestDataName : morphtestDataNames ) {
+				testmethods.append(metamorphictestBody(metamorphicTest, morphtestDataName));
+			}
 		}
 		
 		for( SmokeTest smokeTest : smokeTests ) {
@@ -103,9 +112,10 @@ public class WekaTestclassGenerator {
 	
 	/**
 	 * @param metamorphicTest metamorphic test
+	 * @param morphtestDataName name of the current data set
 	 * @return body for a metamorphic test case
 	 */
-	private String metamorphictestBody(MetamorphicTest metamorphicTest) {
+	private String metamorphictestBody(MetamorphicTest metamorphicTest, String morphtestDataName) {
 		String morphClass;
 		switch(metamorphicTest.getPredictionType()) {
 		case ORDERED_DATA:
@@ -134,11 +144,13 @@ public class WekaTestclassGenerator {
 		String methodBody = new Scanner(this.getClass().getResourceAsStream("/junit-morphtest.template"), "UTF-8").useDelimiter("\\A").next();
 		
 		methodBody = methodBody.replaceAll("<<<NAME>>>", metamorphicTest.getName());
+		methodBody = methodBody.replaceAll("<<<DATASET>>>", morphtestDataName);
 		methodBody = methodBody.replaceAll("<<<CLASSIFIER>>>", classifierUnderTest.createClassifier().getClass().getSimpleName());
 		methodBody = methodBody.replaceAll("<<<PARAMETERS>>>", classifierParametersString());
 		methodBody = methodBody.replaceAll("<<<ITERATIONS>>>", Integer.toString(iterations));
 		methodBody = methodBody.replaceAll("<<<MORPHCLASS>>>", morphClass);
 		methodBody = methodBody.replaceAll("<<<MORPHRELATION>>>", morphRelation);
+		
 		return methodBody;
 	}
 	

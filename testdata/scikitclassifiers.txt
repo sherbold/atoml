@@ -1,2 +1,4 @@
-DT_DEFAULT sklearn.tree.DecisionTreeClassifier()
-DT_DEPTH2 sklearn.tree.DecisionTreeClassifier(max_depth=2)
+DecisionTree_DEFAULT sklearn.tree.DecisionTreeClassifier()
+DecisionTree_DEPTH2 sklearn.tree.DecisionTreeClassifier(max_depth=2)
+KNeighbors_DEFAULT sklearn.neighbors.KNeighborsClassifier()
+KNeighbors_5 sklearn.neighbors.KNeighborsClassifier(n_neighbors=5)

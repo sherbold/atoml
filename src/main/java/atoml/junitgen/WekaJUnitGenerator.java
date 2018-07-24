@@ -47,11 +47,11 @@ public class WekaJUnitGenerator {
 		LOGGER.info("creating test data...");
 		TestdataGenerator testdataGenerator = new TestdataGenerator(smokeTests, metamorphicTests, iterations);
 		LOGGER.info("test data creation finished");
-		testdataGenerator.generateTestdata(testResourcePath);
+		List<String> morphtestDataNames = testdataGenerator.generateTestdata(testResourcePath);
 		for(ClassifierCreator classifierUnderTest : classifiersUnderTest ) {
 			if( classifierUnderTest instanceof WekaClassifierCreator ) {
 				LOGGER.info("creating tests for " + classifierUnderTest.getClassifierName() + "...");
-				WekaTestclassGenerator testclassGenerator = new WekaTestclassGenerator((WekaClassifierCreator) classifierUnderTest, smokeTests, metamorphicTests, iterations);
+				WekaTestclassGenerator testclassGenerator = new WekaTestclassGenerator((WekaClassifierCreator) classifierUnderTest, smokeTests, metamorphicTests, iterations, morphtestDataNames);
 				String testclassCode = testclassGenerator.generateTestclass();
 	
 				Path path = Paths.get(testJavaPath + testclassGenerator.getPackageName().replaceAll("\\.", "/") + "/" + testclassGenerator.getClassName() + ".java");

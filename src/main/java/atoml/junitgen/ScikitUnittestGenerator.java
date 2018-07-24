@@ -47,11 +47,11 @@ public class ScikitUnittestGenerator {
 		LOGGER.info("creating test data...");
 		TestdataGenerator testdataGenerator = new TestdataGenerator(smokeTests, metamorphicTests, iterations);
 		LOGGER.info("test data creation finished");
-		testdataGenerator.generateTestdata(testResourcePath);
+		List<String> morphtestDataNames = testdataGenerator.generateTestdata(testResourcePath);
 		for(ClassifierCreator classifierUnderTest : classifiersUnderTest ) {
 			if( classifierUnderTest instanceof ScikitClassifier ) {
 				LOGGER.info("creating tests for " + classifierUnderTest.getClassifierName() + "...");
-				ScikitTestclassGenerator testclassGenerator = new ScikitTestclassGenerator((ScikitClassifier) classifierUnderTest, smokeTests, metamorphicTests, iterations);
+				ScikitTestclassGenerator testclassGenerator = new ScikitTestclassGenerator((ScikitClassifier) classifierUnderTest, smokeTests, metamorphicTests, iterations, morphtestDataNames);
 				String testclassCode = testclassGenerator.generateTestclass();
 	
 				Path path = Paths.get(testPath + testclassGenerator.getClassName() + ".py");

@@ -34,16 +34,23 @@ public class ScikitTestclassGenerator {
 	private final int iterations;
 	
 	/**
+	 * names of the data sets used for the morph tests
+	 */
+	private final List<String> morphtestDataNames;
+	
+	/**
 	 * creates a new TestclassGenerator
 	 * @param classifierUnderTest classifier that is tested
 	 * @param smokeTest list of smoke tests
 	 * @param metamorphicTests list of metamorphic tests
+	 * @param morphtestDataNames names of the data sets used by morph tests
 	 */
-	public ScikitTestclassGenerator(ScikitClassifier classifierUnderTest, List<SmokeTest> smokeTest, List<MetamorphicTest> metamorphicTests, int iterations) {
+	public ScikitTestclassGenerator(ScikitClassifier classifierUnderTest, List<SmokeTest> smokeTest, List<MetamorphicTest> metamorphicTests, int iterations, List<String> morphtestDataNames) {
 		this.classifierUnderTest = classifierUnderTest;
 		this.smokeTests = smokeTest;
 		this.metamorphicTests = metamorphicTests;
 		this.iterations = iterations;
+		this.morphtestDataNames = morphtestDataNames;
 	}
 	
 	/**
@@ -57,7 +64,9 @@ public class ScikitTestclassGenerator {
 		StringBuilder testmethods = new StringBuilder();
 		
 		for( MetamorphicTest metamorphicTest : metamorphicTests) {
-			testmethods.append(metamorphictestBody(metamorphicTest));
+			for( String morphtestDataName : morphtestDataNames ) {
+				testmethods.append(metamorphictestBody(metamorphicTest, morphtestDataName));
+			}
 		}
 		
 		for( SmokeTest smokeTest : smokeTests ) {
@@ -99,7 +108,7 @@ public class ScikitTestclassGenerator {
 	 * @param metamorphicTest metamorphic test
 	 * @return body for a metamorphic test case
 	 */
-	private String metamorphictestBody(MetamorphicTest metamorphicTest) {
+	private String metamorphictestBody(MetamorphicTest metamorphicTest, String morphtestDataName) {
 		String morphTestdata;
 		switch(metamorphicTest.getPredictionType()) {
 		case ORDERED_DATA:
@@ -128,6 +137,7 @@ public class ScikitTestclassGenerator {
 		String methodBody = new Scanner(this.getClass().getResourceAsStream("/scikit-morphtest.template"), "UTF-8").useDelimiter("\\A").next();
 		
 		methodBody = methodBody.replaceAll("<<<NAME>>>", metamorphicTest.getName());
+		methodBody = methodBody.replaceAll("<<<DATASET>>>", morphtestDataName);
 		methodBody = methodBody.replaceAll("<<<CLASSIFIER>>>", classifierUnderTest.getCreateString());
 		methodBody = methodBody.replaceAll("<<<ITERATIONS>>>", Integer.toString(iterations));
 		methodBody = methodBody.replaceAll("<<<MORPHTESTDATA>>>", morphTestdata);
