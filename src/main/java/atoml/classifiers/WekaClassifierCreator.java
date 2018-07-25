@@ -1,12 +1,8 @@
 package atoml.classifiers;
 
 import java.util.Arrays;
-import java.util.logging.Logger;
 
 import org.apache.tools.ant.types.Commandline;
-
-import weka.classifiers.AbstractClassifier;
-import weka.classifiers.Classifier;
 
 /**
  * Creates a Weka classifier from a string
@@ -14,11 +10,6 @@ import weka.classifiers.Classifier;
  * @author sherbold
  */
 public class WekaClassifierCreator implements ClassifierCreator {
-
-	/**
-	 * logger that is used
-	 */
-	private final static Logger LOGGER = Logger.getLogger("atoml");
 
 	/**
 	 * name of the classifier (also used for classifier creation)
@@ -34,6 +25,11 @@ public class WekaClassifierCreator implements ClassifierCreator {
 	 * array with the classifiers parameters
 	 */
 	private final String[] classifierParameters;
+	
+	/**
+	 * package in which the classifier is defined
+	 */
+	private final String classifierPackage;
 
 	/**
 	 * creates a new StringClassifierCreator
@@ -51,24 +47,10 @@ public class WekaClassifierCreator implements ClassifierCreator {
 			this.classifierClassName = args[1];
 			this.classifierParameters = Arrays.copyOfRange(args, 2, args.length);
 		}
+		int lastDot = this.classifierClassName.lastIndexOf('.');
+		this.classifierPackage = this.classifierClassName.substring(0,lastDot);
 	}
 
-	/**
-	 * creates a new classifier using reflection
-	 * 
-	 * @return classifier
-	 */
-	@Override
-	public Classifier createClassifier() {
-		try {
-			return AbstractClassifier.forName(this.classifierClassName, Arrays.copyOf(this.classifierParameters, this.classifierParameters.length));
-		} catch (Exception e) {
-			e.printStackTrace();
-			LOGGER.severe("could not initialize classifier " + classifierName + ": " + e.getMessage());
-			return null;
-		}
-	}
-	
 	/* (non-Javadoc)
 	 * @see atoml.classifiers.ClassifierCreator#getClassifierName()
 	 */
@@ -91,5 +73,13 @@ public class WekaClassifierCreator implements ClassifierCreator {
 	 */
 	public String[] getClassifierParameters() {
 		return classifierParameters;
+	}
+	
+	/**
+	 * name of the package in which the classifier is defined
+	 * @return package name
+	 */
+	public String getPackageName() {
+		return classifierPackage;
 	}
 }

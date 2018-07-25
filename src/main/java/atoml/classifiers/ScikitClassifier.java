@@ -1,7 +1,5 @@
 package atoml.classifiers;
 
-import weka.classifiers.Classifier;
-
 public class ScikitClassifier implements ClassifierCreator {
 
 	/**
@@ -76,10 +74,5 @@ public class ScikitClassifier implements ClassifierCreator {
 	 */
 	public String getCreateString() {
 		return classifierCreateString;
-	}
-
-	@Override
-	public Classifier createClassifier() {
-		throw new RuntimeException("createClassifier not support for scikit");
 	}
 }

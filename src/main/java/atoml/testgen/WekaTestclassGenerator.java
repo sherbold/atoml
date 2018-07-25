@@ -73,7 +73,7 @@ public class WekaTestclassGenerator {
 			testmethods.append(smoketestBody(smokeTest));
 		}
 		
-		classBody = classBody.replaceAll("<<<PACKAGENAME>>>", getPackageName());
+		classBody = classBody.replaceAll("<<<PACKAGENAME>>>", classifierUnderTest.getPackageName());
 		classBody = classBody.replaceAll("<<<CLASSNAME>>>", getClassName());
 		classBody = classBody.replaceAll("<<<METHODS>>>", testmethods.toString());
 		return classBody;
@@ -84,7 +84,7 @@ public class WekaTestclassGenerator {
 	 * @return package name
 	 */
 	public String getPackageName() {
-		return classifierUnderTest.createClassifier().getClass().getPackage().getName();
+		return classifierUnderTest.getPackageName();
 	}
 	
 	/**
@@ -145,7 +145,7 @@ public class WekaTestclassGenerator {
 		
 		methodBody = methodBody.replaceAll("<<<NAME>>>", metamorphicTest.getName());
 		methodBody = methodBody.replaceAll("<<<DATASET>>>", morphtestDataName);
-		methodBody = methodBody.replaceAll("<<<CLASSIFIER>>>", classifierUnderTest.createClassifier().getClass().getSimpleName());
+		methodBody = methodBody.replaceAll("<<<CLASSIFIER>>>", classifierUnderTest.getClassifierClassName());
 		methodBody = methodBody.replaceAll("<<<PARAMETERS>>>", classifierParametersString());
 		methodBody = methodBody.replaceAll("<<<ITERATIONS>>>", Integer.toString(iterations));
 		methodBody = methodBody.replaceAll("<<<MORPHCLASS>>>", morphClass);
