@@ -7,12 +7,11 @@ package atoml.testgen;
  */
 public interface TestcaseGenerator {
 	
-	// XXX rename to generateSource()
 	/**
 	 * generates the source code
 	 * @return the source code
 	 */
-	public String generateTestclass();
+	public String generateSource();
 
 	/**
 	 * The path where the test case should be stored. This path is relative to the testsuite source folder.

@@ -57,7 +57,7 @@ public abstract class AbstractTestsuiteGenerator implements TestsuiteGenerator {
 		for(Classifier classifierUnderTest : classifiersUnderTest ) {
 			LOGGER.info("creating tests for " + classifierUnderTest.getClassifierName() + "...");
 			TestcaseGenerator testcaseGenerator = getTestcaseGenerator(classifierUnderTest, smokeTests, metamorphicTests, iterations, morphtestDataNames);
-			String testclassCode = testcaseGenerator.generateTestclass();
+			String testclassCode = testcaseGenerator.generateSource();
 			
 			Path path = Paths.get(testcasePath).resolve(testcaseGenerator.getFilePath());
 

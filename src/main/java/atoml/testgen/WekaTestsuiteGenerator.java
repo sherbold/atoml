@@ -11,14 +11,14 @@ import atoml.smoke.SmokeTest;
  * Generates JUnit tests for Weka
  * @author sherbold
  */
-public class WekaJUnitGenerator extends AbstractTestsuiteGenerator {
+public class WekaTestsuiteGenerator extends AbstractTestsuiteGenerator {
 
 	/**
-	 * Creates a new WekaJUnitGenerator
+	 * Creates a new WekaTestsuiteGenerator
 	 * @param testcasePath path of the sources for the test cases
 	 * @param testdataPath path where test data should be stored
 	 */
-	public WekaJUnitGenerator(String testcasePath, String testdataPath) {
+	public WekaTestsuiteGenerator(String testcasePath, String testdataPath) {
 		super(testcasePath, testdataPath);
 	}
 	
@@ -29,6 +29,6 @@ public class WekaJUnitGenerator extends AbstractTestsuiteGenerator {
 	@Override
 	protected TestcaseGenerator getTestcaseGenerator(Classifier classifierUnderTest, List<SmokeTest> smokeTests,
 			List<MetamorphicTest> metamorphicTests, int iterations, List<String> morphtestDataNames) {
-		return new WekaTestclassGenerator((WekaClassifier) classifierUnderTest, smokeTests, metamorphicTests, iterations, morphtestDataNames);
+		return new WekaTestcaseGenerator((WekaClassifier) classifierUnderTest, smokeTests, metamorphicTests, iterations, morphtestDataNames);
 	}
 }

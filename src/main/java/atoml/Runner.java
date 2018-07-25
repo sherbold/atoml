@@ -35,8 +35,8 @@ import atoml.smoke.UniformVeryLarge;
 import atoml.smoke.UniformVerySmall;
 import atoml.smoke.UniformWholeDoubleRange;
 import atoml.smoke.UniformZeroToOne;
-import atoml.testgen.ScikitUnittestGenerator;
-import atoml.testgen.WekaJUnitGenerator;
+import atoml.testgen.ScikitTestsuiteGenerator;
+import atoml.testgen.WekaTestsuiteGenerator;
 
 /**
  * Application object that executes the main function.
@@ -124,11 +124,11 @@ public class Runner {
 		}
 		
 		if( "weka".equals(mllib) ) {
-			WekaJUnitGenerator junitGenerator = new WekaJUnitGenerator(testSrcPath, testResourcePath);
+			WekaTestsuiteGenerator junitGenerator = new WekaTestsuiteGenerator(testSrcPath, testResourcePath);
 			junitGenerator.generateTests(classifiersUnderTest, smokeTests, metamorphicTests, iterations);
 		}
 		else if( "scikit".equals(mllib) ) {
-			ScikitUnittestGenerator scikitGenerator = new ScikitUnittestGenerator(testSrcPath, testResourcePath);
+			ScikitTestsuiteGenerator scikitGenerator = new ScikitTestsuiteGenerator(testSrcPath, testResourcePath);
 			scikitGenerator.generateTests(classifiersUnderTest, smokeTests, metamorphicTests, iterations);
 		} else {
 			throw new RuntimeException("invalid option for mllib: " + mllib);
