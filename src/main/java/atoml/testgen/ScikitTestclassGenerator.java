@@ -11,7 +11,7 @@ import atoml.smoke.SmokeTest;
  * Generates the source code for JUnit tests
  * @author sherbold
  */
-public class ScikitTestclassGenerator {
+public class ScikitTestclassGenerator implements TestcaseGenerator {
 	
 	/**
 	 * classifier that is tested
@@ -53,10 +53,12 @@ public class ScikitTestclassGenerator {
 		this.morphtestDataNames = morphtestDataNames;
 	}
 	
-	/**
-	 * generates the source code
-	 * @return the source code
+	
+	/* 
+	 * (non-Javadoc)
+	 * @see atoml.testgen.TestcaseGenerator#generateTestclass()
 	 */
+	@Override
 	public String generateTestclass() {
 		@SuppressWarnings("resource")
 		String classBody = new Scanner(this.getClass().getResourceAsStream("/scikit-class.template"), "UTF-8").useDelimiter("\\A").next();
@@ -78,6 +80,19 @@ public class ScikitTestclassGenerator {
 		return classBody;
 	}
 	
+	/* 
+	 * (non-Javadoc)
+	 * @see atoml.testgen.TestcaseGenerator#getFilePath()
+	 */
+	@Override
+	public String getFilePath() {
+		return getClassName() + ".py";
+	}
+	
+	/**
+	 * generates the import statements
+	 * @return the import statement
+	 */
 	public String getImportStatement() {
 		return "from " + classifierUnderTest.getPackageName() + " import " + classifierUnderTest.getClassName();
 	}

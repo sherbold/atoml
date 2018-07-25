@@ -1,12 +1,6 @@
 package atoml.testgen;
 
-import java.io.BufferedWriter;
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.List;
-import java.util.logging.Logger;
 
 import atoml.classifiers.Classifier;
 import atoml.classifiers.WekaClassifier;
@@ -14,64 +8,27 @@ import atoml.metamorphic.MetamorphicTest;
 import atoml.smoke.SmokeTest;
 
 /**
- * Generates JUnit tests for a list of classifiers
+ * Generates JUnit tests for Weka
  * @author sherbold
  */
-public class WekaJUnitGenerator {
-	
+public class WekaJUnitGenerator extends AbstractTestsuiteGenerator {
+
 	/**
-	 * logger that is used
+	 * Creates a new WekaJUnitGenerator
+	 * @param testcasePath path of the sources for the test cases
+	 * @param testdataPath path where test data should be stored
 	 */
-	private final static Logger LOGGER = Logger.getLogger("atoml");
-	
-	final String testJavaPath;
-	final String testResourcePath;
-	
-	/**
-	 * creates a new JUnitGenerator
-	 * @param testJavaPath path of the source folder for the test cases
-	 * @param testResourcePath path where resources should be stored (i.e. the data)
-	 */
-	public WekaJUnitGenerator(String testJavaPath, String testResourcePath) {
-		this.testJavaPath = testJavaPath;
-		this.testResourcePath = testResourcePath;
+	public WekaJUnitGenerator(String testcasePath, String testdataPath) {
+		super(testcasePath, testdataPath);
 	}
 	
-	/**
-	 * generates the tests
-	 * @param classifiersUnderTest classifiers for which tests are generated
-	 * @param smokeTests smoke tests that are generated
-	 * @param metamorphicTests metamorphic tests that are generated
+	/* 
+	 * (non-Javadoc)
+	 * @see atoml.testgen.AbstractTestsuiteGenerator#getTestcaseGenerator(atoml.classifiers.Classifier, java.util.List, java.util.List, int, java.util.List)
 	 */
-	public void generateTests(List<Classifier> classifiersUnderTest, List<SmokeTest> smokeTests, List<MetamorphicTest> metamorphicTests, int iterations) {
-		LOGGER.info("creating test data...");
-		TestdataGenerator testdataGenerator = new TestdataGenerator(smokeTests, metamorphicTests, iterations);
-		LOGGER.info("test data creation finished");
-		List<String> morphtestDataNames = testdataGenerator.generateTestdata(testResourcePath);
-		for(Classifier classifierUnderTest : classifiersUnderTest ) {
-			if( classifierUnderTest instanceof WekaClassifier ) {
-				LOGGER.info("creating tests for " + classifierUnderTest.getClassifierName() + "...");
-				WekaTestclassGenerator testclassGenerator = new WekaTestclassGenerator((WekaClassifier) classifierUnderTest, smokeTests, metamorphicTests, iterations, morphtestDataNames);
-				String testclassCode = testclassGenerator.generateTestclass();
-	
-				Path path = Paths.get(testJavaPath + testclassGenerator.getPackageName().replaceAll("\\.", "/") + "/" + testclassGenerator.getClassName() + ".java");
-	
-				try {
-					Files.createDirectories(path.getParent());
-				} catch (IOException e) {
-					throw new RuntimeException("could not create folder for test cases", e);
-				}
-				
-				try (BufferedWriter writer = Files.newBufferedWriter(path))
-				{
-				    writer.write(testclassCode);
-				} catch (IOException e) {
-					throw new RuntimeException("could write test case: ", e);
-				}
-				LOGGER.info("finished creating tests for " + classifierUnderTest.getClassifierName());
-			} else {
-				LOGGER.info("could not create tests for " + classifierUnderTest.getClassifierName() + ": not a WekaClassiferCreator");
-			}
-		}
+	@Override
+	protected TestcaseGenerator getTestcaseGenerator(Classifier classifierUnderTest, List<SmokeTest> smokeTests,
+			List<MetamorphicTest> metamorphicTests, int iterations, List<String> morphtestDataNames) {
+		return new WekaTestclassGenerator((WekaClassifier) classifierUnderTest, smokeTests, metamorphicTests, iterations, morphtestDataNames);
 	}
 }

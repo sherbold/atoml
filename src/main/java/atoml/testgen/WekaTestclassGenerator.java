@@ -11,7 +11,7 @@ import atoml.smoke.SmokeTest;
  * Generates the source code for JUnit tests
  * @author sherbold
  */
-public class WekaTestclassGenerator {
+public class WekaTestclassGenerator implements TestcaseGenerator {
 	
 	/**
 	 * classifier that is tested
@@ -53,10 +53,12 @@ public class WekaTestclassGenerator {
 		this.morphtestDataNames = morphtestDataNames;
 	}
 	
-	/**
-	 * generates the source code
-	 * @return the source code
+	
+	/* 
+	 * (non-Javadoc)
+	 * @see atoml.testgen.TestcaseGenerator#generateTestclass()
 	 */
+	@Override
 	public String generateTestclass() {
 		@SuppressWarnings("resource")
 		String classBody = new Scanner(this.getClass().getResourceAsStream("/junit-class.template"), "UTF-8").useDelimiter("\\A").next();
@@ -77,6 +79,15 @@ public class WekaTestclassGenerator {
 		classBody = classBody.replaceAll("<<<CLASSNAME>>>", getClassName());
 		classBody = classBody.replaceAll("<<<METHODS>>>", testmethods.toString());
 		return classBody;
+	}
+	
+	/* 
+	 * (non-Javadoc)
+	 * @see atoml.testgen.TestcaseGenerator#getFilePath()
+	 */
+	@Override
+	public String getFilePath() {
+		return getPackageName().replaceAll("\\.", "/") + "/" + getClassName() + ".java";
 	}
 	
 	/**
