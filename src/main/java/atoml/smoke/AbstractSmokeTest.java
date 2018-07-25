@@ -9,6 +9,12 @@ import weka.core.Instances;
  */
 public abstract class AbstractSmokeTest implements SmokeTest {
 
+	protected String name;
+	
+	protected AbstractSmokeTest() {
+		this.name = this.getClass().getSimpleName();
+	}
+	
 	/**
 	 * smoke test data
 	 */
@@ -26,7 +32,7 @@ public abstract class AbstractSmokeTest implements SmokeTest {
 	 */
 	@Override
 	public String getName() {
-		return this.getClass().getSimpleName();
+		return name;
 	}
 
 	/*
