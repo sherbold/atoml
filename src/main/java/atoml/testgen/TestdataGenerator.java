@@ -1,8 +1,10 @@
 package atoml.testgen;
 
+import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -83,6 +85,9 @@ public class TestdataGenerator {
 		List<String> morphtestDataNames = new ArrayList<>();
 		morphtestDataNames.add("UniformRandom");
 		morphtestDataNames.add("UniformInformative");
+		morphtestDataNames.add("diabetes");
+		morphtestDataNames.add("ionosphere");
+		morphtestDataNames.add("unbalance");
 		
 		for( int iteration=1; iteration<=this.iterations; iteration++) {
 			for( SmokeTest smokeTest : smokeTests ) {
@@ -103,6 +108,9 @@ public class TestdataGenerator {
 			List<Instances> morphtestData = new ArrayList<>();
 			morphtestData.add(DataGenerator.generateData(numFeatures, 0, numInstances, new UniformRealDistribution(), 0.5, iteration));
 			morphtestData.add(DataGenerator.generateData(numFeatures, numFeatures/2, numInstances, new UniformRealDistribution(), 0.1, iteration));
+			morphtestData.add(readArffFromResource("/morphdata/diabetes.arff"));
+			morphtestData.add(readArffFromResource("/morphdata/ionosphere.arff"));
+			morphtestData.add(readArffFromResource("/morphdata/unbalanced.arff"));
 			
 			for(MetamorphicTest metamorphicTest : metamorphicTests) {
 				metamorphicTest.setSeed(iteration);
@@ -122,5 +130,18 @@ public class TestdataGenerator {
 			}
 		}
 		return morphtestDataNames;
+	}
+	
+	private Instances readArffFromResource(String resource) {
+		Instances data;
+        InputStreamReader originalFile = new InputStreamReader(
+                 this.getClass().getResourceAsStream(resource));
+        try(BufferedReader reader = new BufferedReader(originalFile);) {
+            data = new Instances(reader);
+        }
+        catch (IOException e) {
+            throw new RuntimeException("error reading ARFF from resource: " + resource, e);
+        }
+        return data;
 	}
 }
