@@ -9,7 +9,7 @@ import java.util.List;
 import java.util.logging.Logger;
 
 import atoml.classifiers.Classifier;
-import atoml.classifiers.WekaClassifierCreator;
+import atoml.classifiers.WekaClassifier;
 import atoml.metamorphic.MetamorphicTest;
 import atoml.smoke.SmokeTest;
 
@@ -49,9 +49,9 @@ public class WekaJUnitGenerator {
 		LOGGER.info("test data creation finished");
 		List<String> morphtestDataNames = testdataGenerator.generateTestdata(testResourcePath);
 		for(Classifier classifierUnderTest : classifiersUnderTest ) {
-			if( classifierUnderTest instanceof WekaClassifierCreator ) {
+			if( classifierUnderTest instanceof WekaClassifier ) {
 				LOGGER.info("creating tests for " + classifierUnderTest.getClassifierName() + "...");
-				WekaTestclassGenerator testclassGenerator = new WekaTestclassGenerator((WekaClassifierCreator) classifierUnderTest, smokeTests, metamorphicTests, iterations, morphtestDataNames);
+				WekaTestclassGenerator testclassGenerator = new WekaTestclassGenerator((WekaClassifier) classifierUnderTest, smokeTests, metamorphicTests, iterations, morphtestDataNames);
 				String testclassCode = testclassGenerator.generateTestclass();
 	
 				Path path = Paths.get(testJavaPath + testclassGenerator.getPackageName().replaceAll("\\.", "/") + "/" + testclassGenerator.getClassName() + ".java");

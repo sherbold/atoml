@@ -12,7 +12,7 @@ import org.apache.commons.cli.ParseException;
 
 import atoml.classifiers.Classifier;
 import atoml.classifiers.ScikitClassifier;
-import atoml.classifiers.WekaClassifierCreator;
+import atoml.classifiers.WekaClassifier;
 import atoml.data.ClassificationGenerator;
 import atoml.data.DataGenerator;
 import atoml.metamorphic.ConstantChange;
@@ -97,7 +97,7 @@ public class Runner {
 		List<Classifier> classifiersUnderTest = new LinkedList<>();
 		if( classifierStr!=null ) {
 			if( "weka".equals(mllib) ) {
-				classifiersUnderTest.add(new WekaClassifierCreator(classifierStr));
+				classifiersUnderTest.add(new WekaClassifier(classifierStr));
 			}
 			else if( "scikit".equals(mllib) ) {
 				classifiersUnderTest.add(new ScikitClassifier(classifierStr));
@@ -111,7 +111,7 @@ public class Runner {
 					@Override
 					public void accept(String line) {
 						if( "weka".equals(mllib) ) {
-							classifiersUnderTest.add(new WekaClassifierCreator(line));
+							classifiersUnderTest.add(new WekaClassifier(line));
 						}
 						else if( "scikit".equals(mllib) ) {
 							classifiersUnderTest.add(new ScikitClassifier(line));

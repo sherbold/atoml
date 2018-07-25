@@ -9,7 +9,7 @@ import org.apache.tools.ant.types.Commandline;
  * 
  * @author sherbold
  */
-public class WekaClassifierCreator implements Classifier {
+public class WekaClassifier implements Classifier {
 
 	/**
 	 * name of the classifier (also used for classifier creation)
@@ -37,7 +37,7 @@ public class WekaClassifierCreator implements Classifier {
 	 * @param classifierName
 	 *            qualified name of the classifier
 	 */
-	public WekaClassifierCreator(String classifierDescription) {
+	public WekaClassifier(String classifierDescription) {
 		String[] args = Commandline.translateCommandline(classifierDescription);
 		this.classifierName = args[0];
 		if( args.length==1 ) {

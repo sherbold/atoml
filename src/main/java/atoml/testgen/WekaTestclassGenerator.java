@@ -3,7 +3,7 @@ package atoml.testgen;
 import java.util.List;
 import java.util.Scanner;
 
-import atoml.classifiers.WekaClassifierCreator;
+import atoml.classifiers.WekaClassifier;
 import atoml.metamorphic.MetamorphicTest;
 import atoml.smoke.SmokeTest;
 
@@ -16,7 +16,7 @@ public class WekaTestclassGenerator {
 	/**
 	 * classifier that is tested
 	 */
-	private final WekaClassifierCreator classifierUnderTest;
+	private final WekaClassifier classifierUnderTest;
 	
 	/**
 	 * smoke tests that are generated
@@ -45,7 +45,7 @@ public class WekaTestclassGenerator {
 	 * @param metamorphicTests list of metamorphic tests
 	 * @param morphtestDataNames names of the data sets used by morph tests
 	 */
-	public WekaTestclassGenerator(WekaClassifierCreator classifierUnderTest, List<SmokeTest> smokeTest, List<MetamorphicTest> metamorphicTests, int iterations, List<String> morphtestDataNames) {
+	public WekaTestclassGenerator(WekaClassifier classifierUnderTest, List<SmokeTest> smokeTest, List<MetamorphicTest> metamorphicTests, int iterations, List<String> morphtestDataNames) {
 		this.classifierUnderTest = classifierUnderTest;
 		this.smokeTests = smokeTest;
 		this.metamorphicTests = metamorphicTests;
