@@ -72,15 +72,15 @@ public class TestdataGenerator {
 		
 		for( int iteration=1; iteration<=this.iterations; iteration++) {
 			for( SmokeTest smokeTest : smokeTests ) {
+				// TODO remove hardcoded number of features/instances
+				smokeTest.generateData(10, 100, iteration);
 				try(BufferedWriter writer = new BufferedWriter(new FileWriter(datapath + "smokedata/" + smokeTest.getName() + "_" + iteration + "_training.arff"));) {
-					smokeTest.createData();
 					writer.write(smokeTest.getData().toString());
 				} catch(IOException e) {
 					throw new RuntimeException("could write data for smoke test " + smokeTest.getName(), e);
 				}
 				try(BufferedWriter writer = new BufferedWriter(new FileWriter(datapath + "smokedata/" + smokeTest.getName() + "_" + iteration + "_test.arff"));) {
-					smokeTest.createData();
-					writer.write(smokeTest.getData().toString());
+					writer.write(smokeTest.getTestData().toString());
 				} catch(IOException e) {
 					throw new RuntimeException("could write data for smoke test " + smokeTest.getName(), e);
 				}

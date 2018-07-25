@@ -1,6 +1,5 @@
 package atoml.smoke;
 
-import atoml.data.DataGenerator;
 import weka.core.Instances;
 
 /**
@@ -11,11 +10,6 @@ import weka.core.Instances;
 public abstract class AbstractSmokeTest implements SmokeTest {
 
 	/**
-	 * generator for the smoke test data
-	 */
-	protected final DataGenerator dataGenerator;
-
-	/**
 	 * smoke test data
 	 */
 	protected Instances data = null;
@@ -24,30 +18,6 @@ public abstract class AbstractSmokeTest implements SmokeTest {
 	 * test data that is used
 	 */
 	protected Instances testdata = null;
-
-	/**
-	 * creates a new AbstractSmokeTest
-	 * 
-	 * @param dataGenerator
-	 *            data generator that is used
-	 */
-	public AbstractSmokeTest(DataGenerator dataGenerator) {
-		this.dataGenerator = dataGenerator;
-	}
-
-	/**
-	 * creates data for the smoke test
-	 * 
-	 * @return data
-	 */
-	public abstract void createData();
-	
-	/**
-	 * creates the test data for the smoke test
-	 * 
-	 * @return data
-	 */
-	public abstract void createTestdata();
 
 	/*
 	 * (non-Javadoc)

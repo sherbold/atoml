@@ -25,7 +25,7 @@ public class DataGenerator {
 	 * @param numFeatures number of features (dimension will be +1, because of the class attribute)
 	 * @param numInformative number of informative features, i.e., that is not random with respect to the class
 	 * @param numInstances number of instances
-	 * @param distribution distribution from which the instances are drawn
+	 * @param distribution distribution from which the instances are drawn. If this is null, all values are generated as 0 and the classification will be random
 	 * @param noiseRate white noise that is applied to the classification
 	 * @param seed seed that is used all random numbers drawn by this generator
 	 * @return generated data

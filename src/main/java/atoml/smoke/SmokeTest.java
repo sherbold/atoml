@@ -32,12 +32,11 @@ public interface SmokeTest {
 	Instances getTestData();
 	
 	/**
-	 * create new data that is stored internally
+	 * generates the data for the smoke tests
+	 * TODO param documentation
+	 * @param numFeatures
+	 * @param numInstances
+	 * @param seed
 	 */
-	void createData();
-	
-	/**
-	 * creates new testdata that is stored internally
-	 */
-	void createTestdata();
+	void generateData(int numFeatures, int numInstances, long seed);
 }

@@ -1,45 +1,29 @@
 package atoml.smoke;
 
+import org.apache.commons.math3.distribution.UniformRealDistribution;
+
 import atoml.data.DataGenerator;
 
 /**
- * Data: Uniformly distributed in [0,1], however, only one instance in class 0, all others in class 1
+ * Features: Uniformly distributed in [0,1]
+ * Class: One instance in class 0, all others in class 1
  * 
  * @author sherbold
  */
 public class SingleInstanceMinorityClass extends AbstractSmokeTest {
-
-	/**
-	 * creates a new AllZeroes object
-	 * 
-	 * @param dataGenerator
-	 *            data generator that is used
-	 */
-	public SingleInstanceMinorityClass(DataGenerator dataGenerator) {
-		super(dataGenerator);
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see atoml.smoke.AbstractSmokeTest#createData()
-	 */
-	@Override
-	public void createData() {
-		this.data = dataGenerator.randomUniformData(0, 1);
-		data.get(0).setClassValue(0.0d);
-		for( int i=0; i<data.size(); i++ ) {
-			data.get(i).setClassValue(1.0d);
-		}
-	}
 	
-	/*
+	/* 
 	 * (non-Javadoc)
-	 * 
-	 * @see atoml.smoke.AbstractSmokeTest#createTestdata()
+	 * @see atoml.smoke.SmokeTest#generateData(int, int, int, double, long)
 	 */
 	@Override
-	public void createTestdata() {
-		this.testdata = this.data;
+	public void generateData(int numFeatures, int numInstances, long seed) {
+		data = DataGenerator.generateData(numFeatures, 0, numInstances, new UniformRealDistribution(0, 1), 0.5, seed);
+		int classIndex = data.numAttributes()-1;
+		data.instance(0).setValue(classIndex, 0);
+		for( int i=1; i<data.size() ; i++ ) {
+			data.instance(i).setValue(classIndex, 1);
+		}
+		testdata = data;
 	}
 }

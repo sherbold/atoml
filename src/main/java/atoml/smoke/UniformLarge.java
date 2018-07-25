@@ -1,41 +1,24 @@
 package atoml.smoke;
 
+import org.apache.commons.math3.distribution.UniformRealDistribution;
+
 import atoml.data.DataGenerator;
 
 /**
- * Data: uniformly distributed in [-10^10,10^10]
+ * Features: uniformly distributed in [-10^10,10^10]
+ * Class: Random
  * 
  * @author sherbold
  */
 public class UniformLarge extends AbstractSmokeTest {
 
-	/**
-	 * creates a new UniformLarge object
-	 * 
-	 * @param dataGenerator
-	 *            data generator that is used
-	 */
-	public UniformLarge(DataGenerator dataGenerator) {
-		super(dataGenerator);
-	}
-
-	/*
+	/* 
 	 * (non-Javadoc)
-	 * 
-	 * @see atoml.smoke.AbstractSmokeTest#createData()
+	 * @see atoml.smoke.SmokeTest#generateData(int, int, int, double, long)
 	 */
 	@Override
-	public void createData() {
-		this.data = dataGenerator.randomUniformData(-1e6, 1e6);
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see atoml.smoke.AbstractSmokeTest#createTestdata()
-	 */
-	@Override
-	public void createTestdata() {
-		this.testdata = this.data;
+	public void generateData(int numFeatures, int numInstances, long seed) {
+		data = DataGenerator.generateData(numFeatures, 0, numInstances, new UniformRealDistribution(-1e10,1e10), 0.5, seed);
+		testdata = data;
 	}
 }
