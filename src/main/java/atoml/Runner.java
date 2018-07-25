@@ -27,6 +27,7 @@ import atoml.smoke.Outliers;
 import atoml.smoke.RightSkewed;
 import atoml.smoke.SingleInstanceMinorityClass;
 import atoml.smoke.SmokeTest;
+import atoml.smoke.SmoketestFromArff;
 import atoml.smoke.SpreadMixture;
 import atoml.smoke.UniformDoubleMachinePrecision;
 import atoml.smoke.UniformLarge;
@@ -83,6 +84,7 @@ public class Runner {
 		smokeTests.add(new NonoverlappingTrainingAndTestData());
 		smokeTests.add(new LeftSkewed());
 		smokeTests.add(new RightSkewed());
+		smokeTests.add(new SmoketestFromArff("CM1", "/smokedata/cm1.arff"));
 		List<MetamorphicTest> metamorphicTests = new LinkedList<>();
 		metamorphicTests.add(new ConstantChange());
 		metamorphicTests.add(new InvertedClass());
