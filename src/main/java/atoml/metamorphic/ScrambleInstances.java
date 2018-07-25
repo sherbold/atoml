@@ -29,7 +29,7 @@ public class ScrambleInstances extends AbstractMetamorphicTest {
 	 */
 	@Override
 	public PredictionType getPredictionType() {
-		return PredictionType.ORDERED_DATA;
+		return PredictionType.SAME_CLASSIFIER;
 	}
 	
 	/*
