@@ -105,6 +105,7 @@ public class TestdataGenerator {
 			morphtestData.add(DataGenerator.generateData(10, 5, 100, new UniformRealDistribution(), 0.1, iteration));
 			
 			for(MetamorphicTest metamorphicTest : metamorphicTests) {
+				metamorphicTest.setSeed(iteration);
 				for( int i=0; i<morphtestData.size(); i++ ) {
 					Instances morphedData = metamorphicTest.morphData(morphtestData.get(i));
 					try (BufferedWriter writer = new BufferedWriter(new FileWriter(datapath + morphtestDataNames.get(i) + "_" + iteration + ".arff"));) {
