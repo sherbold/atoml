@@ -83,21 +83,6 @@ public class TestdataGenerator {
 					throw new RuntimeException("could write data for smoke test " + smokeTest.getName(), e);
 				}
 			}
-			/*
-			for(MetamorphicTest metamorphicTest : metamorphicTests) {
-				Instances originalData = metamorphicTest.createData();
-				Instances morphedData = metamorphicTest.morphData(originalData);
-				try (BufferedWriter writer = new BufferedWriter(new FileWriter(datapath + "morphtest_" + metamorphicTest.getName() + "_" + iteration + "_original.arff"));) {
-					writer.write(originalData.toString());
-				} catch(Exception e) {
-					throw new RuntimeException("could write data for metamorphic test " + metamorphicTest.getName(), e);
-				}
-				try (BufferedWriter writer = new BufferedWriter(new FileWriter(datapath + "morphtest_" + metamorphicTest.getName() + "_" + iteration + "_morphed.arff"));) {
-					writer.write(morphedData.toString());
-				} catch(Exception e) {
-					throw new RuntimeException("could write data for metamorphic test " + metamorphicTest.getName(), e);
-				}
-			}*/
 			
 			// XXX I do not like that this is separated from the name definition. 
 			List<Instances> morphtestData = new ArrayList<>();
