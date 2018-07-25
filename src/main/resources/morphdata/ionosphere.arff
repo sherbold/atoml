@@ -98,7 +98,7 @@
 @attribute a32 numeric
 @attribute a33 numeric
 @attribute a34 numeric
-@attribute class {b, g}
+@attribute classAtt {b, g}
 
 @data
 

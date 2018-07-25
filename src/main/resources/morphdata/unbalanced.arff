@@ -32,7 +32,7 @@
 @attribute MW numeric
 @attribute BBB numeric
 @attribute BadGroup numeric
-@attribute Outcome {Active,Inactive}
+@attribute classAtt {Active,Inactive}
 
 @data
 -2.3941,1.8819,-2.5208,2.3536,-2.7698,3.1048,-3.4568,3.9734,-0.8412,1.2385,-1.7103,2.0127,-2.5874,2.8944,-3.4677,3.7962,-0.885,1.1079,-1.694,1.9939,-2.5592,2.8987,-3.4355,3.8086,4.924,60.45,6,4,1,362.857,1,0,Active

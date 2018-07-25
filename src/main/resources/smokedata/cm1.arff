@@ -17,7 +17,7 @@
 @attribute BRANCH_COUNT numeric
 @attribute CYCLOMATIC_COMPLEXITY numeric
 @attribute DESIGN_COMPLEXITY numeric
-@attribute bug-new {0,1}
+@attribute classAtt {0,1}
 
 @data
 25,24,0,1,15,15,44,19,309.13,63,9.5,2936.77,0.1,163.15,9,5,3,0,{1.074924}
