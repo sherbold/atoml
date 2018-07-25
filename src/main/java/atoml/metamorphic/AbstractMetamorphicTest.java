@@ -10,6 +10,8 @@ package atoml.metamorphic;
  */
 public abstract class AbstractMetamorphicTest implements MetamorphicTest {
 
+	protected long seed = 0;
+	
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -18,5 +20,14 @@ public abstract class AbstractMetamorphicTest implements MetamorphicTest {
 	@Override
 	public String getName() {
 		return this.getClass().getSimpleName();
+	}
+	
+	/* 
+	 * (non-Javadoc)
+	 * @see atoml.metamorphic.MetamorphicTest#setSeed(long)
+	 */
+	@Override
+	public void setSeed(long seed) {
+		this.seed = seed;		
 	}
 }

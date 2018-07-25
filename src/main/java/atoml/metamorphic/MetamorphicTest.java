@@ -37,4 +37,10 @@ public interface MetamorphicTest {
 	 * @return the prediction type
 	 */
 	PredictionType getPredictionType();
+	
+	/**
+	 * sets the seed that is used by any internal random number generator
+	 * @param seed the seed
+	 */
+	void setSeed(long seed);
 }
