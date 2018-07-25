@@ -1,4 +1,4 @@
-package atoml.junitgen;
+package atoml.testgen;
 
 import java.io.BufferedWriter;
 import java.io.IOException;
@@ -9,7 +9,7 @@ import java.util.List;
 import java.util.logging.Logger;
 
 import atoml.classifiers.ClassifierCreator;
-import atoml.classifiers.WekaClassifierCreator;
+import atoml.classifiers.ScikitClassifier;
 import atoml.metamorphic.MetamorphicTest;
 import atoml.smoke.SmokeTest;
 
@@ -17,23 +17,23 @@ import atoml.smoke.SmokeTest;
  * Generates JUnit tests for a list of classifiers
  * @author sherbold
  */
-public class WekaJUnitGenerator {
+public class ScikitUnittestGenerator {
 	
 	/**
 	 * logger that is used
 	 */
 	private final static Logger LOGGER = Logger.getLogger("atoml");
 	
-	final String testJavaPath;
+	final String testPath;
 	final String testResourcePath;
 	
 	/**
-	 * creates a new JUnitGenerator
+	 * creates a new ScikitUnittestGenerator
 	 * @param testJavaPath path of the source folder for the test cases
 	 * @param testResourcePath path where resources should be stored (i.e. the data)
 	 */
-	public WekaJUnitGenerator(String testJavaPath, String testResourcePath) {
-		this.testJavaPath = testJavaPath;
+	public ScikitUnittestGenerator(String testPath, String testResourcePath) {
+		this.testPath = testPath;
 		this.testResourcePath = testResourcePath;
 	}
 	
@@ -49,12 +49,12 @@ public class WekaJUnitGenerator {
 		LOGGER.info("test data creation finished");
 		List<String> morphtestDataNames = testdataGenerator.generateTestdata(testResourcePath);
 		for(ClassifierCreator classifierUnderTest : classifiersUnderTest ) {
-			if( classifierUnderTest instanceof WekaClassifierCreator ) {
+			if( classifierUnderTest instanceof ScikitClassifier ) {
 				LOGGER.info("creating tests for " + classifierUnderTest.getClassifierName() + "...");
-				WekaTestclassGenerator testclassGenerator = new WekaTestclassGenerator((WekaClassifierCreator) classifierUnderTest, smokeTests, metamorphicTests, iterations, morphtestDataNames);
+				ScikitTestclassGenerator testclassGenerator = new ScikitTestclassGenerator((ScikitClassifier) classifierUnderTest, smokeTests, metamorphicTests, iterations, morphtestDataNames);
 				String testclassCode = testclassGenerator.generateTestclass();
 	
-				Path path = Paths.get(testJavaPath + testclassGenerator.getPackageName().replaceAll("\\.", "/") + "/" + testclassGenerator.getClassName() + ".java");
+				Path path = Paths.get(testPath + testclassGenerator.getClassName() + ".py");
 	
 				try {
 					Files.createDirectories(path.getParent());
@@ -70,7 +70,8 @@ public class WekaJUnitGenerator {
 				}
 				LOGGER.info("finished creating tests for " + classifierUnderTest.getClassifierName());
 			} else {
-				LOGGER.info("could not create tests for " + classifierUnderTest.getClassifierName() + ": not a WekaClassiferCreator");
+				// TODO update
+				LOGGER.info("could not create tests for " + classifierUnderTest.getClassifierName() + ": not a ScikitClassifier");
 			}
 		}
 	}

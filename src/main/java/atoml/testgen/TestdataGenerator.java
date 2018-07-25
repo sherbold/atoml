@@ -1,4 +1,4 @@
-package atoml.junitgen;
+package atoml.testgen;
 
 import java.io.BufferedWriter;
 import java.io.FileWriter;

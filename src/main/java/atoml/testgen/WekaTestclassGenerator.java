@@ -1,9 +1,9 @@
-package atoml.junitgen;
+package atoml.testgen;
 
 import java.util.List;
 import java.util.Scanner;
 
-import atoml.classifiers.ScikitClassifier;
+import atoml.classifiers.WekaClassifierCreator;
 import atoml.metamorphic.MetamorphicTest;
 import atoml.smoke.SmokeTest;
 
@@ -11,12 +11,12 @@ import atoml.smoke.SmokeTest;
  * Generates the source code for JUnit tests
  * @author sherbold
  */
-public class ScikitTestclassGenerator {
+public class WekaTestclassGenerator {
 	
 	/**
 	 * classifier that is tested
 	 */
-	private final ScikitClassifier classifierUnderTest;
+	private final WekaClassifierCreator classifierUnderTest;
 	
 	/**
 	 * smoke tests that are generated
@@ -45,7 +45,7 @@ public class ScikitTestclassGenerator {
 	 * @param metamorphicTests list of metamorphic tests
 	 * @param morphtestDataNames names of the data sets used by morph tests
 	 */
-	public ScikitTestclassGenerator(ScikitClassifier classifierUnderTest, List<SmokeTest> smokeTest, List<MetamorphicTest> metamorphicTests, int iterations, List<String> morphtestDataNames) {
+	public WekaTestclassGenerator(WekaClassifierCreator classifierUnderTest, List<SmokeTest> smokeTest, List<MetamorphicTest> metamorphicTests, int iterations, List<String> morphtestDataNames) {
 		this.classifierUnderTest = classifierUnderTest;
 		this.smokeTests = smokeTest;
 		this.metamorphicTests = metamorphicTests;
@@ -59,7 +59,7 @@ public class ScikitTestclassGenerator {
 	 */
 	public String generateTestclass() {
 		@SuppressWarnings("resource")
-		String classBody = new Scanner(this.getClass().getResourceAsStream("/scikit-class.template"), "UTF-8").useDelimiter("\\A").next();
+		String classBody = new Scanner(this.getClass().getResourceAsStream("/junit-class.template"), "UTF-8").useDelimiter("\\A").next();
 
 		StringBuilder testmethods = new StringBuilder();
 		
@@ -72,14 +72,19 @@ public class ScikitTestclassGenerator {
 		for( SmokeTest smokeTest : smokeTests ) {
 			testmethods.append(smoketestBody(smokeTest));
 		}
-		classBody = classBody.replaceAll("<<<IMPORTCLASSIFIER>>>", getImportStatement());
+		
+		classBody = classBody.replaceAll("<<<PACKAGENAME>>>", getPackageName());
 		classBody = classBody.replaceAll("<<<CLASSNAME>>>", getClassName());
 		classBody = classBody.replaceAll("<<<METHODS>>>", testmethods.toString());
 		return classBody;
 	}
 	
-	public String getImportStatement() {
-		return "from " + classifierUnderTest.getPackageName() + " import " + classifierUnderTest.getClassName();
+	/**
+	 * package name of the generated class
+	 * @return package name
+	 */
+	public String getPackageName() {
+		return classifierUnderTest.createClassifier().getClass().getPackage().getName();
 	}
 	
 	/**
@@ -87,7 +92,7 @@ public class ScikitTestclassGenerator {
 	 * @return class name
 	 */
 	public String getClassName() {
-		return "test_" + classifierUnderTest.getClassifierName();
+		return classifierUnderTest.getClassifierName() + "_AtomlTest";
 	}
 
 	/**
@@ -96,52 +101,74 @@ public class ScikitTestclassGenerator {
 	 */
 	private String smoketestBody(SmokeTest smokeTest) {
 		@SuppressWarnings("resource")
-		String methodBody = new Scanner(this.getClass().getResourceAsStream("/scikit-smoketest.template"), "UTF-8").useDelimiter("\\A").next();
+		String methodBody = new Scanner(this.getClass().getResourceAsStream("/junit-smoketest.template"), "UTF-8").useDelimiter("\\A").next();
 		
 		methodBody = methodBody.replaceAll("<<<NAME>>>", smokeTest.getName());
-		methodBody = methodBody.replaceAll("<<<CLASSIFIER>>>", classifierUnderTest.getCreateString());
+		methodBody = methodBody.replaceAll("<<<CLASSIFIER>>>", classifierUnderTest.getClassifierClassName());
+		methodBody = methodBody.replaceAll("<<<PARAMETERS>>>", classifierParametersString());
 		methodBody = methodBody.replaceAll("<<<ITERATIONS>>>", Integer.toString(iterations));
 		return methodBody;
 	}
 	
 	/**
 	 * @param metamorphicTest metamorphic test
+	 * @param morphtestDataName name of the current data set
 	 * @return body for a metamorphic test case
 	 */
 	private String metamorphictestBody(MetamorphicTest metamorphicTest, String morphtestDataName) {
-		String morphTestdata;
+		String morphClass;
 		switch(metamorphicTest.getPredictionType()) {
 		case ORDERED_DATA:
-			morphTestdata = "data_morph_df";
+			morphClass = "double morphedClass = morphedClassifier.classifyInstance(morphedData.instance(i));\n";
 			break;
 		case SAME_CLASSIFIER:
-			morphTestdata = "data_original_df";
+			morphClass = "double morphedClass = morphedClassifier.classifyInstance(data.instance(i));\n";
 			break;
 		default:
-			throw new RuntimeException("could not generate tests, unknown morph test class");
+			throw new RuntimeException("could not generate unit tests, unknown morph test class");
 		}
 		
 		String morphRelation;
 		switch(metamorphicTest.getPredictionRelation()) {
 		case EQUAL:
-			morphRelation = "self.assertTrue((prediction_original==prediction_morph).all())";
+			morphRelation = "Double.compare(originalClass, morphedClass) == 0";
 			break;
 		case INVERTED:
-			morphRelation = "self.assertFalse((prediction_original==prediction_morph).any())";
+			morphRelation = "Double.compare(originalClass, morphedClass) != 0";
 			break;
 		default:
 			throw new RuntimeException("could not generate tests, unknown morph prediction relation type");
 		}
 		
 		@SuppressWarnings("resource")
-		String methodBody = new Scanner(this.getClass().getResourceAsStream("/scikit-morphtest.template"), "UTF-8").useDelimiter("\\A").next();
+		String methodBody = new Scanner(this.getClass().getResourceAsStream("/junit-morphtest.template"), "UTF-8").useDelimiter("\\A").next();
 		
 		methodBody = methodBody.replaceAll("<<<NAME>>>", metamorphicTest.getName());
 		methodBody = methodBody.replaceAll("<<<DATASET>>>", morphtestDataName);
-		methodBody = methodBody.replaceAll("<<<CLASSIFIER>>>", classifierUnderTest.getCreateString());
+		methodBody = methodBody.replaceAll("<<<CLASSIFIER>>>", classifierUnderTest.createClassifier().getClass().getSimpleName());
+		methodBody = methodBody.replaceAll("<<<PARAMETERS>>>", classifierParametersString());
 		methodBody = methodBody.replaceAll("<<<ITERATIONS>>>", Integer.toString(iterations));
-		methodBody = methodBody.replaceAll("<<<MORPHTESTDATA>>>", morphTestdata);
+		methodBody = methodBody.replaceAll("<<<MORPHCLASS>>>", morphClass);
 		methodBody = methodBody.replaceAll("<<<MORPHRELATION>>>", morphRelation);
+		
 		return methodBody;
+	}
+	
+	/**
+	 * creates a string to initialize a new string array for the parameters
+	 * @return parameters string
+	 */
+	private String classifierParametersString() {
+		StringBuilder parameters = new StringBuilder();
+		if( classifierUnderTest.getClassifierParameters().length>0 ) {
+			parameters.append("{");
+			for( String param : classifierUnderTest.getClassifierParameters()) {
+				parameters.append("\"" + param + "\",");
+			}
+			parameters.replace(parameters.length()-1, parameters.length(), "}");
+		} else {
+			parameters.append("{}");
+		}
+		return parameters.toString();
 	}
 }

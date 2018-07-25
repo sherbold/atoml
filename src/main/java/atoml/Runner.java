@@ -15,8 +15,6 @@ import atoml.classifiers.ScikitClassifier;
 import atoml.classifiers.WekaClassifierCreator;
 import atoml.data.ClassificationGenerator;
 import atoml.data.DataGenerator;
-import atoml.junitgen.ScikitUnittestGenerator;
-import atoml.junitgen.WekaJUnitGenerator;
 import atoml.metamorphic.ConstantChange;
 import atoml.metamorphic.DuplicateData;
 import atoml.metamorphic.InvertedClass;
@@ -39,6 +37,8 @@ import atoml.smoke.UniformVeryLarge;
 import atoml.smoke.UniformVerySmall;
 import atoml.smoke.UniformWholeDoubleRange;
 import atoml.smoke.UniformZeroToOne;
+import atoml.testgen.ScikitUnittestGenerator;
+import atoml.testgen.WekaJUnitGenerator;
 
 /**
  * Application object that executes the main function.
