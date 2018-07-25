@@ -9,7 +9,7 @@ import org.apache.tools.ant.types.Commandline;
  * 
  * @author sherbold
  */
-public class WekaClassifierCreator implements ClassifierCreator {
+public class WekaClassifierCreator implements Classifier {
 
 	/**
 	 * name of the classifier (also used for classifier creation)
@@ -52,7 +52,7 @@ public class WekaClassifierCreator implements ClassifierCreator {
 	}
 
 	/* (non-Javadoc)
-	 * @see atoml.classifiers.ClassifierCreator#getClassifierName()
+	 * @see atoml.classifiers.Classifier#getClassifierName()
 	 */
 	@Override
 	public String getClassifierName() {

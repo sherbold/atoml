@@ -10,7 +10,7 @@ import java.util.stream.Stream;
 
 import org.apache.commons.cli.ParseException;
 
-import atoml.classifiers.ClassifierCreator;
+import atoml.classifiers.Classifier;
 import atoml.classifiers.ScikitClassifier;
 import atoml.classifiers.WekaClassifierCreator;
 import atoml.data.ClassificationGenerator;
@@ -94,7 +94,7 @@ public class Runner {
 		metamorphicTests.add(new DuplicateData());
 		metamorphicTests.add(new SameData());
 	    
-		List<ClassifierCreator> classifiersUnderTest = new LinkedList<>();
+		List<Classifier> classifiersUnderTest = new LinkedList<>();
 		if( classifierStr!=null ) {
 			if( "weka".equals(mllib) ) {
 				classifiersUnderTest.add(new WekaClassifierCreator(classifierStr));

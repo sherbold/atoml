@@ -8,7 +8,7 @@ import java.nio.file.Paths;
 import java.util.List;
 import java.util.logging.Logger;
 
-import atoml.classifiers.ClassifierCreator;
+import atoml.classifiers.Classifier;
 import atoml.classifiers.WekaClassifierCreator;
 import atoml.metamorphic.MetamorphicTest;
 import atoml.smoke.SmokeTest;
@@ -43,12 +43,12 @@ public class WekaJUnitGenerator {
 	 * @param smokeTests smoke tests that are generated
 	 * @param metamorphicTests metamorphic tests that are generated
 	 */
-	public void generateTests(List<ClassifierCreator> classifiersUnderTest, List<SmokeTest> smokeTests, List<MetamorphicTest> metamorphicTests, int iterations) {
+	public void generateTests(List<Classifier> classifiersUnderTest, List<SmokeTest> smokeTests, List<MetamorphicTest> metamorphicTests, int iterations) {
 		LOGGER.info("creating test data...");
 		TestdataGenerator testdataGenerator = new TestdataGenerator(smokeTests, metamorphicTests, iterations);
 		LOGGER.info("test data creation finished");
 		List<String> morphtestDataNames = testdataGenerator.generateTestdata(testResourcePath);
-		for(ClassifierCreator classifierUnderTest : classifiersUnderTest ) {
+		for(Classifier classifierUnderTest : classifiersUnderTest ) {
 			if( classifierUnderTest instanceof WekaClassifierCreator ) {
 				LOGGER.info("creating tests for " + classifierUnderTest.getClassifierName() + "...");
 				WekaTestclassGenerator testclassGenerator = new WekaTestclassGenerator((WekaClassifierCreator) classifierUnderTest, smokeTests, metamorphicTests, iterations, morphtestDataNames);

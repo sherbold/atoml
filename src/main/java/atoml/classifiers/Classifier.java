@@ -5,7 +5,7 @@ package atoml.classifiers;
  * 
  * @author sherbold
  */
-public interface ClassifierCreator {
+public interface Classifier {
 	
 	/**
 	 * returns the name of the classifier

@@ -1,6 +1,6 @@
 package atoml.classifiers;
 
-public class ScikitClassifier implements ClassifierCreator {
+public class ScikitClassifier implements Classifier {
 
 	/**
 	 * name of the classifier (also used for classifier creation)
@@ -45,7 +45,7 @@ public class ScikitClassifier implements ClassifierCreator {
 	}
 	
 	/* (non-Javadoc)
-	 * @see atoml.classifiers.ClassifierCreator#getClassifierName()
+	 * @see atoml.classifiers.Classifier#getClassifierName()
 	 */
 	@Override
 	public String getClassifierName() {
