@@ -1,7 +1,7 @@
     def test_<<<NAME>>>(self):
         for iter in range(1,<<<ITERATIONS>>>+1):
-            data, meta = loadarff('smoketest_<<<NAME>>>_%i_training.arff' % iter)
-            testdata, testmeta = loadarff('smoketest_<<<NAME>>>_%i_test.arff' % iter)
+            data, meta = loadarff('smokedata/<<<NAME>>>_%i_training.arff' % iter)
+            testdata, testmeta = loadarff('smokedata/<<<NAME>>>_%i_test.arff' % iter)
             data_df = pd.DataFrame(data)
             testdata_df = pd.DataFrame(data)
             nfeatures = data_df.shape[1]

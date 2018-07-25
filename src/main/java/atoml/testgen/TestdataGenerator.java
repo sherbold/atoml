@@ -56,10 +56,12 @@ public class TestdataGenerator {
 	 */
 	public List<String> generateTestdata(String datapath) {
 		
-		Path path = Paths.get(datapath);
+		Path smokePath = Paths.get(datapath).resolve("smokedata");
+		Path morphPath = Paths.get(datapath).resolve("morphdata");
 
 		try {
-			Files.createDirectories(path);
+			Files.createDirectories(smokePath);
+			Files.createDirectories(morphPath);
 		} catch (IOException e) {
 			throw new RuntimeException("could not create folder for test data", e);
 		}
@@ -70,13 +72,13 @@ public class TestdataGenerator {
 		
 		for( int iteration=1; iteration<=this.iterations; iteration++) {
 			for( SmokeTest smokeTest : smokeTests ) {
-				try(BufferedWriter writer = new BufferedWriter(new FileWriter(datapath + "smoketest_" + smokeTest.getName() + "_" + iteration + "_training.arff"));) {
+				try(BufferedWriter writer = new BufferedWriter(new FileWriter(datapath + "smokedata/" + smokeTest.getName() + "_" + iteration + "_training.arff"));) {
 					smokeTest.createData();
 					writer.write(smokeTest.getData().toString());
 				} catch(IOException e) {
 					throw new RuntimeException("could write data for smoke test " + smokeTest.getName(), e);
 				}
-				try(BufferedWriter writer = new BufferedWriter(new FileWriter(datapath + "smoketest_" + smokeTest.getName() + "_" + iteration + "_test.arff"));) {
+				try(BufferedWriter writer = new BufferedWriter(new FileWriter(datapath + "smokedata/" + smokeTest.getName() + "_" + iteration + "_test.arff"));) {
 					smokeTest.createData();
 					writer.write(smokeTest.getData().toString());
 				} catch(IOException e) {
@@ -93,12 +95,12 @@ public class TestdataGenerator {
 				metamorphicTest.setSeed(iteration);
 				for( int i=0; i<morphtestData.size(); i++ ) {
 					Instances morphedData = metamorphicTest.morphData(morphtestData.get(i));
-					try (BufferedWriter writer = new BufferedWriter(new FileWriter(datapath + morphtestDataNames.get(i) + "_" + iteration + ".arff"));) {
+					try (BufferedWriter writer = new BufferedWriter(new FileWriter(datapath + "morphdata/" + morphtestDataNames.get(i) + "_" + iteration + ".arff"));) {
 						writer.write(morphtestData.get(i).toString());
 					} catch(Exception e) {
 						throw new RuntimeException("could write data for metamorphic test " + metamorphicTest.getName(), e);
 					}
-					try (BufferedWriter writer = new BufferedWriter(new FileWriter(datapath + morphtestDataNames.get(i) + "_" + iteration + "_" + metamorphicTest.getName() + ".arff"));) {
+					try (BufferedWriter writer = new BufferedWriter(new FileWriter(datapath + "morphdata/" + morphtestDataNames.get(i) + "_" + iteration + "_" + metamorphicTest.getName() + ".arff"));) {
 						writer.write(morphedData.toString());
 					} catch(Exception e) {
 						throw new RuntimeException("could not write data for metamorphic test " + metamorphicTest.getName(), e);

@@ -3,24 +3,24 @@
         for(int iter=1; iter<=<<<ITERATIONS>>>; iter++) {
             Instances data;
             InputStreamReader originalFile = new InputStreamReader(
-                     this.getClass().getResourceAsStream("/<<<DATASET>>>_" + iter + ".arff"));
+                     this.getClass().getResourceAsStream("/morphdata/<<<DATASET>>>_" + iter + ".arff"));
             try(BufferedReader reader = new BufferedReader(originalFile);) {
                 data = new Instances(reader);
                 reader.close();
             }
             catch (IOException e) {
-                throw new RuntimeException("error reading file:  <<<DATASET>>>_" + iter + ".arff", e);
+                throw new RuntimeException("error reading file:  morphdata/<<<DATASET>>>_" + iter + ".arff", e);
             }
             data.setClassIndex(data.numAttributes()-1);
             Instances morphedData;
             InputStreamReader morphedFile = new InputStreamReader(
-                     this.getClass().getResourceAsStream("/<<<DATASET>>>_" + iter + "_<<<NAME>>>.arff"));
+                     this.getClass().getResourceAsStream("/morphdata/<<<DATASET>>>_" + iter + "_<<<NAME>>>.arff"));
             try(BufferedReader reader = new BufferedReader(morphedFile);) {
                 morphedData = new Instances(reader);
                 reader.close();
             }
             catch (IOException e) {
-                throw new RuntimeException("error reading file:  <<<DATASET>>>_" + iter + "_<<<NAME>>>.arff", e);
+                throw new RuntimeException("error reading file:  morphdata/<<<DATASET>>>_" + iter + "_<<<NAME>>>.arff", e);
             }
             morphedData.setClassIndex(morphedData.numAttributes()-1);
             Classifier classifier = AbstractClassifier.forName("<<<CLASSIFIER>>>", new String[]<<<PARAMETERS>>>);

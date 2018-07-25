@@ -1,7 +1,7 @@
     def test_<<<NAME>>>_<<<DATASET>>>(self):
         for iter in range(1,<<<ITERATIONS>>>+1):
-            data_original, meta_original = loadarff('<<<DATASET>>>_%i.arff' % iter)
-            data_morphed, meta_morphed = loadarff('<<<DATASET>>>_%i_<<<NAME>>>.arff' % iter)
+            data_original, meta_original = loadarff('morphdata/<<<DATASET>>>_%i.arff' % iter)
+            data_morphed, meta_morphed = loadarff('morphdata/<<<DATASET>>>_%i_<<<NAME>>>.arff' % iter)
             data_original_df = pd.DataFrame(data_original)
             data_morph_df = pd.DataFrame(data_morphed)
             nfeatures_original = data_original_df.shape[1]
