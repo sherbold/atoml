@@ -18,7 +18,7 @@ public class Outliers extends AbstractSmokeTest {
 	 */
 	@Override
 	public void generateData(int numFeatures, int numInstances, long seed) {
-		data = DataGenerator.generateData(numFeatures, 5, numInstances, new UniformRealDistribution(0, 1e-10), 0.1, seed);
+		data = DataGenerator.generateData(numFeatures, numFeatures/2, numInstances, new UniformRealDistribution(0, 1e-10), 0.1, seed);
 		int classIndex = data.numAttributes()-1;
 		for( int j=0; j<data.numAttributes() ; j++ ) {
 			if( j!=classIndex ) {
