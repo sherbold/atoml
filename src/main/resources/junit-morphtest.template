@@ -36,7 +36,7 @@
                 }
             }
             if (violations > 0) {
-                assertEquals("metamorphic relation broken: " + violations + " violations",0, violations);
+                assertEquals("metamorphic relation broken (iteration " + iter + "): " + violations + " violations",0, violations);
             }
         }
     }
