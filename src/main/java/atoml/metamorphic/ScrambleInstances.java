@@ -45,7 +45,7 @@ public class ScrambleInstances extends AbstractMetamorphicTest {
 		RandomDataGenerator random = new RandomDataGenerator();
 		// Fisher-Yates shuffle
 		for (int i = morphedData.size() - 1; i > 0; i--) {
-			int index = random.nextInt(0, i + 1);
+			int index = random.nextInt(0, i);
 			morphedData.swap(index, i);
 		}
 		return morphedData;
