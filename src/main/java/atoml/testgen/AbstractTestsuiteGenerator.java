@@ -35,13 +35,27 @@ public abstract class AbstractTestsuiteGenerator implements TestsuiteGenerator {
 	final String testdataPath;
 	
 	/**
+	 * number of features for generated data
+	 */
+	final int numFeatures;
+	
+	/**
+	 * number of instances for generated data
+	 */
+	final int numInstances;
+	
+	/**
 	 * creates a new AbstractTestsuiteGenerator
 	 * @param testcasePath path of the sources for the test cases
 	 * @param testdataPath path where test data should be stored
+	 * @param numFeatures number of features for generated data
+	 * @param numInstances number of instances for generated data
 	 */
-	public AbstractTestsuiteGenerator(String testcasePath, String testdataPath) {
+	public AbstractTestsuiteGenerator(String testcasePath, String testdataPath, int numFeatures, int numInstances) {
 		this.testcasePath = testcasePath;
 		this.testdataPath = testdataPath;
+		this.numFeatures = numFeatures;
+		this.numInstances = numInstances;
 	}
 	
 	/* 
@@ -51,7 +65,7 @@ public abstract class AbstractTestsuiteGenerator implements TestsuiteGenerator {
 	@Override
 	public void generateTests(List<Classifier> classifiersUnderTest, List<SmokeTest> smokeTests, List<MetamorphicTest> metamorphicTests, int iterations) {
 		LOGGER.info("creating test data...");
-		TestdataGenerator testdataGenerator = new TestdataGenerator(smokeTests, metamorphicTests, iterations);
+		TestdataGenerator testdataGenerator = new TestdataGenerator(smokeTests, metamorphicTests, numFeatures, numInstances, iterations);
 		LOGGER.info("test data creation finished");
 		List<String> morphtestDataNames = testdataGenerator.generateTestdata(testdataPath);
 		for(Classifier classifierUnderTest : classifiersUnderTest ) {

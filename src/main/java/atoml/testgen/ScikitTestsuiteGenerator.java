@@ -15,11 +15,13 @@ public class ScikitTestsuiteGenerator extends AbstractTestsuiteGenerator {
 	
 	/**
 	 * creates a new ScikitTestsuiteGenerator
-	  * @param testcasePath path of the sources for the test cases
+	 * @param testcasePath path of the sources for the test cases
 	 * @param testdataPath path where test data should be stored
+	 * @param numFeatures number of features for generated data
+	 * @param numInstances number of instances for generated data
 	 */
-	public ScikitTestsuiteGenerator(String testcasePath, String testdataPath) {
-		super(testcasePath, testdataPath);
+	public ScikitTestsuiteGenerator(String testcasePath, String testdataPath, int numFeatures, int numInstances) {
+		super(testcasePath, testdataPath, numFeatures, numInstances);
 	}
 	
 	@Override

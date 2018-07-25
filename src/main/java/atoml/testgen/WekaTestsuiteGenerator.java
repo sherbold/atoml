@@ -17,9 +17,11 @@ public class WekaTestsuiteGenerator extends AbstractTestsuiteGenerator {
 	 * Creates a new WekaTestsuiteGenerator
 	 * @param testcasePath path of the sources for the test cases
 	 * @param testdataPath path where test data should be stored
+	 * @param numFeatures number of features for generated data
+	 * @param numInstances number of instances for generated data
 	 */
-	public WekaTestsuiteGenerator(String testcasePath, String testdataPath) {
-		super(testcasePath, testdataPath);
+	public WekaTestsuiteGenerator(String testcasePath, String testdataPath, int numFeatures, int numInstances) {
+		super(testcasePath, testdataPath, numFeatures, numInstances);
 	}
 	
 	/* 

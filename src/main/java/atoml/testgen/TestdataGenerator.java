@@ -33,6 +33,16 @@ public class TestdataGenerator {
 	private List<MetamorphicTest> metamorphicTests;
 	
 	/**
+	 * number of features for generated data
+	 */
+	final int numFeatures;
+	
+	/**
+	 * number of instances for generated data
+	 */
+	final int numInstances;
+	
+	/**
 	 * number of iterations for the test data generation
 	 */
 	private final int iterations;
@@ -41,11 +51,15 @@ public class TestdataGenerator {
 	 * creates a new TestdataGenerator
 	 * @param smokeTests smoke tests for which data is generated
 	 * @param metamorphicTests metamorphic tests for which data is generated
+	 * @param numFeatures number of features for generated data
+	 * @param numInstances number of instances for generated data
 	 * @param iterations number of iterations for the test data generation
 	 */
-	public TestdataGenerator(List<SmokeTest> smokeTests, List<MetamorphicTest> metamorphicTests, int iterations) {
+	public TestdataGenerator(List<SmokeTest> smokeTests, List<MetamorphicTest> metamorphicTests, int numFeatures, int numInstances, int iterations) {
 		this.smokeTests = smokeTests;
 		this.metamorphicTests = metamorphicTests;
+		this.numFeatures = numFeatures;
+		this.numInstances = numInstances;
 		this.iterations = iterations;
 	}
 	
@@ -72,8 +86,7 @@ public class TestdataGenerator {
 		
 		for( int iteration=1; iteration<=this.iterations; iteration++) {
 			for( SmokeTest smokeTest : smokeTests ) {
-				// TODO remove hardcoded number of features/instances
-				smokeTest.generateData(10, 100, iteration);
+				smokeTest.generateData(numFeatures, numInstances, iteration);
 				try(BufferedWriter writer = new BufferedWriter(new FileWriter(datapath + "smokedata/" + smokeTest.getName() + "_" + iteration + "_training.arff"));) {
 					writer.write(smokeTest.getData().toString());
 				} catch(IOException e) {
@@ -88,8 +101,8 @@ public class TestdataGenerator {
 			
 			// XXX I do not like that this is separated from the name definition. 
 			List<Instances> morphtestData = new ArrayList<>();
-			morphtestData.add(DataGenerator.generateData(10, 0, 100, new UniformRealDistribution(), 0.5, iteration));
-			morphtestData.add(DataGenerator.generateData(10, 5, 100, new UniformRealDistribution(), 0.1, iteration));
+			morphtestData.add(DataGenerator.generateData(numFeatures, 0, numInstances, new UniformRealDistribution(), 0.5, iteration));
+			morphtestData.add(DataGenerator.generateData(numFeatures, numFeatures/2, numInstances, new UniformRealDistribution(), 0.1, iteration));
 			
 			for(MetamorphicTest metamorphicTest : metamorphicTests) {
 				metamorphicTest.setSeed(iteration);

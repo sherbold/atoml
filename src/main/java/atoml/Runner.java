@@ -124,11 +124,11 @@ public class Runner {
 		}
 		
 		if( "weka".equals(mllib) ) {
-			WekaTestsuiteGenerator junitGenerator = new WekaTestsuiteGenerator(testSrcPath, testResourcePath);
+			WekaTestsuiteGenerator junitGenerator = new WekaTestsuiteGenerator(testSrcPath, testResourcePath, numFeatures, numInstances);
 			junitGenerator.generateTests(classifiersUnderTest, smokeTests, metamorphicTests, iterations);
 		}
 		else if( "scikit".equals(mllib) ) {
-			ScikitTestsuiteGenerator scikitGenerator = new ScikitTestsuiteGenerator(testSrcPath, testResourcePath);
+			ScikitTestsuiteGenerator scikitGenerator = new ScikitTestsuiteGenerator(testSrcPath, testResourcePath, numFeatures, numInstances);
 			scikitGenerator.generateTests(classifiersUnderTest, smokeTests, metamorphicTests, iterations);
 		} else {
 			throw new RuntimeException("invalid option for mllib: " + mllib);
