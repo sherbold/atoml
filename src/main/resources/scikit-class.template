@@ -1,10 +1,47 @@
 import unittest
 import xmlrunner
 import pandas as pd
+import threading
+import functools
+import logging
 
 from scipy.io.arff import loadarff
 from sklearn.preprocessing import LabelEncoder
 <<<IMPORTCLASSIFIER>>>
+
+class TestTimeoutException(Exception):
+    def __init__(self, value):
+        self.value = value
+    def __str__(self):
+        return repr(self.value)
+
+# thanks to https://gist.github.com/vadimg/2902788
+def timeout(duration, default=None):
+    def decorator(func):
+        class InterruptableThread(threading.Thread):
+            def __init__(self, args, kwargs):
+                threading.Thread.__init__(self)
+                self.args = args
+                self.kwargs = kwargs
+                self.result = default
+                self.daemon = True
+
+            def run(self):
+                try:
+                    self.result = func(*self.args, **self.kwargs)
+                except Exception:
+                    pass
+
+        @functools.wraps(func)
+        def wrap(*args, **kwargs):
+            it = InterruptableThread(args, kwargs)
+            it.start()
+            it.join(duration)
+            if it.isAlive():
+                raise TestTimeoutException('timeout after %i seconds for test %s' % (duration, func))
+            return it.result
+        return wrap
+    return decorator
 
 class <<<CLASSNAME>>>(unittest.TestCase):
 
