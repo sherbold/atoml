@@ -35,6 +35,7 @@ import atoml.smoke.UniformSmall;
 import atoml.smoke.UniformVeryLarge;
 import atoml.smoke.UniformVerySmall;
 import atoml.smoke.UniformWholeDoubleRange;
+import atoml.smoke.UniformWholeFloatRange;
 import atoml.smoke.UniformZeroToOne;
 import atoml.testgen.ScikitTestsuiteGenerator;
 import atoml.testgen.WekaTestsuiteGenerator;
@@ -75,6 +76,7 @@ public class Runner {
 		smokeTests.add(new UniformLarge());
 		smokeTests.add(new UniformVeryLarge());
 		smokeTests.add(new UniformWholeDoubleRange());
+		smokeTests.add(new UniformWholeFloatRange());
 		smokeTests.add(new UniformSmall());
 		smokeTests.add(new UniformVerySmall());
 		smokeTests.add(new UniformDoubleMachinePrecision());
