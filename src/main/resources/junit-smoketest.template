@@ -1,5 +1,5 @@
     @Test
-    public void <<<NAME>>>_SmokeTest() throws Exception {
+    public void test_<<<NAME>>>() throws Exception {
         for(int iter=1; iter<=<<<ITERATIONS>>>; iter++) {
             Instances data;
             InputStreamReader file = new InputStreamReader(

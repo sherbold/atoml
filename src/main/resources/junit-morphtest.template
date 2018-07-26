@@ -1,5 +1,5 @@
     @Test
-    public void <<<NAME>>>_<<<DATASET>>>_MorphTest() throws Exception {
+    public void test_<<<NAME>>>_<<<DATASET>>>() throws Exception {
         for(int iter=1; iter<=<<<ITERATIONS>>>; iter++) {
             Instances data;
             InputStreamReader originalFile = new InputStreamReader(
