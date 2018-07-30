@@ -2,6 +2,8 @@ package atoml.data;
 
 import static org.junit.Assert.*;
 
+import java.util.stream.IntStream;
+
 import org.apache.commons.math3.distribution.NormalDistribution;
 import org.junit.Test;
 
@@ -14,6 +16,17 @@ public class DataGeneratorTest {
 		Instances data = DataGenerator.generateData(10, 5, 20, new NormalDistribution(0.0, 1.0), 0.0, 1);
 		assertEquals(11, data.numAttributes());
 		assertEquals(20, data.numInstances());
+	}
+	
+	@Test
+	public void testGenerateData_shapeWithNominals() {
+		int[] featureTypes = IntStream.generate(() -> 5).limit(10).toArray();
+		Instances data = DataGenerator.generateData(10, 5, 20, new NormalDistribution(0.0, 1.0), 0.0, 1, featureTypes);
+		assertEquals(11, data.numAttributes());
+		assertEquals(20, data.numInstances());
+		for( int j=0; j<10; j++) {
+			assertEquals(5, data.attributeStats(j).nominalCounts.length);
+		}
 	}
 	
 	@Test
@@ -60,8 +73,6 @@ public class DataGeneratorTest {
 		assertTrue("no differences, even though there should be noise are different", differences>0);
 	}
 	
-	
-	
 	@Test(expected=RuntimeException.class)
 	public void testGenerateData_tooFewFeatures() {
 		DataGenerator.generateData(-1, -1, 20, new NormalDistribution(0.0, 1.0), 0.0, 1);
@@ -106,4 +117,18 @@ public class DataGeneratorTest {
 	public void testGenerateData_tooLowNoise() {
 		DataGenerator.generateData(10, 5, 20, new NormalDistribution(0.0, 1.0), -0.1, 1);
 	}
+	
+	@Test(expected=RuntimeException.class)
+	public void testGenerateData_invalidNumberOfFeatureTypes() {
+		int[] featureTypes = IntStream.generate(() -> 5).limit(100).toArray();
+		DataGenerator.generateData(10, 5, 20, new NormalDistribution(0.0, 1.0), 0.0, 1, featureTypes);
+	}
+	
+	@Test(expected=RuntimeException.class)
+	public void testGenerateData_tooManyCategories() {
+		int[] featureTypes = IntStream.generate(() -> 10001).limit(10).toArray();
+		DataGenerator.generateData(10, 5, 20, new NormalDistribution(0.0, 1.0), 0.0, 1, featureTypes);
+	}
+	
+	
 }
