@@ -25,12 +25,13 @@ def timeout(duration, default=None):
                 self.kwargs = kwargs
                 self.result = default
                 self.daemon = True
+                self.exception = None
 
             def run(self):
                 try:
                     self.result = func(*self.args, **self.kwargs)
-                except Exception:
-                    pass
+                except Exception as e:
+                    self.exception = e
 
         @functools.wraps(func)
         def wrap(*args, **kwargs):
@@ -39,6 +40,8 @@ def timeout(duration, default=None):
             it.join(duration)
             if it.isAlive():
                 raise TestTimeoutException('timeout after %i seconds for test %s' % (duration, func))
+            if it.exception:
+                raise it.exception
             return it.result
         return wrap
     return decorator
