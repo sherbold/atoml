@@ -93,7 +93,7 @@ public class DataGenerator {
 		attributes.add(new Attribute("classAtt", classNames));
 		Instances data = new Instances("zeros", attributes, numInstances);
 		
-		data.setRelationName(generateDatasetName(numFeatures, numInformative, numInstances, distribution, noiseRate, seed));
+		data.setRelationName(generateDatasetName(numFeatures, numInformative, numInstances, distribution, noiseRate, seed, featureType));
 		
 		distribution.reseedRandomGenerator(seed);
 		RandomDataGenerator noiseGenerator = new RandomDataGenerator();
@@ -146,8 +146,23 @@ public class DataGenerator {
 		return data;
 	}
 	
-	private static String generateDatasetName(int numFeatures, int numInformative, int numInstances, AbstractRealDistribution distribution, double noiseRate, long seed) {
+	private static String generateDatasetName(int numFeatures, int numInformative, int numInstances, AbstractRealDistribution distribution, double noiseRate, long seed, int[] featureTypes) {
+		double meanCategories = 0.0;
+		int numCategorical = 0;
+		for( int featureType : featureTypes ) {
+			meanCategories += featureType;
+			if( featureType>0 ) {
+				numCategorical++;
+			}
+		}
+		
+		if( numCategorical==0 ) {
+			meanCategories=0;
+		} else {
+			meanCategories = meanCategories/numCategorical;
+		}
+		
 		String distributionString = distribution.getClass().getSimpleName()+"_"+distribution.getNumericalMean()+"_"+distribution.getNumericalVariance();
-		return distributionString+"_"+numFeatures+"_"+numInformative+"_"+numInstances+"_"+noiseRate+"_"+seed;
+		return distributionString+"_"+numFeatures+"_"+numInformative+"_"+numInstances+"_"+noiseRate+"_"+numCategorical+"_"+meanCategories+"_"+seed;
 	}
 }
