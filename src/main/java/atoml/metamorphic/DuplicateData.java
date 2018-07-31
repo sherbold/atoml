@@ -13,6 +13,15 @@ public class DuplicateData extends AbstractMetamorphicTest {
 
 	/*
 	 * (non-Javadoc)
+	 * @see atoml.metamorphic.MetamorphicTest#getDataSupported()
+	 */
+	@Override
+	public DataSupported getDataSupported() {
+		return DataSupported.BOTH;
+	}
+	
+	/*
+	 * (non-Javadoc)
 	 * 
 	 * @see atoml.metamorphic.MetamorphicTest#getPredictionRelation()
 	 */

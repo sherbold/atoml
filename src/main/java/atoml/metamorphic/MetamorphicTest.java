@@ -9,6 +9,8 @@ import weka.core.Instances;
  */
 public interface MetamorphicTest {
 
+	public enum DataSupported {BOTH, NUMERIC, CATEGORICAL};
+	
 	public enum RelationType {EQUAL, INVERTED};
 	
 	public enum PredictionType {ORDERED_DATA, SAME_CLASSIFIER};
@@ -25,6 +27,12 @@ public interface MetamorphicTest {
 	 * @return morphed data
 	 */
 	Instances morphData(Instances data);
+	
+	/**
+	 * the type of data that is supported by this morph test
+	 * @return data that is supported
+	 */
+	DataSupported getDataSupported();
 	
 	/**
 	 * the type of the relationship between original and morphed prediction

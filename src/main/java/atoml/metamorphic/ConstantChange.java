@@ -14,6 +14,15 @@ public class ConstantChange extends AbstractMetamorphicTest {
 
 	/*
 	 * (non-Javadoc)
+	 * @see atoml.metamorphic.MetamorphicTest#getDataSupported()
+	 */
+	@Override
+	public DataSupported getDataSupported() {
+		return DataSupported.NUMERIC;
+	}
+	
+	/*
+	 * (non-Javadoc)
 	 * 
 	 * @see atoml.metamorphic.MetamorphicTest#getPredictionRelation()
 	 */
