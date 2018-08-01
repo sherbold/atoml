@@ -17,6 +17,7 @@ import atoml.metamorphic.ConstantChange;
 import atoml.metamorphic.DuplicateData;
 import atoml.metamorphic.InvertedClass;
 import atoml.metamorphic.MetamorphicTest;
+import atoml.metamorphic.RenameAttributes;
 import atoml.metamorphic.ReorderAttributes;
 import atoml.metamorphic.SameData;
 import atoml.metamorphic.ScrambleInstances;
@@ -108,6 +109,7 @@ public class Runner {
 		metamorphicTests.add(new ReorderAttributes());
 		metamorphicTests.add(new DuplicateData());
 		metamorphicTests.add(new SameData());
+		metamorphicTests.add(new RenameAttributes());
 	    
 		List<Classifier> classifiersUnderTest = new LinkedList<>();
 		if( classifierStr!=null ) {
