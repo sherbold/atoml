@@ -5,12 +5,12 @@ import org.apache.commons.math3.distribution.UniformRealDistribution;
 import atoml.data.DataGenerator;
 
 /**
- * Features: uniformly distributed in [-10^100, 10^100]
- * Class: Random
- * 
+ * Features: Generates uniformly distributed small values [0, 10^-10] and one outlier 10^10.
+ * Class: rectangle of quantiles
  * @author sherbold
+ *
  */
-public class UniformVeryLarge extends AbstractSmokeTest {
+public class Outlier extends AbstractSmokeTest {
 
 	/* 
 	 * (non-Javadoc)
@@ -18,7 +18,13 @@ public class UniformVeryLarge extends AbstractSmokeTest {
 	 */
 	@Override
 	public void generateData(int numFeatures, int numInstances, long seed) {
-		data = DataGenerator.generateData(numFeatures, 0, numInstances, new UniformRealDistribution(-1e100,1e100), 0.5, seed);
+		data = DataGenerator.generateData(numFeatures, numFeatures, numInstances, new UniformRealDistribution(0, 1e-10), 0.1, seed);
+		int classIndex = data.numAttributes()-1;
+		for( int j=0; j<data.numAttributes() ; j++ ) {
+			if( j!=classIndex ) {
+				data.instance(0).setValue(j, 10e10);
+			}
+		}
 		testdata = data;
 	}
 	

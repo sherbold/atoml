@@ -5,13 +5,13 @@ import org.apache.commons.math3.distribution.UniformRealDistribution;
 import atoml.data.DataGenerator;
 
 /**
- * Features: Uniformly distributed in [0,10^-15]
- * Data: Random
+ * Data: Uniformly distributed in [0, {@link Float#MAX_VALUE]
+ * Class: rectangle of quantiles
  * 
  * @author sherbold
- *
+
  */
-public class UniformDoubleMachinePrecision extends AbstractSmokeTest {
+public class MaxFloat extends AbstractSmokeTest {
 
 	/* 
 	 * (non-Javadoc)
@@ -19,7 +19,7 @@ public class UniformDoubleMachinePrecision extends AbstractSmokeTest {
 	 */
 	@Override
 	public void generateData(int numFeatures, int numInstances, long seed) {
-		data = DataGenerator.generateData(numFeatures, 0, numInstances, new UniformRealDistribution(0,1e-15), 0.5, seed);
+		data = DataGenerator.generateData(numFeatures, numFeatures, numInstances, new UniformRealDistribution(0,Float.MAX_VALUE), 0.5, seed);
 		testdata = data;
 	}
 	

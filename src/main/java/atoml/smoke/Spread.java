@@ -12,7 +12,7 @@ import weka.core.Instances;
  *  
  * @author sherbold
  */
-public class SpreadMixture extends AbstractSmokeTest {
+public class Spread extends AbstractSmokeTest {
 	
 	/* 
 	 * (non-Javadoc)
