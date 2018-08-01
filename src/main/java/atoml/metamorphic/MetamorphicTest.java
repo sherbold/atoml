@@ -1,5 +1,6 @@
 package atoml.metamorphic;
 
+import atoml.data.DataDescription;
 import weka.core.Instances;
 
 /**
@@ -33,6 +34,14 @@ public interface MetamorphicTest {
 	 * @return data that is supported
 	 */
 	DataSupported getDataSupported();
+	
+	/**
+	 * checks if a morph test is compatible with the data
+	 * @param morphTest the morph test
+	 * @param dataDescription the data description
+	 * @return true if test and data are compatible
+	 */
+	boolean isCompatibleWithData(DataDescription dataDescription);
 	
 	/**
 	 * the type of the relationship between original and morphed prediction

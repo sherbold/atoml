@@ -17,6 +17,24 @@ public class DataGenerator {
 	final static int numClasses = 2;
 	
 	/**
+	 * Creates new {@link Instances} based on a {@link DataDescription}. 
+	 * 
+	 * 
+	 * @param dataDescription the data description
+	 * @param seed the seed for random number generator intialization
+	 * @return generated data
+	 */
+	public static Instances generateData(DataDescription dataDescription, long seed) {
+		return generateData(dataDescription.getNumFeatures(),
+				dataDescription.getNumInformative(),
+				dataDescription.getNumInstances(),
+				dataDescription.getDistribution(),
+				dataDescription.getNoiseRate(),
+				seed,
+				dataDescription.getFeatureTypes());
+	}
+	
+	/**
 	 * Creates new {@link Instances}.
 	 * 
 	 * The class is binary and assigned using a hyperplane that intersects the axis of informative features at the mean value of the distribution.

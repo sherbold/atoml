@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Scanner;
 
 import atoml.classifiers.ScikitClassifier;
+import atoml.data.DataDescription;
 import atoml.metamorphic.MetamorphicTest;
 import atoml.smoke.SmokeTest;
 
@@ -34,23 +35,23 @@ public class ScikitTestcaseGenerator implements TestcaseGenerator {
 	private final int iterations;
 	
 	/**
-	 * names of the data sets used for the morph tests
+	 * descriptions of the data sets used for the morph tests
 	 */
-	private final List<String> morphtestDataNames;
+	private final List<DataDescription> morphtestDataDescriptions;
 	
 	/**
 	 * creates a new TestclassGenerator
 	 * @param classifierUnderTest classifier that is tested
 	 * @param smokeTest list of smoke tests
 	 * @param metamorphicTests list of metamorphic tests
-	 * @param morphtestDataNames names of the data sets used by morph tests
+	 * @param morphtestDataDescriptions descriptions of the data sets used by morph tests
 	 */
-	public ScikitTestcaseGenerator(ScikitClassifier classifierUnderTest, List<SmokeTest> smokeTest, List<MetamorphicTest> metamorphicTests, int iterations, List<String> morphtestDataNames) {
+	public ScikitTestcaseGenerator(ScikitClassifier classifierUnderTest, List<SmokeTest> smokeTest, List<MetamorphicTest> metamorphicTests, int iterations, List<DataDescription> morphtestDataDescriptions) {
 		this.classifierUnderTest = classifierUnderTest;
 		this.smokeTests = smokeTest;
 		this.metamorphicTests = metamorphicTests;
 		this.iterations = iterations;
-		this.morphtestDataNames = morphtestDataNames;
+		this.morphtestDataDescriptions = morphtestDataDescriptions;
 	}
 	
 	
@@ -66,8 +67,10 @@ public class ScikitTestcaseGenerator implements TestcaseGenerator {
 		StringBuilder testmethods = new StringBuilder();
 		
 		for( MetamorphicTest metamorphicTest : metamorphicTests) {
-			for( String morphtestDataName : morphtestDataNames ) {
-				testmethods.append(metamorphictestBody(metamorphicTest, morphtestDataName));
+			for( DataDescription morphtestDataDescription : morphtestDataDescriptions ) {
+				if( metamorphicTest.isCompatibleWithData(morphtestDataDescription) ) {
+					testmethods.append(metamorphictestBody(metamorphicTest, morphtestDataDescription));
+				}
 			}
 		}
 		
@@ -123,7 +126,7 @@ public class ScikitTestcaseGenerator implements TestcaseGenerator {
 	 * @param metamorphicTest metamorphic test
 	 * @return body for a metamorphic test case
 	 */
-	private String metamorphictestBody(MetamorphicTest metamorphicTest, String morphtestDataName) {
+	private String metamorphictestBody(MetamorphicTest metamorphicTest, DataDescription morphtestDataDescription) {
 		String morphTestdata;
 		switch(metamorphicTest.getPredictionType()) {
 		case ORDERED_DATA:
@@ -148,11 +151,18 @@ public class ScikitTestcaseGenerator implements TestcaseGenerator {
 			throw new RuntimeException("could not generate tests, unknown morph prediction relation type");
 		}
 		
+		int iterations;
+		if( morphtestDataDescription.isRandomized() ) {
+			iterations = this.iterations;
+		} else {
+			iterations = 1;
+		}
+		
 		@SuppressWarnings("resource")
 		String methodBody = new Scanner(this.getClass().getResourceAsStream("/scikit-morphtest.template"), "UTF-8").useDelimiter("\\A").next();
 		
 		methodBody = methodBody.replaceAll("<<<NAME>>>", metamorphicTest.getName());
-		methodBody = methodBody.replaceAll("<<<DATASET>>>", morphtestDataName);
+		methodBody = methodBody.replaceAll("<<<DATASET>>>", morphtestDataDescription.getName());
 		methodBody = methodBody.replaceAll("<<<CLASSIFIER>>>", classifierUnderTest.getCreateString());
 		methodBody = methodBody.replaceAll("<<<ITERATIONS>>>", Integer.toString(iterations));
 		methodBody = methodBody.replaceAll("<<<MORPHTESTDATA>>>", morphTestdata);

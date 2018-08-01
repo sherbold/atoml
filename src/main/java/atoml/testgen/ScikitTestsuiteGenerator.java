@@ -4,6 +4,7 @@ import java.util.List;
 
 import atoml.classifiers.Classifier;
 import atoml.classifiers.ScikitClassifier;
+import atoml.data.DataDescription;
 import atoml.metamorphic.MetamorphicTest;
 import atoml.smoke.SmokeTest;
 
@@ -26,7 +27,7 @@ public class ScikitTestsuiteGenerator extends AbstractTestsuiteGenerator {
 	
 	@Override
 	protected TestcaseGenerator getTestcaseGenerator(Classifier classifierUnderTest, List<SmokeTest> smokeTests,
-			List<MetamorphicTest> metamorphicTests, int iterations, List<String> morphtestDataNames) {
+			List<MetamorphicTest> metamorphicTests, int iterations, List<DataDescription> morphtestDataNames) {
 		return new ScikitTestcaseGenerator((ScikitClassifier) classifierUnderTest, smokeTests, metamorphicTests, iterations, morphtestDataNames);
 	}
 }

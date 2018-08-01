@@ -9,6 +9,7 @@ import java.util.List;
 import java.util.logging.Logger;
 
 import atoml.classifiers.Classifier;
+import atoml.data.DataDescription;
 import atoml.metamorphic.MetamorphicTest;
 import atoml.smoke.SmokeTest;
 
@@ -67,7 +68,7 @@ public abstract class AbstractTestsuiteGenerator implements TestsuiteGenerator {
 		LOGGER.info("creating test data...");
 		TestdataGenerator testdataGenerator = new TestdataGenerator(smokeTests, metamorphicTests, numFeatures, numInstances, iterations);
 		LOGGER.info("test data creation finished");
-		List<String> morphtestDataNames = testdataGenerator.generateTestdata(testdataPath);
+		List<DataDescription> morphtestDataNames = testdataGenerator.generateTestdata(testdataPath);
 		for(Classifier classifierUnderTest : classifiersUnderTest ) {
 			LOGGER.info("creating tests for " + classifierUnderTest.getClassifierName() + "...");
 			TestcaseGenerator testcaseGenerator = getTestcaseGenerator(classifierUnderTest, smokeTests, metamorphicTests, iterations, morphtestDataNames);
@@ -91,5 +92,5 @@ public abstract class AbstractTestsuiteGenerator implements TestsuiteGenerator {
 		}
 	}
 	
-	abstract protected TestcaseGenerator getTestcaseGenerator(Classifier classifierUnderTest, List<SmokeTest> smokeTests, List<MetamorphicTest> metamorphicTests, int iterations, List<String> morphtestDataNames);
+	abstract protected TestcaseGenerator getTestcaseGenerator(Classifier classifierUnderTest, List<SmokeTest> smokeTests, List<MetamorphicTest> metamorphicTests, int iterations, List<DataDescription> morphtestDataNames);
 }

@@ -10,9 +10,11 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.IntStream;
 
 import org.apache.commons.math3.distribution.UniformRealDistribution;
 
+import atoml.data.DataDescription;
 import atoml.data.DataGenerator;
 import atoml.metamorphic.MetamorphicTest;
 import atoml.smoke.SmokeTest;
@@ -70,7 +72,7 @@ public class TestdataGenerator {
 	 * @param datapath path where the generated data is stored
 	 * @return name of the datasets on which morph tests are based
 	 */
-	public List<String> generateTestdata(String datapath) {
+	public List<DataDescription> generateTestdata(String datapath) {
 		
 		Path smokePath = Paths.get(datapath).resolve("smokedata");
 		Path morphPath = Paths.get(datapath).resolve("morphdata");
@@ -82,12 +84,16 @@ public class TestdataGenerator {
 			throw new RuntimeException("could not create folder for test data", e);
 		}
 		
-		List<String> morphtestDataNames = new ArrayList<>();
-		morphtestDataNames.add("UniformRandom");
-		morphtestDataNames.add("UniformInformative");
-		morphtestDataNames.add("diabetes");
-		morphtestDataNames.add("ionosphere");
-		morphtestDataNames.add("unbalance");
+		
+		int[] featureTypes = IntStream.generate(() -> 10).limit(numFeatures).toArray();
+		List<DataDescription> morphtestDataDescriptions = new ArrayList<>();
+		morphtestDataDescriptions.add(new DataDescription("UniformRandom", numFeatures, 0, numInstances, new UniformRealDistribution(), 0.5, null));
+		morphtestDataDescriptions.add(new DataDescription("UniformInformative", numFeatures, numFeatures/2, numInstances, new UniformRealDistribution(), 0.1, null));
+		morphtestDataDescriptions.add(new DataDescription("CategoricalRandom",numFeatures, 0, numInstances, new UniformRealDistribution(), 0.5, featureTypes));
+		morphtestDataDescriptions.add(new DataDescription("CategoricalInformative", numFeatures, numFeatures/2, numInstances, new UniformRealDistribution(), 0.1, featureTypes));
+		morphtestDataDescriptions.add(new DataDescription("diabetes", "/morphdata/diabetes.arff", true, false));
+		morphtestDataDescriptions.add(new DataDescription("ionosphere", "/morphdata/ionosphere.arff", true, false));
+		morphtestDataDescriptions.add(new DataDescription("unbalance", "/morphdata/unbalanced.arff", true, false));
 		
 		for( int iteration=1; iteration<=this.iterations; iteration++) {
 			for( SmokeTest smokeTest : smokeTests ) {
@@ -104,32 +110,40 @@ public class TestdataGenerator {
 				}
 			}
 			
-			// XXX I do not like that this is separated from the name definition. 
-			List<Instances> morphtestData = new ArrayList<>();
-			morphtestData.add(DataGenerator.generateData(numFeatures, 0, numInstances, new UniformRealDistribution(), 0.5, iteration));
-			morphtestData.add(DataGenerator.generateData(numFeatures, numFeatures/2, numInstances, new UniformRealDistribution(), 0.1, iteration));
-			morphtestData.add(readArffFromResource("/morphdata/diabetes.arff"));
-			morphtestData.add(readArffFromResource("/morphdata/ionosphere.arff"));
-			morphtestData.add(readArffFromResource("/morphdata/unbalanced.arff"));
-			
-			for(MetamorphicTest metamorphicTest : metamorphicTests) {
-				metamorphicTest.setSeed(iteration);
-				for( int i=0; i<morphtestData.size(); i++ ) {
-					Instances morphedData = metamorphicTest.morphData(morphtestData.get(i));
-					try (BufferedWriter writer = new BufferedWriter(new FileWriter(datapath + "morphdata/" + morphtestDataNames.get(i) + "_" + iteration + ".arff"));) {
-						writer.write(morphtestData.get(i).toString());
-					} catch(Exception e) {
-						throw new RuntimeException("could write data for metamorphic test " + metamorphicTest.getName(), e);
+			for( DataDescription dataDescription : morphtestDataDescriptions ) {
+				if( dataDescription.isRandomized() || iteration==1 ) {
+					Instances originalData = null;
+					switch(dataDescription.getType()) {
+					case FILE:
+						originalData = readArffFromResource(dataDescription.getFile());
+						break;
+					case GENERATED:
+						originalData = DataGenerator.generateData(dataDescription, iteration);
+						break;
+					default:
+						throw new RuntimeException("unsupported data description type: " + dataDescription.getType());
 					}
-					try (BufferedWriter writer = new BufferedWriter(new FileWriter(datapath + "morphdata/" + morphtestDataNames.get(i) + "_" + iteration + "_" + metamorphicTest.getName() + ".arff"));) {
-						writer.write(morphedData.toString());
-					} catch(Exception e) {
-						throw new RuntimeException("could not write data for metamorphic test " + metamorphicTest.getName(), e);
+					
+					for(MetamorphicTest metamorphicTest : metamorphicTests) {
+						metamorphicTest.setSeed(iteration);
+						if( metamorphicTest.isCompatibleWithData(dataDescription) ) {
+							Instances morphedData = metamorphicTest.morphData(originalData);
+							try (BufferedWriter writer = new BufferedWriter(new FileWriter(datapath + "morphdata/" + dataDescription + "_" + iteration + ".arff"));) {
+								writer.write(originalData.toString());
+							} catch(Exception e) {
+								throw new RuntimeException("could write data for metamorphic test " + metamorphicTest.getName(), e);
+							}
+							try (BufferedWriter writer = new BufferedWriter(new FileWriter(datapath + "morphdata/" + dataDescription + "_" + iteration + "_" + metamorphicTest.getName() + ".arff"));) {
+								writer.write(morphedData.toString());
+							} catch(Exception e) {
+								throw new RuntimeException("could not write data for metamorphic test " + metamorphicTest.getName(), e);
+							}
+						}
 					}
 				}
 			}
 		}
-		return morphtestDataNames;
+		return morphtestDataDescriptions;
 	}
 	
 	private Instances readArffFromResource(String resource) {
