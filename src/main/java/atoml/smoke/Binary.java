@@ -12,7 +12,7 @@ import atoml.data.DataGenerator;
  * 
  * @author sherbold
  */
-public class BinaryCategorical extends AbstractSmokeTest {
+public class Binary extends AbstractSmokeTest {
 
 	/* 
 	 * (non-Javadoc)

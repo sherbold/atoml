@@ -7,11 +7,11 @@ import atoml.data.DataGenerator;
 /**
  * Features training: Uniformly distributed in [0,1]
  * Features test: Uniformly distributed in [100,101] with half of the features informative
- * Class: Half of the features are informative with 0.1 noise rate
+ * Class: rectangle of quantiles
  * 
  * @author sherbold
  */
-public class NonoverlappingTrainingAndTestData extends AbstractSmokeTest {
+public class Disjunctive extends AbstractSmokeTest {
 	
 	/* 
 	 * (non-Javadoc)
@@ -20,7 +20,7 @@ public class NonoverlappingTrainingAndTestData extends AbstractSmokeTest {
 	@Override
 	public void generateData(int numFeatures, int numInstances, long seed) {
 		data = DataGenerator.generateData(numFeatures, numFeatures/2, numInstances, new UniformRealDistribution(0, 1), 0.1, seed);
-		testdata = DataGenerator.generateData(numFeatures, numFeatures/2, numInstances, new UniformRealDistribution(100, 101), 0.1, seed);
+		testdata = DataGenerator.generateData(numFeatures, numFeatures, numInstances, new UniformRealDistribution(100, 101), 0.1, seed);
 	}
 	
 	/* 

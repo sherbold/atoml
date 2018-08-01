@@ -12,13 +12,13 @@ import weka.core.DenseInstance;
 import weka.core.Instances;
 
 /**
- * Features training: Uniformly distributed in [0,1]
- * Features test: Uniformly distributed in [100,101] with half of the features informative
- * Class: Half of the features are informative with 0.1 noise rate
+ * Features training: ten categories for each feature
+ * Features test: ten different categories for each feature
+ * Class: rectangle of quantiles
  * 
  * @author sherbold
  */
-public class NonoverlappingTrainingAndTestDataCategorical extends AbstractSmokeTest {
+public class DisjunctiveCategorial extends AbstractSmokeTest {
 	
 	/* 
 	 * (non-Javadoc)
@@ -27,7 +27,7 @@ public class NonoverlappingTrainingAndTestDataCategorical extends AbstractSmokeT
 	@Override
 	public void generateData(int numFeatures, int numInstances, long seed) {
 		int[] featureTypes = IntStream.generate(() -> 10).limit(numFeatures).toArray();
-		data = DataGenerator.generateData(numFeatures, 0, numInstances, new UniformRealDistribution(0,1), 0.5, seed, featureTypes);
+		data = DataGenerator.generateData(numFeatures, numFeatures, numInstances, new UniformRealDistribution(0,1), 0.1, seed, featureTypes);
 		
 		ArrayList<Attribute> attributes = new ArrayList<>();
 		for( int j=0; j<numFeatures; j++ ) {
