@@ -91,9 +91,15 @@ public class TestdataGenerator {
 		morphtestDataDescriptions.add(new DataDescription("UniformInformative", numFeatures, numFeatures/2, numInstances, new UniformRealDistribution(), 0.1, null));
 		morphtestDataDescriptions.add(new DataDescription("CategoricalRandom",numFeatures, 0, numInstances, new UniformRealDistribution(), 0.5, featureTypes));
 		morphtestDataDescriptions.add(new DataDescription("CategoricalInformative", numFeatures, numFeatures/2, numInstances, new UniformRealDistribution(), 0.1, featureTypes));
+		morphtestDataDescriptions.add(new DataDescription("breastcancer", "/morphdata/breastcancer.arff", false, true));
+		morphtestDataDescriptions.add(new DataDescription("creditg", "/morphdata/creditg.arff", false, true));
 		morphtestDataDescriptions.add(new DataDescription("diabetes", "/morphdata/diabetes.arff", true, false));
 		morphtestDataDescriptions.add(new DataDescription("ionosphere", "/morphdata/ionosphere.arff", true, false));
+		morphtestDataDescriptions.add(new DataDescription("labor", "/morphdata/labor.arff", true, true));
 		morphtestDataDescriptions.add(new DataDescription("unbalance", "/morphdata/unbalanced.arff", true, false));
+		morphtestDataDescriptions.add(new DataDescription("vote", "/morphdata/unbalanced.arff", false, true));
+		morphtestDataDescriptions.add(new DataDescription("weathernominal", "/morphdata/weathernominal.arff", false, true));
+		morphtestDataDescriptions.add(new DataDescription("weathernumeric", "/morphdata/weathernumeric.arff", true, true));
 		
 		for( int iteration=1; iteration<=this.iterations; iteration++) {
 			for( SmokeTest smokeTest : smokeTests ) {
@@ -102,12 +108,12 @@ public class TestdataGenerator {
 					try(BufferedWriter writer = new BufferedWriter(new FileWriter(datapath + "smokedata/" + smokeTest.getName() + "_" + iteration + "_training.arff"));) {
 						writer.write(smokeTest.getData().toString());
 					} catch(IOException e) {
-						throw new RuntimeException("could write data for smoke test " + smokeTest.getName(), e);
+						throw new RuntimeException("could not write data for smoke test " + smokeTest.getName(), e);
 					}
 					try(BufferedWriter writer = new BufferedWriter(new FileWriter(datapath + "smokedata/" + smokeTest.getName() + "_" + iteration + "_test.arff"));) {
 						writer.write(smokeTest.getTestData().toString());
 					} catch(IOException e) {
-						throw new RuntimeException("could write data for smoke test " + smokeTest.getName(), e);
+						throw new RuntimeException("could not write data for smoke test " + smokeTest.getName(), e);
 					}
 				}
 			}
@@ -126,15 +132,15 @@ public class TestdataGenerator {
 						throw new RuntimeException("unsupported data description type: " + dataDescription.getType());
 					}
 					
+					try (BufferedWriter writer = new BufferedWriter(new FileWriter(datapath + "morphdata/" + dataDescription + "_" + iteration + ".arff"));) {
+						writer.write(originalData.toString());
+					} catch(Exception e) {
+						throw new RuntimeException("could not write data " + dataDescription.getName(), e);
+					}
 					for(MetamorphicTest metamorphicTest : metamorphicTests) {
 						metamorphicTest.setSeed(iteration);
 						if( metamorphicTest.isCompatibleWithData(dataDescription) ) {
 							Instances morphedData = metamorphicTest.morphData(originalData);
-							try (BufferedWriter writer = new BufferedWriter(new FileWriter(datapath + "morphdata/" + dataDescription + "_" + iteration + ".arff"));) {
-								writer.write(originalData.toString());
-							} catch(Exception e) {
-								throw new RuntimeException("could write data for metamorphic test " + metamorphicTest.getName(), e);
-							}
 							try (BufferedWriter writer = new BufferedWriter(new FileWriter(datapath + "morphdata/" + dataDescription + "_" + iteration + "_" + metamorphicTest.getName() + ".arff"));) {
 								writer.write(morphedData.toString());
 							} catch(Exception e) {
