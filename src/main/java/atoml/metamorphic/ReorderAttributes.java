@@ -54,12 +54,11 @@ public class ReorderAttributes extends AbstractMetamorphicTest {
 		int classIndex = data.numAttributes()-1;
 		ArrayList<Attribute> attributes = new ArrayList<>();
 		for( int j=0; j<numAttributes-1; j++) {
-			attributes.add(data.attribute(numAttributes-j-2));
+			attributes.add((Attribute) data.attribute(numAttributes-j-2).copy());
 		}
-		attributes.add(data.attribute(classIndex));
+		attributes.add((Attribute) data.attribute(classIndex).copy());
 		Instances morphedData = new Instances("morphed_data", attributes, 0);
 		morphedData.setRelationName(data.relationName()+"_"+this.getClass().getSimpleName());
-		morphedData.setClassIndex(classIndex);
 		for( Instance instance : data ) {
 			double[] values = new double[numAttributes];
 			for( int j=0; j<numAttributes-1; j++) {
