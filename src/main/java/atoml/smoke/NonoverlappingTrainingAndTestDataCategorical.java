@@ -51,4 +51,13 @@ public class NonoverlappingTrainingAndTestDataCategorical extends AbstractSmokeT
 			testdata.add(new DenseInstance(1.0, data.get(i).toDoubleArray()));
 		}
 	}
+	
+	/* 
+	 * (non-Javadoc)
+	 * @see atoml.smoke.SmokeTest#isRandmized()
+	 */
+	@Override
+	public boolean isRandomized() {
+		return true;
+	}
 }

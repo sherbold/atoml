@@ -26,4 +26,13 @@ public class ManyCategories extends AbstractSmokeTest {
 		data = DataGenerator.generateData(2, 0, 100000, new UniformRealDistribution(0,1), 0.5, seed, featureTypes);
 		testdata = data;
 	}
+	
+	/* 
+	 * (non-Javadoc)
+	 * @see atoml.smoke.SmokeTest#isRandmized()
+	 */
+	@Override
+	public boolean isRandomized() {
+		return true;
+	}
 }

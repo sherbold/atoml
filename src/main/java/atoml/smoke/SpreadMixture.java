@@ -37,4 +37,13 @@ public class SpreadMixture extends AbstractSmokeTest {
 		this.data = mixture;		
 		testdata = data;
 	}
+	
+	/* 
+	 * (non-Javadoc)
+	 * @see atoml.smoke.SmokeTest#isRandmized()
+	 */
+	@Override
+	public boolean isRandomized() {
+		return true;
+	}
 }

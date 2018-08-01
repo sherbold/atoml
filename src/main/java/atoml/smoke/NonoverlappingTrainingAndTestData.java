@@ -22,4 +22,13 @@ public class NonoverlappingTrainingAndTestData extends AbstractSmokeTest {
 		data = DataGenerator.generateData(numFeatures, numFeatures/2, numInstances, new UniformRealDistribution(0, 1), 0.1, seed);
 		testdata = DataGenerator.generateData(numFeatures, numFeatures/2, numInstances, new UniformRealDistribution(100, 101), 0.1, seed);
 	}
+	
+	/* 
+	 * (non-Javadoc)
+	 * @see atoml.smoke.SmokeTest#isRandmized()
+	 */
+	@Override
+	public boolean isRandomized() {
+		return true;
+	}
 }

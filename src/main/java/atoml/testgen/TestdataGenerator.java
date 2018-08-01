@@ -97,16 +97,18 @@ public class TestdataGenerator {
 		
 		for( int iteration=1; iteration<=this.iterations; iteration++) {
 			for( SmokeTest smokeTest : smokeTests ) {
-				smokeTest.generateData(numFeatures, numInstances, iteration);
-				try(BufferedWriter writer = new BufferedWriter(new FileWriter(datapath + "smokedata/" + smokeTest.getName() + "_" + iteration + "_training.arff"));) {
-					writer.write(smokeTest.getData().toString());
-				} catch(IOException e) {
-					throw new RuntimeException("could write data for smoke test " + smokeTest.getName(), e);
-				}
-				try(BufferedWriter writer = new BufferedWriter(new FileWriter(datapath + "smokedata/" + smokeTest.getName() + "_" + iteration + "_test.arff"));) {
-					writer.write(smokeTest.getTestData().toString());
-				} catch(IOException e) {
-					throw new RuntimeException("could write data for smoke test " + smokeTest.getName(), e);
+				if( smokeTest.isRandomized() || iteration==1 ) {
+					smokeTest.generateData(numFeatures, numInstances, iteration);
+					try(BufferedWriter writer = new BufferedWriter(new FileWriter(datapath + "smokedata/" + smokeTest.getName() + "_" + iteration + "_training.arff"));) {
+						writer.write(smokeTest.getData().toString());
+					} catch(IOException e) {
+						throw new RuntimeException("could write data for smoke test " + smokeTest.getName(), e);
+					}
+					try(BufferedWriter writer = new BufferedWriter(new FileWriter(datapath + "smokedata/" + smokeTest.getName() + "_" + iteration + "_test.arff"));) {
+						writer.write(smokeTest.getTestData().toString());
+					} catch(IOException e) {
+						throw new RuntimeException("could write data for smoke test " + smokeTest.getName(), e);
+					}
 				}
 			}
 			

@@ -21,4 +21,13 @@ public class UniformVeryLarge extends AbstractSmokeTest {
 		data = DataGenerator.generateData(numFeatures, 0, numInstances, new UniformRealDistribution(-1e100,1e100), 0.5, seed);
 		testdata = data;
 	}
+	
+	/* 
+	 * (non-Javadoc)
+	 * @see atoml.smoke.SmokeTest#isRandmized()
+	 */
+	@Override
+	public boolean isRandomized() {
+		return true;
+	}
 }

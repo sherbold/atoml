@@ -27,4 +27,13 @@ public class Outliers extends AbstractSmokeTest {
 		}
 		testdata = data;
 	}
+	
+	/* 
+	 * (non-Javadoc)
+	 * @see atoml.smoke.SmokeTest#isRandmized()
+	 */
+	@Override
+	public boolean isRandomized() {
+		return true;
+	}
 }

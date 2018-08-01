@@ -113,6 +113,13 @@ public class ScikitTestcaseGenerator implements TestcaseGenerator {
 	 * @return body for a smoke test method
 	 */
 	private String smoketestBody(SmokeTest smokeTest) {
+		int iterations;
+		if( smokeTest.isRandomized() ) {
+			iterations = this.iterations;
+		} else {
+			iterations = 1;
+		}
+		
 		@SuppressWarnings("resource")
 		String methodBody = new Scanner(this.getClass().getResourceAsStream("/scikit-smoketest.template"), "UTF-8").useDelimiter("\\A").next();
 		

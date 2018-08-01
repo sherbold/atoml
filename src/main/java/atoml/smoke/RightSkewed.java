@@ -21,4 +21,13 @@ public class RightSkewed extends AbstractSmokeTest {
 		data = DataGenerator.generateData(numFeatures, numFeatures/2, numInstances, new GammaDistribution(0.1, 4.0), 0.1, seed);
 		testdata = data;
 	}
+	
+	/* 
+	 * (non-Javadoc)
+	 * @see atoml.smoke.SmokeTest#isRandmized()
+	 */
+	@Override
+	public boolean isRandomized() {
+		return true;
+	}
 }

@@ -22,4 +22,13 @@ public class UniformWholeFloatRange extends AbstractSmokeTest {
 		data = DataGenerator.generateData(numFeatures, 0, numInstances, new UniformRealDistribution(0,Float.MAX_VALUE), 0.5, seed);
 		testdata = data;
 	}
+	
+	/* 
+	 * (non-Javadoc)
+	 * @see atoml.smoke.SmokeTest#isRandmized()
+	 */
+	@Override
+	public boolean isRandomized() {
+		return true;
+	}
 }

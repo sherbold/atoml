@@ -39,4 +39,6 @@ public interface SmokeTest {
 	 * @param seed
 	 */
 	void generateData(int numFeatures, int numInstances, long seed);
+	
+	boolean isRandomized();
 }
