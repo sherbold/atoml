@@ -39,6 +39,7 @@ public class <<<CLASSNAME>>> {
     @Before
     public void setUp() {
         sparkSession = SparkSession.builder().appName("Logistic_Default_AtomlTest").master("local[1]").getOrCreate();
+        sparkSession.sparkContext().setLogLevel("WARN");
     }
     
     @After
