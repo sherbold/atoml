@@ -14,7 +14,6 @@ import atoml.classifiers.Classifier;
 import atoml.classifiers.ScikitClassifier;
 import atoml.classifiers.WekaClassifier;
 import atoml.metamorphic.ConstantChange;
-import atoml.metamorphic.DuplicateData;
 import atoml.metamorphic.InvertedClass;
 import atoml.metamorphic.MetamorphicTest;
 import atoml.metamorphic.RenameAttributes;
@@ -103,7 +102,6 @@ public class Runner {
 		metamorphicTests.add(new InvertedClass());
 		metamorphicTests.add(new ScrambleInstances());
 		metamorphicTests.add(new ReorderAttributes());
-		metamorphicTests.add(new DuplicateData());
 		metamorphicTests.add(new SameData());
 		metamorphicTests.add(new RenameAttributes());
 	    
