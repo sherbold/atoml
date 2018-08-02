@@ -2,6 +2,9 @@ package <<<PACKAGENAME>>>;
 
 import static org.junit.Assert.*;
 import org.junit.Test;
+import org.junit.FixMethodOrder;
+import org.junit.runners.MethodSorters;
+
 
 import javax.annotation.Generated;
 import java.io.BufferedReader;
@@ -16,6 +19,7 @@ import weka.core.Instance;
  * Automatically generated smoke and metamorphic tests.
  */
 @Generated("atoml.testgen.TestclassGenerator")
+@FixMethodOrder(MethodSorters.NAME_ASCENDING)
 public class <<<CLASSNAME>>> {
 
 <<<METHODS>>>
