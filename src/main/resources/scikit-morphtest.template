@@ -3,19 +3,30 @@
         for iter in range(1,<<<ITERATIONS>>>+1):
             data_original, meta_original = loadarff('morphdata/<<<DATASET>>>_%i.arff' % iter)
             data_morphed, meta_morphed = loadarff('morphdata/<<<DATASET>>>_%i_<<<NAME>>>.arff' % iter)
-            data_original_df = pd.DataFrame(data_original)
-            data_morph_df = pd.DataFrame(data_morphed)
-            nfeatures_original = data_original_df.shape[1]
-            nfeatures_morph = data_morph_df.shape[1]
             lb_make = LabelEncoder()
+            
+            data_original_df = pd.DataFrame(data_original)
             data_original_df["classAtt"] = lb_make.fit_transform(data_original_df["classAtt"])
+            data_original_df = pd.get_dummies(data_original_df)
+            
+            data_morph_df = pd.DataFrame(data_morphed)
             data_morph_df["classAtt"] = lb_make.fit_transform(data_morph_df["classAtt"])
+            data_morph_df = pd.get_dummies(data_morph_df)
+            
+            class_index_original = -1
+            for i, s in enumerate(data_original_df.columns):
+                if 'classAtt' in s:
+                    class_index_original = i
+            class_index_morph = -1
+            for i, s in enumerate(data_morph_df.columns):
+                if 'classAtt' in s:
+                    class_index_morph = i
+            
             classifier_original = <<<CLASSIFIER>>>
-            classifier_original.fit(data_original_df.values[:,0:nfeatures_original-1],data_original_df.values[:,nfeatures_original-1])
+            classifier_original.fit(np.delete(data_original_df.values, class_index_original, axis=1),data_original_df.values[:,class_index_original])
             classifier_morph = <<<CLASSIFIER>>>
-            classifier_morph.fit(data_morph_df.values[:,0:nfeatures_morph-1],data_morph_df.values[:,nfeatures_morph-1])
-            violations = 0
-            prediction_original = classifier_original.predict(data_original_df.values[:,0:nfeatures_original-1])
-            prediction_morph = classifier_morph.predict(<<<MORPHTESTDATA>>>.values[:,0:nfeatures_morph-1])
+            classifier_morph.fit(np.delete(data_morph_df.values, class_index_morph, axis=1),data_morph_df.values[:,class_index_morph])
+            prediction_original = classifier_original.predict(np.delete(data_original_df.values, class_index_original, axis=1))
+            prediction_morph = classifier_morph.predict(np.delete(data_morph_df.values, class_index_morph, axis=1))
             <<<MORPHRELATION>>>
 

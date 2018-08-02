@@ -1,9 +1,9 @@
 import unittest
 import xmlrunner
 import pandas as pd
+import numpy as np
 import threading
 import functools
-import logging
 
 from scipy.io.arff import loadarff
 from sklearn.preprocessing import LabelEncoder

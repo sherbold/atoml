@@ -3,12 +3,21 @@
         for iter in range(1,<<<ITERATIONS>>>+1):
             data, meta = loadarff('smokedata/<<<NAME>>>_%i_training.arff' % iter)
             testdata, testmeta = loadarff('smokedata/<<<NAME>>>_%i_test.arff' % iter)
-            data_df = pd.DataFrame(data)
-            testdata_df = pd.DataFrame(data)
-            nfeatures = data_df.shape[1]
             lb_make = LabelEncoder()
+            data_df = pd.DataFrame(data)
             data_df["classAtt"] = lb_make.fit_transform(data_df["classAtt"])
+            data_df = pd.get_dummies(data_df)
+            
+            testdata_df = pd.DataFrame(data)
+            testdata_df["classAtt"] = lb_make.fit_transform(testdata_df["classAtt"])
+            testdata_df = pd.get_dummies(testdata_df)
+            
+            classIndex = -1
+            for i, s in enumerate(data_df.columns):
+                if 'classAtt' in s:
+                    classIndex = i
+
             classifier = <<<CLASSIFIER>>>
-            classifier.fit(data_df.values[:,0:nfeatures-1],data_df.values[:,nfeatures-1])
-            classifier.predict(testdata_df.values[:,0:nfeatures-1])
+            classifier.fit(np.delete(data_df.values, classIndex, axis=1),data_df.values[:,classIndex])
+            classifier.predict(np.delete(testdata_df.values, classIndex, axis=1))
 
