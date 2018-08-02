@@ -1,0 +1,14 @@
+    @Test
+    public void test_<<<NAME>>>() throws Exception {
+        for(int iter=1; iter<=<<<ITERATIONS>>>; iter++) {
+            Dataset<Row> dataframe = arffToDataset("/smokedata/<<<NAME>>>_" + iter + "_training.arff");
+            Dataset<Row> testdata = arffToDataset("/smokedata/<<<NAME>>>_" + iter + "_test.arff");
+            
+            <<<CLASSNAME>>> classifier = new <<<CLASSIFIER>>>;
+            classifier.setLabelCol("classAtt");
+            
+            ClassificationModel<?, ?> model = classifier.fit(dataframe);
+            model.transform(testdata);
+        }
+    }
+

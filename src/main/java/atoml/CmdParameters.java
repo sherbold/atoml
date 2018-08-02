@@ -125,8 +125,8 @@ public class CmdParameters {
 		if (cmd.getOptionValue("file") != null && cmd.getOptionValue("classifier") != null) {
 			throw new ParseException("Duplicate options: must specify both classifier (-c) and input file (-f)");
 		}
-		if( !("weka".equals(getStringValue("mllib")) || "scikit".equals(getStringValue("mllib")))) {
-			throw new ParseException("Disallowed value: --mllib (-l) must either be weka or scikit");
+		if( !("weka".equals(getStringValue("mllib")) || "scikit".equals(getStringValue("mllib")) || "spark".equals(getStringValue("mllib")))) {
+			throw new ParseException("Disallowed value: --mllib (-l) must either be weka, scikit, or spark");
 		}
 	}
 

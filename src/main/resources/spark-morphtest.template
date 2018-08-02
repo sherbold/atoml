@@ -1,0 +1,31 @@
+    @Test
+    public void test_<<<NAME>>>_<<<DATASET>>>() throws Exception {
+        for(int iter=1; iter<=<<<ITERATIONS>>>; iter++) {
+            Dataset<Row> dataframe = arffToDataset("/morphdata/<<<DATASET>>>_" + iter + ".arff");
+            Dataset<Row> morpheddata = arffToDataset("/morphdata/<<<DATASET>>>_" + iter + "_<<<NAME>>>.arff");
+            
+            <<<CLASSNAME>>> classifier = new <<<CLASSIFIER>>>;
+            classifier.setLabelCol("classAtt");
+            <<<CLASSNAME>>> morphedClassifier = new <<<CLASSIFIER>>>;
+            morphedClassifier.setLabelCol("classAtt");
+            
+            ClassificationModel<?, ?> model = classifier.fit(dataframe);
+            ClassificationModel<?, ?> morphedModel = morphedClassifier.fit(morpheddata);
+            
+            List<Row> predictionOriginal = model.transform(dataframe).select("prediction").collectAsList();
+            <<<MORPHCLASS>>>
+            
+            int violations = 0;
+            for (int i = 0; i < predictionOriginal.size(); i++) {
+                double originalClass = predictionOriginal.get(i).getDouble(0);
+                double morphedClass = predictionMorphed.get(i).getDouble(0);
+                if (!(<<<MORPHRELATION>>>)) {
+                    violations++;
+                }
+            }
+            if (violations > 0) {
+                assertEquals("metamorphic relation broken (iteration " + iter + "): " + violations + " violations",0, violations);
+            }
+        }
+    }
+

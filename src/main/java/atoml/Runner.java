@@ -12,6 +12,7 @@ import org.apache.commons.cli.ParseException;
 
 import atoml.classifiers.Classifier;
 import atoml.classifiers.ScikitClassifier;
+import atoml.classifiers.SparkClassifier;
 import atoml.classifiers.WekaClassifier;
 import atoml.metamorphic.Const;
 import atoml.metamorphic.Opposite;
@@ -43,6 +44,7 @@ import atoml.smoke.MaxDouble;
 import atoml.smoke.MaxFloat;
 import atoml.smoke.Uniform;
 import atoml.testgen.ScikitTestsuiteGenerator;
+import atoml.testgen.SparkTestsuiteGenerator;
 import atoml.testgen.WekaTestsuiteGenerator;
 
 /**
@@ -126,7 +128,11 @@ public class Runner {
 						}
 						else if( "scikit".equals(mllib) ) {
 							classifiersUnderTest.add(new ScikitClassifier(line));
-						} else {
+						} 
+						else if( "spark".equals(mllib) ) {
+							classifiersUnderTest.add(new SparkClassifier(line));
+						}
+						else {
 							throw new RuntimeException("invalid option for mllib: " + mllib);
 						}
 					}
@@ -144,6 +150,10 @@ public class Runner {
 		else if( "scikit".equals(mllib) ) {
 			ScikitTestsuiteGenerator scikitGenerator = new ScikitTestsuiteGenerator(testSrcPath, testResourcePath, numFeatures, numInstances);
 			scikitGenerator.generateTests(classifiersUnderTest, smokeTests, metamorphicTests, iterations);
+		} 
+		else if( "spark".equals(mllib) ) {
+			SparkTestsuiteGenerator sparkGenerator = new SparkTestsuiteGenerator(testSrcPath, testResourcePath, numFeatures, numInstances);
+			sparkGenerator.generateTests(classifiersUnderTest, smokeTests, metamorphicTests, iterations);
 		} else {
 			throw new RuntimeException("invalid option for mllib: " + mllib);
 		}

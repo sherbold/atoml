@@ -1,0 +1,104 @@
+package <<<PACKAGENAME>>>;
+
+import static org.junit.Assert.*;
+import org.junit.Test;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.FixMethodOrder;
+import org.junit.runners.MethodSorters;
+
+
+import javax.annotation.Generated;
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
+import java.util.ArrayList;
+import java.util.LinkedList;
+import java.util.List;
+import java.io.IOException;
+import weka.core.Instances;
+import org.apache.spark.sql.Dataset;
+import org.apache.spark.sql.Row;
+import org.apache.spark.sql.RowFactory;
+import org.apache.spark.sql.SparkSession;
+import org.apache.spark.sql.types.DataTypes;
+import org.apache.spark.sql.types.StructField;
+import org.apache.spark.sql.types.StructType;
+import org.apache.spark.ml.feature.OneHotEncoderEstimator;
+import org.apache.spark.ml.feature.OneHotEncoderModel;
+import org.apache.spark.ml.feature.VectorAssembler;
+
+/**
+ * Automatically generated smoke and metamorphic tests.
+ */
+@Generated("atoml.testgen.TestclassGenerator")
+@FixMethodOrder(MethodSorters.NAME_ASCENDING)
+public class <<<CLASSNAME>>> {
+
+    private SparkSession sparkSession;
+	
+    @Before
+    public void setUp() {
+        sparkSession = SparkSession.builder().appName("Logistic_Default_AtomlTest").master("local[1]").getOrCreate();
+    }
+    
+    @After
+    public void tearDown() {
+        sparkSession.stop();
+    }
+
+    public Dataset<Row> arffToDataset(String filename) {
+		Instances data;
+		InputStreamReader file = new InputStreamReader(this.getClass().getResourceAsStream(filename));
+		try (BufferedReader reader = new BufferedReader(file);) {
+			data = new Instances(reader);
+			reader.close();
+		} catch (IOException e) {
+			throw new RuntimeException(filename, e);
+		}
+
+		List<StructField> fields = new LinkedList<>();
+		for (int j = 0; j < data.numAttributes(); j++) {
+			fields.add(DataTypes.createStructField(data.attribute(j).name(), DataTypes.DoubleType, false));
+		}
+		StructType schema = DataTypes.createStructType(fields);
+		List<Row> rows = new LinkedList<>();
+		for (int i = 0; i < data.size(); i++) {
+			List<Double> valueList = new ArrayList<>(data.numAttributes());
+			for (int j = 0; j < data.numAttributes(); j++) {
+				valueList.add(data.instance(i).value(j));
+			}
+
+			rows.add(RowFactory.create(valueList.toArray()));
+		}
+		Dataset<Row> dataframe = sparkSession.createDataFrame(rows, schema);
+
+		List<String> featureNames = new ArrayList<>();
+		List<String> nominals = new LinkedList<>();
+		List<String> nominalsOutput = new LinkedList<>();
+		for (int j = 0; j < data.numAttributes() - 1; j++) {
+			featureNames.add(data.attribute(j).name());
+			if (data.attribute(j).isNominal()) {
+				nominals.add(data.attribute(j).name());
+				nominalsOutput.add(data.attribute(j).name() + "_onehot");
+			}
+		}
+		if (!nominals.isEmpty()) {
+			OneHotEncoderEstimator oneHot = new OneHotEncoderEstimator().setInputCols(nominals.toArray(new String[0]))
+					.setOutputCols(nominalsOutput.toArray(new String[0])).setDropLast(false);
+			OneHotEncoderModel oneHotModel = oneHot.fit(dataframe);
+			dataframe = oneHotModel.transform(dataframe);
+			dataframe = dataframe.drop(nominals.toArray(new String[0]));
+			for (int j = nominals.size() - 1; j >= 0; j--) {
+				dataframe = dataframe.withColumnRenamed(nominalsOutput.get(j), nominals.get(j));
+			}
+		}
+
+		VectorAssembler va = new VectorAssembler().setInputCols(featureNames.toArray(new String[0]))
+				.setOutputCol("features");
+		dataframe = va.transform(dataframe);
+
+		return dataframe;
+	}
+
+<<<METHODS>>>
+}
