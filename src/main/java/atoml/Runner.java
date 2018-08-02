@@ -13,13 +13,13 @@ import org.apache.commons.cli.ParseException;
 import atoml.classifiers.Classifier;
 import atoml.classifiers.ScikitClassifier;
 import atoml.classifiers.WekaClassifier;
-import atoml.metamorphic.ConstantChange;
-import atoml.metamorphic.InvertedClass;
+import atoml.metamorphic.Const;
+import atoml.metamorphic.Opposite;
 import atoml.metamorphic.MetamorphicTest;
-import atoml.metamorphic.RenameAttributes;
-import atoml.metamorphic.ReorderAttributes;
-import atoml.metamorphic.SameData;
-import atoml.metamorphic.ScrambleInstances;
+import atoml.metamorphic.Rename;
+import atoml.metamorphic.Reorder;
+import atoml.metamorphic.Same;
+import atoml.metamorphic.Scramble;
 import atoml.smoke.Zeroes;
 import atoml.smoke.Binary;
 import atoml.smoke.SkewLeft;
@@ -98,12 +98,12 @@ public class Runner {
 		smokeTests.add(new ManyCategories());
 		smokeTests.add(new DisjunctiveCategorial());
 		List<MetamorphicTest> metamorphicTests = new LinkedList<>();
-		metamorphicTests.add(new ConstantChange());
-		metamorphicTests.add(new InvertedClass());
-		metamorphicTests.add(new ScrambleInstances());
-		metamorphicTests.add(new ReorderAttributes());
-		metamorphicTests.add(new SameData());
-		metamorphicTests.add(new RenameAttributes());
+		metamorphicTests.add(new Const());
+		metamorphicTests.add(new Opposite());
+		metamorphicTests.add(new Scramble());
+		metamorphicTests.add(new Reorder());
+		metamorphicTests.add(new Same());
+		metamorphicTests.add(new Rename());
 	    
 		List<Classifier> classifiersUnderTest = new LinkedList<>();
 		if( classifierStr!=null ) {

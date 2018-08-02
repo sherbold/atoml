@@ -10,7 +10,7 @@ import weka.core.Instances;
  * @author sherbold
  *
  */
-public class InvertedClass extends AbstractMetamorphicTest {
+public class Opposite extends AbstractMetamorphicTest {
 
 	/*
 	 * (non-Javadoc)

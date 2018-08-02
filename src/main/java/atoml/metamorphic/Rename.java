@@ -15,7 +15,7 @@ import weka.core.Instances;
  * 
  * @author sherbold
  */
-public class RenameAttributes extends AbstractMetamorphicTest {
+public class Rename extends AbstractMetamorphicTest {
 
 	/*
 	 * (non-Javadoc)

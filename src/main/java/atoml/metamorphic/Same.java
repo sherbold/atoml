@@ -9,7 +9,7 @@ import weka.core.Instances;
  * @author sherbold
  *
  */
-public class SameData extends AbstractMetamorphicTest {
+public class Same extends AbstractMetamorphicTest {
 
 	/*
 	 * (non-Javadoc)

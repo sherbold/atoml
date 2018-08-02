@@ -17,8 +17,8 @@ public class ScrambleInstancesTest {
 		for( int i=0; i<100; i++ ) {
 			Instances data = DataGenerator.generateData(2, 1, 100, new UniformRealDistribution(), 0.1, i);
 			
-			ScrambleInstances scrambleInstances = new ScrambleInstances();
-			Instances morphedData = scrambleInstances.morphData(data);
+			Scramble scramble = new Scramble();
+			Instances morphedData = scramble.morphData(data);
 			
 			assertEquals(data.size(), morphedData.size());
 			InstanceComparator cmp = new InstanceComparator(true);

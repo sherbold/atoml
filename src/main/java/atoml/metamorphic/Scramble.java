@@ -11,7 +11,7 @@ import weka.core.Instances;
  * @author sherbold
  *
  */
-public class ScrambleInstances extends AbstractMetamorphicTest {
+public class Scramble extends AbstractMetamorphicTest {
 
 	/*
 	 * (non-Javadoc)

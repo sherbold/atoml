@@ -1,16 +1,19 @@
 package atoml.metamorphic;
 
+import java.util.ArrayList;
+
+import weka.core.Attribute;
+import weka.core.DenseInstance;
 import weka.core.Instance;
 import weka.core.Instances;
 
 /**
- * Morphed data: original data + 1
+ * Morphed data: inverted attribute order
  * Expectation: classification equal
  * 
  * @author sherbold
- *
  */
-public class ConstantChange extends AbstractMetamorphicTest {
+public class Reorder extends AbstractMetamorphicTest {
 
 	/*
 	 * (non-Javadoc)
@@ -18,7 +21,7 @@ public class ConstantChange extends AbstractMetamorphicTest {
 	 */
 	@Override
 	public DataSupported getDataSupported() {
-		return DataSupported.NUMERIC;
+		return DataSupported.BOTH;
 	}
 	
 	/*
@@ -47,16 +50,22 @@ public class ConstantChange extends AbstractMetamorphicTest {
 	 */
 	@Override
 	public Instances morphData(Instances data) {
-		Instances morphedData = new Instances(data);
+		int numAttributes = data.numAttributes();
+		int classIndex = data.numAttributes()-1;
+		ArrayList<Attribute> attributes = new ArrayList<>();
+		for( int j=0; j<numAttributes-1; j++) {
+			attributes.add((Attribute) data.attribute(numAttributes-j-2).copy());
+		}
+		attributes.add((Attribute) data.attribute(classIndex).copy());
+		Instances morphedData = new Instances("morphed_data", attributes, 0);
 		morphedData.setRelationName(data.relationName()+"_"+this.getClass().getSimpleName());
-		int numAttributes = morphedData.numAttributes();
-		int classIndex = morphedData.numAttributes()-1;
-		for (Instance instance : morphedData) {
-			for (int i = 0; i < numAttributes; i++) {
-				if (i != classIndex) {
-					instance.setValue(i, instance.value(i) + 1);
-				}
+		for( Instance instance : data ) {
+			double[] values = new double[numAttributes];
+			for( int j=0; j<numAttributes-1; j++) {
+				values[j] = instance.value(numAttributes-j-2);
 			}
+			values[numAttributes-1] = instance.value(classIndex);
+			morphedData.add(new DenseInstance(1.0, values));
 		}
 		return morphedData;
 	}
