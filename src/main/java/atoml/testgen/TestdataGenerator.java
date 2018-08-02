@@ -95,7 +95,6 @@ public class TestdataGenerator {
 		morphtestDataDescriptions.add(new DataDescription("creditg", "/morphdata/creditg.arff", false, true));
 		morphtestDataDescriptions.add(new DataDescription("diabetes", "/morphdata/diabetes.arff", true, false));
 		morphtestDataDescriptions.add(new DataDescription("ionosphere", "/morphdata/ionosphere.arff", true, false));
-		morphtestDataDescriptions.add(new DataDescription("labor", "/morphdata/labor.arff", true, true));
 		morphtestDataDescriptions.add(new DataDescription("unbalance", "/morphdata/unbalanced.arff", true, false));
 		morphtestDataDescriptions.add(new DataDescription("vote", "/morphdata/unbalanced.arff", false, true));
 		morphtestDataDescriptions.add(new DataDescription("weathernominal", "/morphdata/weathernominal.arff", false, true));
