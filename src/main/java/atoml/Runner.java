@@ -22,7 +22,7 @@ import atoml.metamorphic.Reorder;
 import atoml.metamorphic.Same;
 import atoml.metamorphic.Scramble;
 import atoml.smoke.Zeroes;
-import atoml.smoke.Binary;
+import atoml.smoke.CandomCategorial;
 import atoml.smoke.SkewLeft;
 import atoml.smoke.ManyCategories;
 import atoml.smoke.Disjunctive;
@@ -42,7 +42,7 @@ import atoml.smoke.VeryLarge;
 import atoml.smoke.VerySmall;
 import atoml.smoke.MaxDouble;
 import atoml.smoke.MaxFloat;
-import atoml.smoke.Uniform;
+import atoml.smoke.Random;
 import atoml.testgen.ScikitTestsuiteGenerator;
 import atoml.testgen.SparkTestsuiteGenerator;
 import atoml.testgen.WekaTestsuiteGenerator;
@@ -79,7 +79,7 @@ public class Runner {
 	    
 	    List<SmokeTest> smokeTests = new LinkedList<>();
 		smokeTests.add(new Zeroes());
-		smokeTests.add(new Uniform());
+		smokeTests.add(new Random());
 		smokeTests.add(new VeryLarge());
 		smokeTests.add(new MaxDouble());
 		smokeTests.add(new MaxFloat());
@@ -94,7 +94,7 @@ public class Runner {
 		smokeTests.add(new SkewRight());
 		smokeTests.add(new SmoketestFromArff("CM1", "/smokedata/cm1.arff"));
 		smokeTests.add(new SingleCategorical());
-		smokeTests.add(new Binary());
+		smokeTests.add(new CandomCategorial());
 		smokeTests.add(new StarvedBinary());
 		smokeTests.add(new StarvedMany());
 		smokeTests.add(new ManyCategories());
