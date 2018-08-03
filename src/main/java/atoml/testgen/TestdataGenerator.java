@@ -91,12 +91,10 @@ public class TestdataGenerator {
 		morphtestDataDescriptions.add(new DataDescription("UniformInformative", numFeatures, numFeatures/2, numInstances, new UniformRealDistribution(), 0.1, null));
 		morphtestDataDescriptions.add(new DataDescription("CategoricalRandom",numFeatures, 0, numInstances, new UniformRealDistribution(), 0.5, featureTypes));
 		morphtestDataDescriptions.add(new DataDescription("CategoricalInformative", numFeatures, numFeatures/2, numInstances, new UniformRealDistribution(), 0.1, featureTypes));
-		morphtestDataDescriptions.add(new DataDescription("breastcancer", "/morphdata/breastcancer.arff", false, true));
 		morphtestDataDescriptions.add(new DataDescription("creditg", "/morphdata/creditg.arff", false, true));
 		morphtestDataDescriptions.add(new DataDescription("diabetes", "/morphdata/diabetes.arff", true, false));
 		morphtestDataDescriptions.add(new DataDescription("ionosphere", "/morphdata/ionosphere.arff", true, false));
 		morphtestDataDescriptions.add(new DataDescription("unbalance", "/morphdata/unbalanced.arff", true, false));
-		morphtestDataDescriptions.add(new DataDescription("vote", "/morphdata/unbalanced.arff", false, true));
 		morphtestDataDescriptions.add(new DataDescription("weathernominal", "/morphdata/weathernominal.arff", false, true));
 		morphtestDataDescriptions.add(new DataDescription("weathernumeric", "/morphdata/weathernumeric.arff", true, true));
 		
