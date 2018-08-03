@@ -6,6 +6,12 @@
             
             <<<CLASSNAME>>> classifier = new <<<CLASSIFIER>>>;
             classifier.setLabelCol("classAtt");
+            try {
+            	classifier.getClass().getMethod("getSeed");
+            	classifier.setSeed(42);
+            } catch (NoSuchMethodException | SecurityException e) {
+            	// not randomized
+            }
             
             ClassificationModel<?, ?> model = classifier.fit(dataframe);
             model.transform(testdata);

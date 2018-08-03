@@ -6,8 +6,20 @@
             
             <<<CLASSNAME>>> classifier = new <<<CLASSIFIER>>>;
             classifier.setLabelCol("classAtt");
+            try {
+            	classifier.getClass().getMethod("getSeed");
+            	classifier.setSeed(42);
+            } catch (NoSuchMethodException | SecurityException e) {
+            	// not randomized
+            }
             <<<CLASSNAME>>> morphedClassifier = new <<<CLASSIFIER>>>;
             morphedClassifier.setLabelCol("classAtt");
+            try {
+            	morphedClassifier.getClass().getMethod("getSeed");
+            	morphedClassifier.setSeed(42);
+            } catch (NoSuchMethodException | SecurityException e) {
+            	// not randomized
+            }
             
             ClassificationModel<?, ?> model = classifier.fit(dataframe);
             ClassificationModel<?, ?> morphedModel = morphedClassifier.fit(morpheddata);
