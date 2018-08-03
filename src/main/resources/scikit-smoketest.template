@@ -18,6 +18,7 @@
                     classIndex = i
 
             classifier = <<<CLASSIFIER>>>
+            np.random.seed(42)
             classifier.fit(np.delete(data_df.values, classIndex, axis=1),data_df.values[:,classIndex])
             classifier.predict(np.delete(testdata_df.values, classIndex, axis=1))
 

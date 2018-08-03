@@ -23,8 +23,10 @@
                     class_index_morph = i
             
             classifier_original = <<<CLASSIFIER>>>
+            np.random.seed(42)
             classifier_original.fit(np.delete(data_original_df.values, class_index_original, axis=1),data_original_df.values[:,class_index_original])
             classifier_morph = <<<CLASSIFIER>>>
+            np.random.seed(42)
             classifier_morph.fit(np.delete(data_morph_df.values, class_index_morph, axis=1),data_morph_df.values[:,class_index_morph])
             prediction_original = classifier_original.predict(np.delete(data_original_df.values, class_index_original, axis=1))
             prediction_morph = classifier_morph.predict(np.delete(data_morph_df.values, class_index_morph, axis=1))
