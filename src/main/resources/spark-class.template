@@ -15,6 +15,7 @@ import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 import java.io.IOException;
+import weka.core.Attribute;
 import weka.core.Instances;
 import org.apache.spark.sql.Dataset;
 import org.apache.spark.sql.Row;
@@ -59,7 +60,7 @@ public class <<<CLASSNAME>>> {
 
 		List<StructField> fields = new LinkedList<>();
 		for (int j = 0; j < data.numAttributes(); j++) {
-			fields.add(DataTypes.createStructField(data.attribute(j).name(), DataTypes.DoubleType, false));
+			fields.add(DataTypes.createStructField(getNormalizedName(data.attribute(j)), DataTypes.DoubleType, false));
 		}
 		StructType schema = DataTypes.createStructType(fields);
 		List<Row> rows = new LinkedList<>();
@@ -77,10 +78,10 @@ public class <<<CLASSNAME>>> {
 		List<String> nominals = new LinkedList<>();
 		List<String> nominalsOutput = new LinkedList<>();
 		for (int j = 0; j < data.numAttributes() - 1; j++) {
-			featureNames.add(data.attribute(j).name());
+			featureNames.add(getNormalizedName(data.attribute(j)));
 			if (data.attribute(j).isNominal()) {
-				nominals.add(data.attribute(j).name());
-				nominalsOutput.add(data.attribute(j).name() + "_onehot");
+				nominals.add(getNormalizedName(data.attribute(j)));
+				nominalsOutput.add(getNormalizedName(data.attribute(j)) + "_onehot");
 			}
 		}
 		if (!nominals.isEmpty()) {
@@ -93,13 +94,16 @@ public class <<<CLASSNAME>>> {
 				dataframe = dataframe.withColumnRenamed(nominalsOutput.get(j), nominals.get(j));
 			}
 		}
-
 		VectorAssembler va = new VectorAssembler().setInputCols(featureNames.toArray(new String[0]))
 				.setOutputCol("features");
 		dataframe = va.transform(dataframe);
 
 		return dataframe;
 	}
+    
+    public String getNormalizedName(Attribute attribute) {
+    	return attribute.name().replaceAll("\\.", "_");
+    }
 
 <<<METHODS>>>
 }
