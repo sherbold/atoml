@@ -7,16 +7,16 @@
             <<<CLASSNAME>>> classifier = new <<<CLASSIFIER>>>;
             classifier.setLabelCol("classAtt");
             try {
-            	classifier.getClass().getMethod("getSeed");
-            	classifier.setSeed(42);
+            	Method setSeedMethod = classifier.getClass().getMethod("setSeed", long.class);
+            	setSeedMethod.invoke(classifier, 42);
             } catch (NoSuchMethodException | SecurityException e) {
             	// not randomized
             }
             <<<CLASSNAME>>> morphedClassifier = new <<<CLASSIFIER>>>;
             morphedClassifier.setLabelCol("classAtt");
             try {
-            	morphedClassifier.getClass().getMethod("getSeed");
-            	morphedClassifier.setSeed(42);
+            	Method setSeedMethod = morphedClassifier.getClass().getMethod("setSeed", long.class);
+            	setSeedMethod.invoke(morphedClassifier, 42);
             } catch (NoSuchMethodException | SecurityException e) {
             	// not randomized
             }
