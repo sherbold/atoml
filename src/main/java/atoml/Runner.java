@@ -33,6 +33,7 @@ import atoml.smoke.SmokeTest;
 import atoml.smoke.Spread;
 import atoml.smoke.StarvedBinary;
 import atoml.smoke.StarvedMany;
+import atoml.smoke.Uniform;
 import atoml.smoke.MinDouble;
 import atoml.smoke.MinFloat;
 import atoml.smoke.VeryLarge;
@@ -75,7 +76,7 @@ public class Runner {
 	    final String mllib = cmdParameters.getStringValue("mllib");
 	    
 	    List<SmokeTest> smokeTests = new LinkedList<>();
-	    // UNIFORM
+	    smokeTests.add(new Uniform());
 	    smokeTests.add(new MinFloat());
 	    smokeTests.add(new VerySmall());
 	    smokeTests.add(new MinDouble());
