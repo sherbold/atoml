@@ -24,15 +24,12 @@ import atoml.metamorphic.Scramble;
 import atoml.smoke.Zeroes;
 import atoml.smoke.CandomCategorial;
 import atoml.smoke.SkewLeft;
-import atoml.smoke.ManyCategories;
 import atoml.smoke.Disjunctive;
 import atoml.smoke.DisjunctiveCategorial;
 import atoml.smoke.Outlier;
 import atoml.smoke.SkewRight;
-import atoml.smoke.SingleCategorical;
 import atoml.smoke.Bias;
 import atoml.smoke.SmokeTest;
-import atoml.smoke.SmoketestFromArff;
 import atoml.smoke.Spread;
 import atoml.smoke.StarvedBinary;
 import atoml.smoke.StarvedMany;
@@ -78,27 +75,26 @@ public class Runner {
 	    final String mllib = cmdParameters.getStringValue("mllib");
 	    
 	    List<SmokeTest> smokeTests = new LinkedList<>();
-		smokeTests.add(new Zeroes());
-		smokeTests.add(new Random());
-		smokeTests.add(new VeryLarge());
+	    // UNIFORM
+	    smokeTests.add(new MinFloat());
+	    smokeTests.add(new VerySmall());
+	    smokeTests.add(new MinDouble());
+	    smokeTests.add(new MaxFloat());
+	    smokeTests.add(new VeryLarge());
 		smokeTests.add(new MaxDouble());
-		smokeTests.add(new MaxFloat());
-		smokeTests.add(new MinFloat());
-		smokeTests.add(new VerySmall());
-		smokeTests.add(new MinDouble());
 		smokeTests.add(new Spread());
-		smokeTests.add(new Outlier());
+		smokeTests.add(new SkewLeft()); // RENAME: LEFTSKEW
+		smokeTests.add(new SkewRight()); // RENAME: RIGHTSKEW
+		// ONECLASS
 		smokeTests.add(new Bias());
-		smokeTests.add(new Disjunctive());
-		smokeTests.add(new SkewLeft());
-		smokeTests.add(new SkewRight());
-		smokeTests.add(new SmoketestFromArff("CM1", "/smokedata/cm1.arff"));
-		smokeTests.add(new SingleCategorical());
-		smokeTests.add(new CandomCategorial());
-		smokeTests.add(new StarvedBinary());
+		smokeTests.add(new Outlier());
+	    smokeTests.add(new Zeroes());
+		smokeTests.add(new Random()); // RENAME: RANDNUM
+		smokeTests.add(new CandomCategorial()); // RENAME: RANDCAT
+		smokeTests.add(new Disjunctive()); // RENAME: DISJOINTNUM
+		smokeTests.add(new DisjunctiveCategorial()); // RENAME DISJOINTCAT
 		smokeTests.add(new StarvedMany());
-		smokeTests.add(new ManyCategories());
-		smokeTests.add(new DisjunctiveCategorial());
+		smokeTests.add(new StarvedBinary());
 		List<MetamorphicTest> metamorphicTests = new LinkedList<>();
 		metamorphicTests.add(new Const());
 		metamorphicTests.add(new Opposite());

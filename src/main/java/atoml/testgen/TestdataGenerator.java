@@ -87,16 +87,15 @@ public class TestdataGenerator {
 		
 		int[] featureTypes = IntStream.generate(() -> 10).limit(numFeatures).toArray();
 		List<DataDescription> morphtestDataDescriptions = new ArrayList<>();
-		morphtestDataDescriptions.add(new DataDescription("UniformRandom", numFeatures, 0, numInstances, new UniformRealDistribution(), 0.5, null));
-		morphtestDataDescriptions.add(new DataDescription("UniformInformative", numFeatures, numFeatures/2, numInstances, new UniformRealDistribution(), 0.1, null));
-		morphtestDataDescriptions.add(new DataDescription("CategoricalRandom",numFeatures, 0, numInstances, new UniformRealDistribution(), 0.5, featureTypes));
-		morphtestDataDescriptions.add(new DataDescription("CategoricalInformative", numFeatures, numFeatures/2, numInstances, new UniformRealDistribution(), 0.1, featureTypes));
-		morphtestDataDescriptions.add(new DataDescription("creditg", "/morphdata/creditg.arff", false, true));
-		morphtestDataDescriptions.add(new DataDescription("diabetes", "/morphdata/diabetes.arff", true, false));
-		morphtestDataDescriptions.add(new DataDescription("ionosphere", "/morphdata/ionosphere.arff", true, false));
-		morphtestDataDescriptions.add(new DataDescription("unbalance", "/morphdata/unbalanced.arff", true, false));
-		morphtestDataDescriptions.add(new DataDescription("weathernominal", "/morphdata/weathernominal.arff", false, true));
-		morphtestDataDescriptions.add(new DataDescription("weathernumeric", "/morphdata/weathernumeric.arff", true, true));
+		morphtestDataDescriptions.add(new DataDescription("RANDNUM", numFeatures, 0, numInstances, new UniformRealDistribution(), 0.5, null));
+		morphtestDataDescriptions.add(new DataDescription("UNIFORM", numFeatures, numFeatures/2, numInstances, new UniformRealDistribution(), 0.1, null));
+		morphtestDataDescriptions.add(new DataDescription("RANDCAT",numFeatures, 0, numInstances, new UniformRealDistribution(), 0.5, featureTypes));
+		morphtestDataDescriptions.add(new DataDescription("CATEGORICAL", numFeatures, numFeatures/2, numInstances, new UniformRealDistribution(), 0.1, featureTypes));
+		morphtestDataDescriptions.add(new DataDescription("CREDITG", "/morphdata/creditg.arff", false, true));
+		morphtestDataDescriptions.add(new DataDescription("IONOSPHERE", "/morphdata/ionosphere.arff", true, false));
+		morphtestDataDescriptions.add(new DataDescription("UNBALANCE", "/morphdata/unbalanced.arff", true, false));
+		morphtestDataDescriptions.add(new DataDescription("WEATHERNOMINAL", "/morphdata/weathernominal.arff", false, true));
+		morphtestDataDescriptions.add(new DataDescription("WEATHERNUMERIC", "/morphdata/weathernumeric.arff", true, true));
 		
 		for( int iteration=1; iteration<=this.iterations; iteration++) {
 			for( SmokeTest smokeTest : smokeTests ) {
