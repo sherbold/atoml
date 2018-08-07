@@ -1,9 +1,10 @@
-BayesNet_Default weka.classifiers.bayes.BayesNet -num-decimal-places 3
+BayesNet_Default weka.classifiers.bayes.BayesNet
 NaiveBayes_Default weka.classifiers.bayes.NaiveBayes
 Logistic_Default weka.classifiers.functions.Logistic
 MLPClassifier_Default weka.classifiers.functions.MLPClassifier
 RBFNetwork_Default weka.classifiers.functions.RBFNetwork
-SMO_Default weka.classifiers.functions.SMO
+SVM_Poly weka.classifiers.functions.SMO
+SVM_RBF weka.classifiers.functions.SMO -K weka.classifiers.functions.supportVector.RBFKernel
 VotedPerceptron_Default weka.classifiers.functions.VotedPerceptron
 IBk_Default weka.classifiers.lazy.IBk
 DecisionTable_Default weka.classifiers.rules.DecisionTable
