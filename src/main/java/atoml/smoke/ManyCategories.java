@@ -10,7 +10,7 @@ import atoml.data.DataGenerator;
  * Creates 100000 instances with two features and ignores the number of features and number of instances defined!
  * 
  * Features: two features with 10000 categories each
- * Class: Random
+ * Class: RandomNumeric
  * 
  * @author sherbold
  */

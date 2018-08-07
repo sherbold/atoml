@@ -8,7 +8,7 @@ import weka.core.Instances;
 
 /**
  * Features: Generates a random mixture of small values [0, 10^-10] and with expected 10% outliers in [10^10, 10^11].
- * Class: Random
+ * Class: RandomNumeric
  *  
  * @author sherbold
  */

@@ -1,16 +1,18 @@
 package atoml.smoke;
 
+import java.util.stream.IntStream;
+
 import org.apache.commons.math3.distribution.UniformRealDistribution;
 
 import atoml.data.DataGenerator;
 
 /**
- * Features: Uniformly distributed in [0,1]
- * Class: Random
+ * Features: categorical with 2 categories each
+ * Class: RandomNumeric
  * 
  * @author sherbold
  */
-public class Random extends AbstractSmokeTest {
+public class RandomCategorial extends AbstractSmokeTest {
 
 	/* 
 	 * (non-Javadoc)
@@ -18,7 +20,8 @@ public class Random extends AbstractSmokeTest {
 	 */
 	@Override
 	public void generateData(int numFeatures, int numInstances, long seed) {
-		data = DataGenerator.generateData(numFeatures, 0, numInstances, new UniformRealDistribution(0,1), 0.5, seed);
+		int[] featureTypes = IntStream.generate(() -> 2).limit(numFeatures).toArray();
+		data = DataGenerator.generateData(numFeatures, 0, numInstances, new UniformRealDistribution(0,1), 0.5, seed, featureTypes);
 		testdata = data;
 	}
 	

@@ -18,7 +18,7 @@ import weka.core.Instances;
  * 
  * @author sherbold
  */
-public class DisjunctiveCategorial extends AbstractSmokeTest {
+public class DisjointCategorical extends AbstractSmokeTest {
 	
 	/* 
 	 * (non-Javadoc)

@@ -11,7 +11,7 @@ import atoml.data.DataGenerator;
  * 
  * @author sherbold
  */
-public class Disjunctive extends AbstractSmokeTest {
+public class DisjointNumeric extends AbstractSmokeTest {
 	
 	/* 
 	 * (non-Javadoc)

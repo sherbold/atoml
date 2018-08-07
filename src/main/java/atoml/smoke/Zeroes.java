@@ -7,7 +7,7 @@ import weka.core.Instance;
 
 /**
  * Features: All 0.0
- * Class: Random
+ * Class: RandomNumeric
  * 
  * @author sherbold
  */

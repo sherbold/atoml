@@ -8,7 +8,7 @@ import atoml.data.DataGenerator;
 
 /**
  * Features: categorical with number of instances categories each
- * Class: Random
+ * Class: RandomNumeric
  * 
  * @author sherbold
  */

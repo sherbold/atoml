@@ -8,7 +8,7 @@ import atoml.data.DataGenerator;
 
 /**
  * Features: categorical with 2 categories each, but for the first feature all values are from the first category and the other is empty, and for the second feature all values are from the second category and the other is empty.
- * Class: Random
+ * Class: RandomNumeric
  * 
  * @author sherbold
  */

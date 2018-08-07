@@ -11,7 +11,7 @@ import weka.core.Instance;
  * 
  * @author sherbold
  */
-public class SkewLeft extends AbstractSmokeTest {
+public class LeftSkew extends AbstractSmokeTest {
 
 	/* 
 	 * (non-Javadoc)

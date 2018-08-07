@@ -22,12 +22,12 @@ import atoml.metamorphic.Reorder;
 import atoml.metamorphic.Same;
 import atoml.metamorphic.Scramble;
 import atoml.smoke.Zeroes;
-import atoml.smoke.CandomCategorial;
-import atoml.smoke.SkewLeft;
-import atoml.smoke.Disjunctive;
-import atoml.smoke.DisjunctiveCategorial;
+import atoml.smoke.RandomCategorial;
+import atoml.smoke.LeftSkew;
+import atoml.smoke.DisjointNumeric;
+import atoml.smoke.DisjointCategorical;
 import atoml.smoke.Outlier;
-import atoml.smoke.SkewRight;
+import atoml.smoke.RightSkew;
 import atoml.smoke.Bias;
 import atoml.smoke.SmokeTest;
 import atoml.smoke.Spread;
@@ -39,7 +39,7 @@ import atoml.smoke.VeryLarge;
 import atoml.smoke.VerySmall;
 import atoml.smoke.MaxDouble;
 import atoml.smoke.MaxFloat;
-import atoml.smoke.Random;
+import atoml.smoke.RandomNumeric;
 import atoml.testgen.ScikitTestsuiteGenerator;
 import atoml.testgen.SparkTestsuiteGenerator;
 import atoml.testgen.WekaTestsuiteGenerator;
@@ -83,16 +83,16 @@ public class Runner {
 	    smokeTests.add(new VeryLarge());
 		smokeTests.add(new MaxDouble());
 		smokeTests.add(new Spread());
-		smokeTests.add(new SkewLeft()); // RENAME: LEFTSKEW
-		smokeTests.add(new SkewRight()); // RENAME: RIGHTSKEW
+		smokeTests.add(new LeftSkew());
+		smokeTests.add(new RightSkew());
 		// ONECLASS
 		smokeTests.add(new Bias());
 		smokeTests.add(new Outlier());
 	    smokeTests.add(new Zeroes());
-		smokeTests.add(new Random()); // RENAME: RANDNUM
-		smokeTests.add(new CandomCategorial()); // RENAME: RANDCAT
-		smokeTests.add(new Disjunctive()); // RENAME: DISJOINTNUM
-		smokeTests.add(new DisjunctiveCategorial()); // RENAME DISJOINTCAT
+		smokeTests.add(new RandomNumeric());
+		smokeTests.add(new RandomCategorial());
+		smokeTests.add(new DisjointNumeric());
+		smokeTests.add(new DisjointCategorical());
 		smokeTests.add(new StarvedMany());
 		smokeTests.add(new StarvedBinary());
 		List<MetamorphicTest> metamorphicTests = new LinkedList<>();
