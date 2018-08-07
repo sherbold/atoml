@@ -36,6 +36,7 @@ import atoml.smoke.StarvedMany;
 import atoml.smoke.Uniform;
 import atoml.smoke.MinDouble;
 import atoml.smoke.MinFloat;
+import atoml.smoke.OneClass;
 import atoml.smoke.VeryLarge;
 import atoml.smoke.VerySmall;
 import atoml.smoke.MaxDouble;
@@ -86,7 +87,7 @@ public class Runner {
 		smokeTests.add(new Spread());
 		smokeTests.add(new LeftSkew());
 		smokeTests.add(new RightSkew());
-		// ONECLASS
+		smokeTests.add(new OneClass());
 		smokeTests.add(new Bias());
 		smokeTests.add(new Outlier());
 	    smokeTests.add(new Zeroes());
