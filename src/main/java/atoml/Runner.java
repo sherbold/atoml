@@ -24,6 +24,7 @@ import atoml.metamorphic.Scramble;
 import atoml.smoke.Zeroes;
 import atoml.smoke.RandomCategorial;
 import atoml.smoke.LeftSkew;
+import atoml.smoke.ManyCategories;
 import atoml.smoke.DisjointNumeric;
 import atoml.smoke.DisjointCategorical;
 import atoml.smoke.Outlier;
@@ -95,6 +96,7 @@ public class Runner {
 		smokeTests.add(new RandomCategorial());
 		smokeTests.add(new DisjointNumeric());
 		smokeTests.add(new DisjointCategorical());
+		smokeTests.add(new ManyCategories());
 		smokeTests.add(new StarvedMany());
 		smokeTests.add(new StarvedBinary());
 		List<MetamorphicTest> metamorphicTests = new LinkedList<>();
