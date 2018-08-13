@@ -1,4 +1,4 @@
-    @Test
+    @Test(timeout=21600000)
     public void test_<<<NAME>>>_<<<DATASET>>>() throws Exception {
         for(int iter=1; iter<=<<<ITERATIONS>>>; iter++) {
             Instances data;
