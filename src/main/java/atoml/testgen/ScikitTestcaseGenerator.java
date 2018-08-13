@@ -135,12 +135,15 @@ public class ScikitTestcaseGenerator implements TestcaseGenerator {
 	 */
 	private String metamorphictestBody(MetamorphicTest metamorphicTest, DataDescription morphtestDataDescription) {
 		String morphTestdata;
+		String morphClassIndex;
 		switch(metamorphicTest.getPredictionType()) {
 		case ORDERED_DATA:
 			morphTestdata = "data_morph_df";
+			morphClassIndex = "class_index_morph";
 			break;
 		case SAME_CLASSIFIER:
 			morphTestdata = "data_original_df";
+			morphClassIndex = "class_index_original";
 			break;
 		default:
 			throw new RuntimeException("could not generate tests, unknown morph test class");
@@ -173,6 +176,7 @@ public class ScikitTestcaseGenerator implements TestcaseGenerator {
 		methodBody = methodBody.replaceAll("<<<CLASSIFIER>>>", classifierUnderTest.getCreateString());
 		methodBody = methodBody.replaceAll("<<<ITERATIONS>>>", Integer.toString(iterations));
 		methodBody = methodBody.replaceAll("<<<MORPHTESTDATA>>>", morphTestdata);
+		methodBody = methodBody.replaceAll("<<<MORPHCLASSINDEX>>>", morphClassIndex);
 		methodBody = methodBody.replaceAll("<<<MORPHRELATION>>>", morphRelation);
 		return methodBody;
 	}
