@@ -20,7 +20,7 @@ dependencies {
 	compile group: 'commons-cli', name: 'commons-cli', version: '1.4'
 	compile group: 'org.apache.ant', name: 'ant', version: '1.10.3'
 	
-	// we are working against the latest dev version of Weka
+	// we are working against the latest dev version of Weka as available in maven central on 2018-08-10
 	compile group: 'nz.ac.waikato.cms.weka', name: 'weka-dev', version: '3.9.2'
 	compile group: 'nz.ac.waikato.cms.weka', name: 'DTNB', version: '1.0.3'
 	compile group: 'nz.ac.waikato.cms.weka', name: 'multiLayerPerceptrons', version: '1.0.10'
@@ -29,6 +29,20 @@ dependencies {
 	compile group: 'nz.ac.waikato.cms.weka', name: 'alternatingDecisionTrees', version: '1.0.5'
 	compile group: 'nz.ac.waikato.cms.weka', name: 'simpleCART', version: '1.0.2'
 	
+    compile group: 'nz.ac.waikato.cms.weka', name: 'SPegasos', version: '1.0.2'
+    compile group: 'nz.ac.waikato.cms.weka', name: 'discriminantAnalysis', version: '1.0.2'
+    compile group: 'nz.ac.waikato.cms.weka', name: 'conjunctiveRule', version: '1.0.4'
+    compile group: 'nz.ac.waikato.cms.weka', name: 'ridor', version: '1.0.2'
+    compile group: 'nz.ac.waikato.cms.weka', name: 'naiveBayesTree', version: '1.0.2'
+    compile group: 'nz.ac.waikato.cms.weka', name: 'extraTrees', version: '1.0.2'
+    compile group: 'nz.ac.waikato.cms.weka', name: 'kernelLogisticRegression', version: '1.0.0'
+    compile group: 'nz.ac.waikato.cms.weka', name: 'complementNaiveBayes', version: '1.0.3'
+    compile group: 'nz.ac.waikato.cms.weka', name: 'bestFirstTree', version: '1.0.4'
+    compile group: 'nz.ac.waikato.cms.weka', name: 'votingFeatureIntervals', version: '1.0.2'
+    compile group: 'nz.ac.waikato.cms.weka', name: 'hyperPipes', version: '1.0.2'
+    
+    
+    
 	// we are working against the latest released version of Spark
 	compile group: 'org.apache.spark', name: 'spark-mllib_2.11', version: '2.3.1'
 	
