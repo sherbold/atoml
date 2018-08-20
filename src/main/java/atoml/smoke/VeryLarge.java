@@ -18,7 +18,7 @@ public class VeryLarge extends AbstractSmokeTest {
 	 */
 	@Override
 	public void generateData(int numFeatures, int numInstances, long seed) {
-		data = DataGenerator.generateData(numFeatures, numFeatures, numInstances, new UniformRealDistribution(-1e100,1e100), 0.5, seed);
+		data = DataGenerator.generateData(numFeatures, numFeatures, numInstances, new UniformRealDistribution(0,1e100), 0.5, seed);
 		testdata = data;
 	}
 	
