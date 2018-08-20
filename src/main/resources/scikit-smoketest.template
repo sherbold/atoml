@@ -1,4 +1,4 @@
-    @timeout(10800)
+    @timeout(21600)
     def test_<<<NAME>>>(self):
         for iter in range(1,<<<ITERATIONS>>>+1):
             data, meta = loadarff('smokedata/<<<NAME>>>_%i_training.arff' % iter)
@@ -10,7 +10,7 @@
             
             testdata_df = pd.DataFrame(data)
             testdata_df["classAtt"] = lb_make.fit_transform(testdata_df["classAtt"])
-            testdata_df = pd.get_dummies(testdata_df)
+            testdata_df = pd.get_dummies(testdata_df, sparse=True)
             
             classIndex = -1
             for i, s in enumerate(data_df.columns):

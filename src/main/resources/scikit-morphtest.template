@@ -1,4 +1,4 @@
-    @timeout(10800)
+    @timeout(21600)
     def test_<<<NAME>>>_<<<DATASET>>>(self):
         for iter in range(1,<<<ITERATIONS>>>+1):
             data_original, meta_original = loadarff('morphdata/<<<DATASET>>>_%i.arff' % iter)
