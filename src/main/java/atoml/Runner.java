@@ -31,7 +31,7 @@ import atoml.smoke.Outlier;
 import atoml.smoke.RightSkew;
 import atoml.smoke.Bias;
 import atoml.smoke.SmokeTest;
-import atoml.smoke.Spread;
+import atoml.smoke.Split;
 import atoml.smoke.StarvedBinary;
 import atoml.smoke.StarvedMany;
 import atoml.smoke.Uniform;
@@ -85,7 +85,7 @@ public class Runner {
 	    smokeTests.add(new MaxFloat());
 	    smokeTests.add(new VeryLarge());
 		smokeTests.add(new MaxDouble());
-		smokeTests.add(new Spread());
+		smokeTests.add(new Split());
 		smokeTests.add(new LeftSkew());
 		smokeTests.add(new RightSkew());
 		smokeTests.add(new OneClass());
