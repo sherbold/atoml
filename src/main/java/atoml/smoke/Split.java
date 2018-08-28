@@ -7,7 +7,7 @@ import atoml.data.DataGenerator;
 import weka.core.Instances;
 
 /**
- * Features: Generates a random mixture of small values [0, 10^-10] and with expected 10% outliers in [10^10, 10^11].
+ * Features: Generates a random mixture of small values [0, 10^-5] and with expected 10% outliers in [10^10, 10^11].
  * Class: RandomNumeric
  *  
  * @author sherbold
@@ -20,7 +20,7 @@ public class Split extends AbstractSmokeTest {
 	 */
 	@Override
 	public void generateData(int numFeatures, int numInstances, long seed) {
-		Instances smallValues = DataGenerator.generateData(numFeatures, 0, numInstances, new UniformRealDistribution(0, 1e-10), 0.5, seed);
+		Instances smallValues = DataGenerator.generateData(numFeatures, 0, numInstances, new UniformRealDistribution(0, 1e-5), 0.5, seed);
 		Instances largeValues = DataGenerator.generateData(numFeatures, 0, numInstances, new UniformRealDistribution(1e10, 1e11), 0.5, seed);
 		
 		// mix data

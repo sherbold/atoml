@@ -30,6 +30,7 @@ import atoml.smoke.DisjointCategorical;
 import atoml.smoke.Outlier;
 import atoml.smoke.RightSkew;
 import atoml.smoke.Bias;
+import atoml.smoke.Categorical;
 import atoml.smoke.SmokeTest;
 import atoml.smoke.Split;
 import atoml.smoke.StarvedBinary;
@@ -79,6 +80,7 @@ public class Runner {
 	    
 	    List<SmokeTest> smokeTests = new LinkedList<>();
 	    smokeTests.add(new Uniform());
+	    smokeTests.add(new Categorical());
 	    smokeTests.add(new MinFloat());
 	    smokeTests.add(new VerySmall());
 	    smokeTests.add(new MinDouble());
