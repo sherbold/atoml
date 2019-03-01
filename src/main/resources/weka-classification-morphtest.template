@@ -27,17 +27,30 @@
 		    classifier.buildClassifier(data);
             Classifier morphedClassifier = AbstractClassifier.forName("<<<CLASSIFIER>>>", new String[]<<<PARAMETERS>>>);
             morphedClassifier.buildClassifier(morphedData);
-            int violations = 0;
+            int deviations = 0;
+            double[] originalClasses = new double[data.size()];
+            double[] morphedClasses = new double[data.size()];
             for (int i = 0; i < data.size(); i++) {
                 double originalClass = classifier.classifyInstance(data.instance(i));
-			    <<<MORPHCLASS>>>
-                if (!(<<<MORPHRELATION>>>)) {
-                    violations++;
+			    double morphedClass = morphedClassifier.classifyInstance(data.instance(i));
+
+                if (!(Double.compare(originalClass, morphedClass) == 0)) {
+                    deviations++;
                 }
+                originalClasses[i] = originalClass;
+                morphedClasses[i] = morphedClass;
             }
-            double violationFraction = violations/(double) data.size();
-            String message = "metamorphic relation broken (iteration " + iter + "): " + violationFraction + " percent violations, but only <<<ALLOWEDVIOLATIONS>>> allowed.";
-            assertTrue(message, violationFraction <= <<<ALLOWEDVIOLATIONS>>>);
+            Mean mean = new Mean();
+            StandardDeviation sd = new StandardDeviation();
+            KolmogorovSmirnovTest ksTest = new KolmogorovSmirnovTest();
+            double meanOriginal = mean.evaluate(originalClasses);
+            double meanMorphed = mean.evaluate(morphedClasses);
+            double sdOriginal = sd.evaluate(originalClasses);
+            double sdMorphed = sd.evaluate(morphedClasses);
+            double pValue = ksTest.kolmogorovSmirnovTest(originalClasses, originalClasses);
+            String message = String.format("results significantly different, p-value = %f (deviations: %d, original: mu=%f sd=%f, morphed: mu=%f sd=%f)", pValue, violations, meanOriginal, sdOriginal, meanMorphed, sdMorphed);
+            
+            assertTrue(message, pValue>0.5);
         }
     }
 
