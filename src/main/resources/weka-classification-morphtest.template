@@ -38,9 +38,6 @@
             double violationFraction = violations/(double) data.size();
             String message = "metamorphic relation broken (iteration " + iter + "): " + violationFraction + " percent violations, but only <<<ALLOWEDVIOLATIONS>>> allowed.";
             assertTrue(message, violationFraction <= <<<ALLOWEDVIOLATIONS>>>);
-            //if (violationFraction > <<<ALLOWEDVIOLATIONS>>>) {
-            //    assertEquals("metamorphic relation broken (iteration " + iter + "): " + violations + " violations",0, violations);
-            //}
         }
     }
 
