@@ -1,6 +1,0 @@
-Logistic_Default_Spark org.apache.spark.ml.classification.LogisticRegression()
-DecisionTree_Default_Spark org.apache.spark.ml.classification.DecisionTreeClassifier()
-GBT_Default org.apache.spark.ml.classification.GBTClassifier()
-NaiveBayes_Default_Spark org.apache.spark.ml.classification.NaiveBayes()
-RandomForest_Default_Spark org.apache.spark.ml.classification.RandomForestClassifier()
-SVM_Linear_Spark org.apache.spark.ml.classification.LinearSVC()
