@@ -15,8 +15,6 @@ import java.util.logging.Logger;
 
 import atoml.classifiers.Algorithm;
 import atoml.data.DataDescription;
-import atoml.metamorphic.MetamorphicTest;
-import atoml.smoke.SmokeTest;
 
 public class TestsuiteGeneratorImpl {
 
@@ -47,7 +45,7 @@ public class TestsuiteGeneratorImpl {
 		this.numInstances = numInstances;
 	}
 	
-	public void generateTests(List<Algorithm> algorithmsUnderTest, List<SmokeTest> smokeTests, List<MetamorphicTest> metamorphicTests, int iterations) {
+	public void generateTests(List<Algorithm> algorithmsUnderTest, int iterations) {
 		// get frameworks from algorithms
 		Set<String> frameworks = new LinkedHashSet<>();
 		for(Algorithm algorithm : algorithmsUnderTest) {
@@ -61,7 +59,8 @@ public class TestsuiteGeneratorImpl {
 		}
 		
 		LOGGER.info("creating test data...");
-		TestdataGenerator testdataGenerator = new TestdataGenerator(smokeTests, metamorphicTests, numFeatures, numInstances, iterations);
+		// XXX only generate data for tests supported by the algorithms
+		TestdataGenerator testdataGenerator = new TestdataGenerator(TestCatalog.SMOKETESTS, TestCatalog.METAMORPHICTESTS, numFeatures, numInstances, iterations);
 		List<DataDescription> morphtestDataDescriptions = null;
 		for( String testdataPath : testdataPaths ) {
 			morphtestDataDescriptions = testdataGenerator.generateTestdata(testdataPath);
@@ -70,7 +69,7 @@ public class TestsuiteGeneratorImpl {
 		
 		for(Algorithm algorithmUnderTest : algorithmsUnderTest ) {
 			LOGGER.info("creating tests for " + algorithmUnderTest.getName() + "...");
-			TestcaseGenerator testcaseGenerator = new TestcaseGeneratorImpl(algorithmUnderTest, morphtestDataDescriptions, iterations);
+			TestcaseGeneratorImpl testcaseGenerator = new TestcaseGeneratorImpl(algorithmUnderTest, morphtestDataDescriptions, iterations);
 			String testclassCode = testcaseGenerator.generateSource();
 			
 			Path path = Paths.get(testcasePaths.get(algorithmUnderTest.getFramework())).resolve(testcaseGenerator.getFilePath());

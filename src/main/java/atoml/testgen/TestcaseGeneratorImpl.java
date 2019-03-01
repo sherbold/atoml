@@ -8,42 +8,14 @@ import java.util.Scanner;
 import atoml.classifiers.Algorithm;
 import atoml.classifiers.FeatureType;
 import atoml.data.DataDescription;
-import atoml.metamorphic.Const;
 import atoml.metamorphic.MetamorphicTest;
-import atoml.metamorphic.Opposite;
-import atoml.metamorphic.Rename;
-import atoml.metamorphic.Reorder;
-import atoml.metamorphic.Same;
-import atoml.metamorphic.Scramble;
-import atoml.smoke.Bias;
-import atoml.smoke.Categorical;
-import atoml.smoke.DisjointCategorical;
-import atoml.smoke.DisjointNumeric;
-import atoml.smoke.LeftSkew;
-import atoml.smoke.ManyCategories;
-import atoml.smoke.MaxDouble;
-import atoml.smoke.MaxFloat;
-import atoml.smoke.MinDouble;
-import atoml.smoke.MinFloat;
-import atoml.smoke.OneClass;
-import atoml.smoke.Outlier;
-import atoml.smoke.RandomCategorial;
-import atoml.smoke.RandomNumeric;
-import atoml.smoke.RightSkew;
 import atoml.smoke.SmokeTest;
-import atoml.smoke.Split;
-import atoml.smoke.StarvedBinary;
-import atoml.smoke.StarvedMany;
-import atoml.smoke.Uniform;
-import atoml.smoke.VeryLarge;
-import atoml.smoke.VerySmall;
-import atoml.smoke.Zeroes;
 
 /**
  * Generates the source code for a test case
  * @author sherbold
  */
-public class TestcaseGeneratorImpl implements TestcaseGenerator {
+public class TestcaseGeneratorImpl {
 	
 	/**
 	 * classifier that is tested
@@ -57,56 +29,12 @@ public class TestcaseGeneratorImpl implements TestcaseGenerator {
 	private final TemplateEngine templateEngine;
 	
 	/**
-	 * list of all smoke tests that are available
-	 */
-	private final List<SmokeTest> allSmokeTests;
-	
-	/**
-	 * list of all morph tests that are available
-	 */
-	private final List<MetamorphicTest> allMetamorphicTests;
-
-	
-	/**
 	 * creates a new TestclassGenerator
 	 * @param algorithmUnderTest classifier that is tested
 	 * @param morphtestDataDescriptions descriptions of the data sets used by morph tests
 	 * @param iterations number of iterations for the test (must match with generated data)
 	 */
 	public TestcaseGeneratorImpl(Algorithm algorithmUnderTest, List<DataDescription> morphtestDataDescriptions, int iterations) {
-		// TODO this should be replaced by some kind of discovery or catalog		
-		this.allSmokeTests = new LinkedList<>();
-		allSmokeTests.add(new Uniform());
-		allSmokeTests.add(new Categorical());
-		allSmokeTests.add(new MinFloat());
-		allSmokeTests.add(new VerySmall());
-	    allSmokeTests.add(new MinDouble());
-	    allSmokeTests.add(new MaxFloat());
-	    allSmokeTests.add(new VeryLarge());
-	    allSmokeTests.add(new MaxDouble());
-	    allSmokeTests.add(new Split());
-	    allSmokeTests.add(new LeftSkew());
-	    allSmokeTests.add(new RightSkew());
-		allSmokeTests.add(new OneClass());
-		allSmokeTests.add(new Bias());
-		allSmokeTests.add(new Outlier());
-		allSmokeTests.add(new Zeroes());
-		allSmokeTests.add(new RandomNumeric());
-		allSmokeTests.add(new RandomCategorial());
-		allSmokeTests.add(new DisjointNumeric());
-		allSmokeTests.add(new DisjointCategorical());
-		allSmokeTests.add(new ManyCategories());
-		allSmokeTests.add(new StarvedMany());
-		allSmokeTests.add(new StarvedBinary());
-		// TODO this should be replaced by some kind of discovery or catalog
-		this.allMetamorphicTests = new LinkedList<>();
-		allMetamorphicTests.add(new Const());
-		allMetamorphicTests.add(new Opposite());
-		allMetamorphicTests.add(new Scramble());
-		allMetamorphicTests.add(new Reorder());
-		allMetamorphicTests.add(new Same());
-		allMetamorphicTests.add(new Rename());
-		
 		this.algorithmUnderTest = algorithmUnderTest;
 		this.morphtestDataDescriptions = morphtestDataDescriptions;
 		this.iterations = iterations; 
@@ -128,11 +56,10 @@ public class TestcaseGeneratorImpl implements TestcaseGenerator {
 		}
 	}
 	
-	/* 
-	 * (non-Javadoc)
-	 * @see atoml.testgen.TestcaseGenerator#generateTestclass()
+	/**
+	 * generates the source code
+	 * @return the source code
 	 */
-	@Override
 	public String generateSource() {
 		@SuppressWarnings("resource")
 		String classBody = new Scanner(this.getClass().getResourceAsStream(getResourcePrefix()+"-class.template"), "UTF-8").useDelimiter("\\A").next();
@@ -207,11 +134,10 @@ public class TestcaseGeneratorImpl implements TestcaseGenerator {
 	}
 
 	
-	/* 
-	 * (non-Javadoc)
-	 * @see atoml.testgen.TestcaseGenerator#getFilePath()
+	/**
+	 * The path where the test case should be stored. This path is relative to the testsuite source folder.
+	 * @return
 	 */
-	@Override
 	public String getFilePath() {
 		return templateEngine.getFilePath();
 	}
@@ -222,7 +148,7 @@ public class TestcaseGeneratorImpl implements TestcaseGenerator {
 	
 	private List<SmokeTest> getSmoketests(FeatureType featureType) {
 			List<SmokeTest> supportedSmokeTests = new LinkedList<>();
-		for( SmokeTest smokeTest : allSmokeTests ) {
+		for( SmokeTest smokeTest : TestCatalog.SMOKETESTS ) {
 			if(FeatureType.isSupported(featureType, smokeTest.getFeatureType())) {
 				supportedSmokeTests.add(smokeTest);
 			}
@@ -232,7 +158,7 @@ public class TestcaseGeneratorImpl implements TestcaseGenerator {
 	
 	private List<MetamorphicTest> getMorptests(Map<String, String> properties) {
 		List<MetamorphicTest> supportedMorphTests = new LinkedList<>();
-		for( MetamorphicTest morphTest : allMetamorphicTests ) {
+		for( MetamorphicTest morphTest : TestCatalog.METAMORPHICTESTS ) {
 			String propertyValue = properties.get(morphTest.getClass().getSimpleName().toUpperCase());
 			if( propertyValue!=null ) {
 				supportedMorphTests.add(morphTest);
