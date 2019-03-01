@@ -116,7 +116,7 @@ public class WekaTemplate implements TemplateEngine {
 		StringBuilder parameters = new StringBuilder();
 		parameters.append("{");
 		for( Parameter parameter : algorithm.getParameters()) {
-			parameters.append("\"--"+parameter.getName()+"\",");
+			parameters.append("\"-"+parameter.getName()+"\",");
 			parameters.append("\""+parameter.getStringValue("default")+"\",");
 			
 		}
