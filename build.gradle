@@ -23,7 +23,7 @@ dependencies {
 	compile group: 'com.esotericsoftware.yamlbeans', name: 'yamlbeans', version: '1.13'
 	
 	// we are working against the latest dev version of Weka as available in maven central on 2018-08-10
-	compile group: 'nz.ac.waikato.cms.weka', name: 'weka-dev', version: '3.9.2'
+	compile group: 'nz.ac.waikato.cms.weka', name: 'weka-dev', version: '3.9.3'
 	compile group: 'nz.ac.waikato.cms.weka', name: 'DTNB', version: '1.0.3'
 	compile group: 'nz.ac.waikato.cms.weka', name: 'multiLayerPerceptrons', version: '1.0.10'
 	compile group: 'nz.ac.waikato.cms.weka', name: 'alternatingModelTrees', version: '1.0.0'
@@ -46,7 +46,7 @@ dependencies {
     
     
 	// we are working against the latest released version of Spark
-	compile group: 'org.apache.spark', name: 'spark-mllib_2.11', version: '2.3.1'
+	compile group: 'org.apache.spark', name: 'spark-mllib_2.11', version: '2.4.0'
 	
 	
     // Use JUnit test framework
