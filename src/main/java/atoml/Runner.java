@@ -34,12 +34,12 @@ public class Runner {
 	    
 		List<Algorithm> algorithms = YamlClassifierGenerator.parseFile(yamlFileStr);
 		TestsuiteGeneratorImpl testsuiteGenerator = new TestsuiteGeneratorImpl(numFeatures, numInstances);
-		System.setProperty("atoml.weka.datapath", "testres/weka/src/test/resources/");
-		System.setProperty("atoml.weka.testcasepath", "testres/weka/src/test/java/");
-		System.setProperty("atoml.sklearn.datapath", "testres/sklearn/");
-		System.setProperty("atoml.sklearn.testcasepath", "testres/sklearn/");
-		System.setProperty("atoml.spark.datapath", "testres/spark/src/test/resources/");
-		System.setProperty("atoml.spark.testcasepath", "testres/spark/src/test/java/");
+		System.setProperty("atoml.weka.datapath", "generated-tests/weka/src/test/resources/");
+		System.setProperty("atoml.weka.testcasepath", "generated-tests/weka/src/test/java/");
+		System.setProperty("atoml.sklearn.datapath", "generated-tests/sklearn/");
+		System.setProperty("atoml.sklearn.testcasepath", "generated-tests/sklearn/");
+		System.setProperty("atoml.spark.datapath", "generated-tests/spark/src/test/resources/");
+		System.setProperty("atoml.spark.testcasepath", "generated-tests/spark/src/test/java/");
 		testsuiteGenerator.generateTests(algorithms, iterations);
 	}
 }
