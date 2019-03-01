@@ -66,13 +66,9 @@ public class CmdParameters {
 	 * prepares the options for the command line parser
 	 */
 	private void prepareOptions() {
-		Option classifier = new Option("c", "classifier", true, "classifier that is evaluated");
-		classifier.setRequired(false);
-		options.addOption(classifier);
-
-		Option inputFile = new Option("f", "file", true, "input file that contains classifiers");
-		inputFile.setRequired(false);
-		options.addOption(inputFile);
+		Option yamlFile = new Option("y", "yaml", true, "input file in yaml format");
+		yamlFile.setRequired(true);
+		options.addOption(yamlFile);
 
 		Option iterations = new Option("i", "iterations", true,
 				"number of iterations used by smoke tester (default: 1)");
@@ -91,24 +87,6 @@ public class CmdParameters {
 		numFeatures.setRequired(false);
 		options.addOption(numFeatures);
 		defaults.put("nfeat", "10");
-
-		Option testpath = new Option("t", "testpath", true,
-				"path where generated test cases are stored (default: src/test/java/)");
-		testpath.setRequired(false);
-		options.addOption(testpath);
-		defaults.put("testpath", "src/test/java/");
-
-		Option datapath = new Option("r", "resourcepath", true,
-				"path where generated test data is stored (default: src/test/resources/)");
-		testpath.setRequired(false);
-		options.addOption(datapath);
-		defaults.put("resourcepath", "src/test/resources/");
-		
-		Option mllib = new Option("l", "mllib", true,
-				"ML library for which tests are generated (default: weka, allowed: weka, scikit)");
-		mllib.setRequired(false);
-		options.addOption(mllib);
-		defaults.put("mllib", "weka");
 	}
 
 	/**
@@ -119,15 +97,17 @@ public class CmdParameters {
 	 *             thrown in case constraints are not fulfilled
 	 */
 	private void checkConstraints() throws ParseException {
-		if (cmd.getOptionValue("file") == null && cmd.getOptionValue("classifier") == null) {
-			throw new ParseException("Missing required option: must specify either classifier (-c) or input file (-f)");
+		/*
+		if (cmd.getOptionValue("file") == null && cmd.getOptionValue("classifier") == null && cmd.getOptionValue("yaml") == null) {
+			throw new ParseException("Missing required option: must specify either classifier (-c), input file (-f), or yaml file (-y)");
 		}
 		if (cmd.getOptionValue("file") != null && cmd.getOptionValue("classifier") != null) {
-			throw new ParseException("Duplicate options: must specify both classifier (-c) and input file (-f)");
+			throw new ParseException("Duplicate options: must not specify both classifier (-c) and input file (-f)");
 		}
 		if( !("weka".equals(getStringValue("mllib")) || "scikit".equals(getStringValue("mllib")) || "spark".equals(getStringValue("mllib")))) {
 			throw new ParseException("Disallowed value: --mllib (-l) must either be weka, scikit, or spark");
 		}
+		*/
 	}
 
 	/**

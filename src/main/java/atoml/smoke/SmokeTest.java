@@ -1,5 +1,6 @@
 package atoml.smoke;
 
+import atoml.classifiers.FeatureType;
 import weka.core.Instances;
 
 /**
@@ -41,4 +42,10 @@ public interface SmokeTest {
 	void generateData(int numFeatures, int numInstances, long seed);
 	
 	boolean isRandomized();
+	
+	/**
+	 * the minimal requirements for the features to be supported by the algorithms, mainly described by the data range
+	 * @return the feature type
+	 */
+	FeatureType getFeatureType();
 }

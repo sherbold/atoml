@@ -20,6 +20,8 @@ dependencies {
 	compile group: 'commons-cli', name: 'commons-cli', version: '1.4'
 	compile group: 'org.apache.ant', name: 'ant', version: '1.10.3'
 	
+	compile group: 'com.esotericsoftware.yamlbeans', name: 'yamlbeans', version: '1.13'
+	
 	// we are working against the latest dev version of Weka as available in maven central on 2018-08-10
 	compile group: 'nz.ac.waikato.cms.weka', name: 'weka-dev', version: '3.9.2'
 	compile group: 'nz.ac.waikato.cms.weka', name: 'DTNB', version: '1.0.3'

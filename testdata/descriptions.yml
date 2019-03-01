@@ -1,0 +1,65 @@
+name: WEKA_DT
+framework: weka
+type: classification
+package: weka.classifiers.trees
+class: J48
+parameters:
+  unpruned:
+    type: binary
+    default: false
+  confidenceFactor:
+    type: double
+    min: 0.0
+    max: 1.0
+    default: 0.25
+  minNumObj:
+    type: integer
+    min: 1
+    max: inf
+    default: 2
+features: double
+properties:
+  same: 0.0
+  scramble: 0.05
+---
+name: SKLEARN_DT
+framework: sklearn
+type: classification
+package:  sklearn.tree
+class: DecisionTreeClassifier
+features: float
+parameters:
+  min_samples_split:
+    type: integer
+    min: 2
+    max: inf
+    default: 2
+  max_depth:
+    type: integer
+    min: 1
+    max: inf
+    default: None
+properties:
+  same: 0.0
+  scramble: 0.05
+---
+name: SPARK_DT
+framework: spark
+type: classification
+package:  org.apache.spark.ml.classification
+class: DecisionTreeClassifier
+features: float
+parameters:
+  setMaxDepth:
+    type: integer
+    min: 1
+    max: inf
+    default: 5
+  setMinInfoGain:
+    type: double
+    min: 0.0
+    max: 1.0
+    default: 0.1
+properties:
+  same: 0.0
+  scramble: 0.05

@@ -4,6 +4,7 @@ import java.util.stream.IntStream;
 
 import org.apache.commons.math3.distribution.UniformRealDistribution;
 
+import atoml.classifiers.FeatureType;
 import atoml.data.DataGenerator;
 
 /**
@@ -32,5 +33,13 @@ public class RandomCategorial extends AbstractSmokeTest {
 	@Override
 	public boolean isRandomized() {
 		return true;
+	}
+	
+	/* (non-Javadoc)
+	 * @see atoml.smoke.SmokeTest#getFeatureType()
+	 */
+	@Override
+	public FeatureType getFeatureType() {
+		return FeatureType.CATEGORIAL;
 	}
 }

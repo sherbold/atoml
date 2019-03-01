@@ -1,0 +1,20 @@
+    @Test
+    public void test_<<<NAME>>>() throws Exception {
+        for(int iter=1; iter<=<<<ITERATIONS>>>; iter++) {
+            Dataset<Row> dataframe = arffToDataset("/smokedata/<<<NAME>>>_" + iter + "_training.arff");
+            Dataset<Row> testdata = arffToDataset("/smokedata/<<<NAME>>>_" + iter + "_test.arff");
+            
+            <<<CLASSNAME>>> classifier = new <<<CLASSIFIER>>>;
+            classifier.setLabelCol("classAtt");
+            try {
+            	Method setSeedMethod = classifier.getClass().getMethod("setSeed", long.class);
+            	setSeedMethod.invoke(classifier, 42);
+            } catch (NoSuchMethodException | SecurityException e) {
+            	// not randomized
+            }
+            
+            ClassificationModel<?, ?> model = classifier.fit(dataframe);
+            model.transform(testdata);
+        }
+    }
+

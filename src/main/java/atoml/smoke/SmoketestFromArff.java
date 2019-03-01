@@ -4,6 +4,7 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 
+import atoml.classifiers.FeatureType;
 import weka.core.Instances;
 
 public class SmoketestFromArff extends AbstractSmokeTest {
@@ -36,5 +37,13 @@ public class SmoketestFromArff extends AbstractSmokeTest {
 	@Override
 	public boolean isRandomized() {
 		return false;
+	}
+	
+	/* (non-Javadoc)
+	 * @see atoml.smoke.SmokeTest#getFeatureType()
+	 */
+	@Override
+	public FeatureType getFeatureType() {
+		return FeatureType.DOUBLE;
 	}
 }

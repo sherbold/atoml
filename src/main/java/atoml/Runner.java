@@ -1,19 +1,12 @@
 package atoml;
 
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Paths;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.function.Consumer;
-import java.util.stream.Stream;
 
 import org.apache.commons.cli.ParseException;
 
-import atoml.classifiers.Classifier;
-import atoml.classifiers.ScikitClassifier;
-import atoml.classifiers.SparkClassifier;
-import atoml.classifiers.WekaClassifier;
+import atoml.classifiers.Algorithm;
+import atoml.classifiers.YamlClassifierGenerator;
 import atoml.metamorphic.Const;
 import atoml.metamorphic.Opposite;
 import atoml.metamorphic.MetamorphicTest;
@@ -44,9 +37,7 @@ import atoml.smoke.VerySmall;
 import atoml.smoke.MaxDouble;
 import atoml.smoke.MaxFloat;
 import atoml.smoke.RandomNumeric;
-import atoml.testgen.ScikitTestsuiteGenerator;
-import atoml.testgen.SparkTestsuiteGenerator;
-import atoml.testgen.WekaTestsuiteGenerator;
+import atoml.testgen.TestsuiteGeneratorImpl;
 
 /**
  * Application object that executes the main function.
@@ -66,17 +57,11 @@ public class Runner {
 			return;
 		}
 		
-	    final String classifierStr = cmdParameters.getStringValue("classifier");
-	    final String inputFileStr = cmdParameters.getStringValue("file");
+	    final String yamlFileStr = cmdParameters.getStringValue("yaml");
 	    
 		final int iterations = cmdParameters.getIntegerValue("iterations");
 	    final int numInstances = cmdParameters.getIntegerValue("ninst");
 	    final int numFeatures = cmdParameters.getIntegerValue("nfeat");
-	    
-	    final String testSrcPath = cmdParameters.getStringValue("testpath");
-	    final String testResourcePath = cmdParameters.getStringValue("resourcepath");
-	    
-	    final String mllib = cmdParameters.getStringValue("mllib");
 	    
 	    List<SmokeTest> smokeTests = new LinkedList<>();
 	    smokeTests.add(new Uniform());
@@ -109,55 +94,14 @@ public class Runner {
 		metamorphicTests.add(new Same());
 		metamorphicTests.add(new Rename());
 	    
-		List<Classifier> classifiersUnderTest = new LinkedList<>();
-		if( classifierStr!=null ) {
-			if( "weka".equals(mllib) ) {
-				classifiersUnderTest.add(new WekaClassifier(classifierStr));
-			}
-			else if( "scikit".equals(mllib) ) {
-				classifiersUnderTest.add(new ScikitClassifier(classifierStr));
-			} else {
-				throw new RuntimeException("invalid option for mllib: " + mllib);
-			}
-		}
-		if( inputFileStr!=null ) {
-			try(Stream<String> stream = Files.lines(Paths.get(inputFileStr))) {
-				stream.forEach(new Consumer<String>() {
-					@Override
-					public void accept(String line) {
-						if( "weka".equals(mllib) ) {
-							classifiersUnderTest.add(new WekaClassifier(line));
-						}
-						else if( "scikit".equals(mllib) ) {
-							classifiersUnderTest.add(new ScikitClassifier(line));
-						} 
-						else if( "spark".equals(mllib) ) {
-							classifiersUnderTest.add(new SparkClassifier(line));
-						}
-						else {
-							throw new RuntimeException("invalid option for mllib: " + mllib);
-						}
-					}
-				});
-			} catch (IOException e) {
-				System.out.println("problem reading " + inputFileStr + ": " + e.getMessage());
-				return;
-			}
-		}
-		
-		if( "weka".equals(mllib) ) {
-			WekaTestsuiteGenerator junitGenerator = new WekaTestsuiteGenerator(testSrcPath, testResourcePath, numFeatures, numInstances);
-			junitGenerator.generateTests(classifiersUnderTest, smokeTests, metamorphicTests, iterations);
-		}
-		else if( "scikit".equals(mllib) ) {
-			ScikitTestsuiteGenerator scikitGenerator = new ScikitTestsuiteGenerator(testSrcPath, testResourcePath, numFeatures, numInstances);
-			scikitGenerator.generateTests(classifiersUnderTest, smokeTests, metamorphicTests, iterations);
-		} 
-		else if( "spark".equals(mllib) ) {
-			SparkTestsuiteGenerator sparkGenerator = new SparkTestsuiteGenerator(testSrcPath, testResourcePath, numFeatures, numInstances);
-			sparkGenerator.generateTests(classifiersUnderTest, smokeTests, metamorphicTests, iterations);
-		} else {
-			throw new RuntimeException("invalid option for mllib: " + mllib);
-		}
+		List<Algorithm> algorithms = YamlClassifierGenerator.parseFile(yamlFileStr);
+		TestsuiteGeneratorImpl testsuiteGenerator = new TestsuiteGeneratorImpl(numFeatures, numInstances);
+		System.setProperty("atoml.weka.datapath", "testres/weka/src/test/resources/");
+		System.setProperty("atoml.weka.testcasepath", "testres/weka/src/test/java/");
+		System.setProperty("atoml.sklearn.datapath", "testres/sklearn/");
+		System.setProperty("atoml.sklearn.testcasepath", "testres/sklearn/");
+		System.setProperty("atoml.spark.datapath", "testres/spark/src/test/resources/");
+		System.setProperty("atoml.spark.testcasepath", "testres/spark/src/test/java/");
+		testsuiteGenerator.generateTests(algorithms, smokeTests, metamorphicTests, iterations);
 	}
 }

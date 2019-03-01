@@ -4,6 +4,8 @@ import java.util.stream.IntStream;
 
 import org.apache.commons.math3.distribution.AbstractRealDistribution;
 
+import atoml.classifiers.FeatureType;
+
 /**
  * Meta data about data sets
  * 
@@ -75,6 +77,9 @@ public class DataDescription {
 	 * the type of this data description
 	 */
 	private final DescriptionType type;
+	
+	// TODO real init
+	private final FeatureType featureType = FeatureType.UNIT;
 
 	/**
 	 * Creates a new data description for data that is loaded from a file
@@ -278,5 +283,14 @@ public class DataDescription {
 	 */
 	public boolean isRandomized() {
 		return isRandomized;
+	}
+	
+
+	/**
+	 * the minimal requirements for the features to be supported by the algorithms, mainly described by the data range
+	 * @return the feature type
+	 */
+	public FeatureType getFeatureType() {
+		return this.featureType;
 	}
 }

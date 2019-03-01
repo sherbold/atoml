@@ -2,6 +2,7 @@ package atoml.smoke;
 
 import org.apache.commons.math3.distribution.GammaDistribution;
 
+import atoml.classifiers.FeatureType;
 import atoml.data.DataGenerator;
 import weka.core.Instance;
 
@@ -39,5 +40,13 @@ public class LeftSkew extends AbstractSmokeTest {
 	@Override
 	public boolean isRandomized() {
 		return true;
+	}
+	
+	/* (non-Javadoc)
+	 * @see atoml.smoke.SmokeTest#getFeatureType()
+	 */
+	@Override
+	public FeatureType getFeatureType() {
+		return FeatureType.FLOAT;
 	}
 }

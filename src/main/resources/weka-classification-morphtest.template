@@ -1,0 +1,43 @@
+    @Test(timeout=21600000)
+    public void test_<<<NAME>>>_<<<DATASET>>>() throws Exception {
+        for(int iter=1; iter<=<<<ITERATIONS>>>; iter++) {
+            Instances data;
+            InputStreamReader originalFile = new InputStreamReader(
+                     this.getClass().getResourceAsStream("/morphdata/<<<DATASET>>>_" + iter + ".arff"));
+            try(BufferedReader reader = new BufferedReader(originalFile);) {
+                data = new Instances(reader);
+                reader.close();
+            }
+            catch (IOException e) {
+                throw new RuntimeException("error reading file:  morphdata/<<<DATASET>>>_" + iter + ".arff", e);
+            }
+            data.setClassIndex(data.numAttributes()-1);
+            Instances morphedData;
+            InputStreamReader morphedFile = new InputStreamReader(
+                     this.getClass().getResourceAsStream("/morphdata/<<<DATASET>>>_" + iter + "_<<<NAME>>>.arff"));
+            try(BufferedReader reader = new BufferedReader(morphedFile);) {
+                morphedData = new Instances(reader);
+                reader.close();
+            }
+            catch (IOException e) {
+                throw new RuntimeException("error reading file:  morphdata/<<<DATASET>>>_" + iter + "_<<<NAME>>>.arff", e);
+            }
+            morphedData.setClassIndex(morphedData.numAttributes()-1);
+            Classifier classifier = AbstractClassifier.forName("<<<CLASSIFIER>>>", new String[]<<<PARAMETERS>>>);
+		    classifier.buildClassifier(data);
+            Classifier morphedClassifier = AbstractClassifier.forName("<<<CLASSIFIER>>>", new String[]<<<PARAMETERS>>>);
+            morphedClassifier.buildClassifier(morphedData);
+            int violations = 0;
+            for (int i = 0; i < data.size(); i++) {
+                double originalClass = classifier.classifyInstance(data.instance(i));
+			    <<<MORPHCLASS>>>
+                if (!(<<<MORPHRELATION>>>)) {
+                    violations++;
+                }
+            }
+            if (violations > 0) {
+                assertEquals("metamorphic relation broken (iteration " + iter + "): " + violations + " violations",0, violations);
+            }
+        }
+    }
+
