@@ -35,9 +35,9 @@
                     violations++;
                 }
             }
-            if (violations > 0) {
-                assertEquals("metamorphic relation broken (iteration " + iter + "): " + violations + " violations",0, violations);
-            }
+            double violationFraction = violations/(double) predictionOriginal.size();
+            String message = "metamorphic relation broken (iteration " + iter + "): " + violationFraction + " percent violations, but only <<<ALLOWEDVIOLATIONS>>> allowed.";
+            assertTrue(message, violationFraction <= <<<ALLOWEDVIOLATIONS>>>);
         }
     }
 

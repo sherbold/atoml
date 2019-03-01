@@ -65,6 +65,7 @@ public class SparkTemplate implements TemplateEngine {
 	@Override
 	public Map<String, String> getSmoketestReplacements(SmokeTest smokeTest) {
 		Map<String, String> replacements = new HashMap<>();
+		replacements.put("<<<CLASSNAME>>>", algorithmUnderTest.getClassName());
 		replacements.put("<<<CLASSIFIER>>>", createString);
 		return replacements;
 	}
@@ -98,11 +99,14 @@ public class SparkTemplate implements TemplateEngine {
 			throw new RuntimeException("could not generate tests, unknown morph prediction relation type");
 		}
 		
+		String allowedViolations = algorithmUnderTest.getProperties().get(metamorphicTest.getClass().getSimpleName().toUpperCase());
+		
 		Map<String, String> replacements = new HashMap<>();
 		replacements.put("<<<CLASSNAME>>>", algorithmUnderTest.getClassName());
 		replacements.put("<<<CLASSIFIER>>>", createString);
 		replacements.put("<<<MORPHCLASS>>>", morphClass);
 		replacements.put("<<<MORPHRELATION>>>", morphRelation);
+		replacements.put("<<<ALLOWEDVIOLATIONS>>>", allowedViolations);
 		
 		return replacements;
 	}
