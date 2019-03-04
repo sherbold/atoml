@@ -23,34 +23,37 @@
                 throw new RuntimeException("error reading file:  morphdata/<<<DATASET>>>_" + iter + "_<<<NAME>>>.arff", e);
             }
             morphedData.setClassIndex(morphedData.numAttributes()-1);
+            
             Classifier classifier = AbstractClassifier.forName("<<<CLASSIFIER>>>", new String[]<<<PARAMETERS>>>);
 		    classifier.buildClassifier(data);
             Classifier morphedClassifier = AbstractClassifier.forName("<<<CLASSIFIER>>>", new String[]<<<PARAMETERS>>>);
             morphedClassifier.buildClassifier(morphedData);
+            
             int deviations = 0;
-            double[] originalClasses = new double[data.size()];
-            double[] morphedClasses = new double[data.size()];
+            long[] expectedMorphCounts = new long[2];
+            double[] expectedMorphDistributions = new double[data.size()];
+            long[] morphedCounts = new long[2] ;
+            double[] morphedDistributions = new double[data.size()];
             for (int i = 0; i < data.size(); i++) {
                 double originalClass = classifier.classifyInstance(data.instance(i));
-			    double morphedClass = morphedClassifier.classifyInstance(data.instance(i));
-
-                if (!(Double.compare(originalClass, morphedClass) == 0)) {
+                double expectedMorphedClass;
+			    <<<EXPECTEDMORPHEDCLASS>>>
+                expectedMorphCounts[(int) expectedMorphedClass]++;
+                expectedMorphDistributions[i] = classifier.distributionForInstance(data.instance(i))[(int) expectedMorphedClass]; 
+                double morphedClass = morphedClassifier.classifyInstance(data.instance(i));
+			    morphedCounts[(int) morphedClass]++;
+			    morphedDistributions[i] = classifier.distributionForInstance(data.instance(i))[(int) morphedClass]; 
+			    
+                if (!(Double.compare(expectedMorphedClass, morphedClass) == 0)) {
                     deviations++;
                 }
-                originalClasses[i] = originalClass;
-                morphedClasses[i] = morphedClass;
             }
-            Mean mean = new Mean();
-            StandardDeviation sd = new StandardDeviation();
-            KolmogorovSmirnovTest ksTest = new KolmogorovSmirnovTest();
-            double meanOriginal = mean.evaluate(originalClasses);
-            double meanMorphed = mean.evaluate(morphedClasses);
-            double sdOriginal = sd.evaluate(originalClasses);
-            double sdMorphed = sd.evaluate(morphedClasses);
-            double pValue = ksTest.kolmogorovSmirnovTest(originalClasses, originalClasses);
-            String message = String.format("results significantly different, p-value = %f (deviations: %d, original: mu=%f sd=%f, morphed: mu=%f sd=%f)", pValue, violations, meanOriginal, sdOriginal, meanMorphed, sdMorphed);
-            
-            assertTrue(message, pValue>0.5);
+            if( deviations>0 ) {
+	            double pValueCounts = TestUtils.chiSquareTestDataSetsComparison(expectedMorphCounts, morphedCounts);
+	            String message = String.format("results significantly different, p-value = %f (deviations: %d out of %d)", pValueCounts, deviations, data.size());
+                System.out.println(String.format("p-value = %f (deviations: %d out of %d)", pValueCounts, deviations, data.size()));
+                assertTrue(message, pValueCounts>0.05);
+            }
         }
     }
 

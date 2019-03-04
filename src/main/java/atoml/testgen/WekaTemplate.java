@@ -90,10 +90,10 @@ public class WekaTemplate implements TemplateEngine {
 		String morphRelation;
 		switch(metamorphicTest.getPredictionRelation()) {
 		case EQUAL:
-			morphRelation = "Double.compare(originalClass, morphedClass) == 0";
+			morphRelation = "expectedMorphedClass = originalClass;";
 			break;
 		case INVERTED:
-			morphRelation = "Double.compare(originalClass, morphedClass) != 0";
+			morphRelation = "expectedMorphedClass = originalClass==0.0 ? 1.0 : 0.0;";
 			break;
 		default:
 			throw new RuntimeException("could not generate tests, unknown morph prediction relation type");
@@ -106,7 +106,7 @@ public class WekaTemplate implements TemplateEngine {
 		replacements.put("<<<CLASSIFIER>>>", algorithmUnderTest.getClassName());
 		replacements.put("<<<PARAMETERS>>>", parameterString);
 		replacements.put("<<<MORPHCLASS>>>", morphClass);
-		replacements.put("<<<MORPHRELATION>>>", morphRelation);
+		replacements.put("<<<EXPECTEDMORPHEDCLASS>>>", morphRelation);
 		replacements.put("<<<ALLOWEDVIOLATIONS>>>", allowedViolations);
 		return replacements;
 	}
