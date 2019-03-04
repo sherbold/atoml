@@ -7,6 +7,7 @@ import java.util.Scanner;
 
 import atoml.classifiers.Algorithm;
 import atoml.classifiers.FeatureType;
+import atoml.classifiers.RelationType;
 import atoml.data.DataDescription;
 import atoml.metamorphic.MetamorphicTest;
 import atoml.smoke.SmokeTest;
@@ -156,10 +157,10 @@ public class TestcaseGeneratorImpl {
 		return supportedSmokeTests;
 	}
 	
-	private List<MetamorphicTest> getMorptests(Map<String, String> properties) {
+	private List<MetamorphicTest> getMorptests(Map<String, RelationType> properties) {
 		List<MetamorphicTest> supportedMorphTests = new LinkedList<>();
 		for( MetamorphicTest morphTest : TestCatalog.METAMORPHICTESTS ) {
-			String propertyValue = properties.get(morphTest.getClass().getSimpleName().toUpperCase());
+			RelationType propertyValue = properties.get(morphTest.getClass().getSimpleName().toUpperCase());
 			if( propertyValue!=null ) {
 				supportedMorphTests.add(morphTest);
 			}

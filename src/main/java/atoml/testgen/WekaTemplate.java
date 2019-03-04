@@ -99,7 +99,17 @@ public class WekaTemplate implements TemplateEngine {
 			throw new RuntimeException("could not generate tests, unknown morph prediction relation type");
 		}
 		
-		String allowedViolations = algorithmUnderTest.getProperties().get(metamorphicTest.getClass().getSimpleName().toUpperCase());
+		String isExact; 
+		switch(algorithmUnderTest.getProperties().get(metamorphicTest.getClass().getSimpleName().toUpperCase())) {
+		case DISTRIBUTION:
+			isExact = "false";
+			break;
+		case EXACT:
+			isExact = "true";
+			break;
+		default:
+			throw new RuntimeException("could not generate tests, unknown morph test evalation relation type");
+		}
 		
 		Map<String, String> replacements = new HashMap<>();
 		
@@ -107,7 +117,7 @@ public class WekaTemplate implements TemplateEngine {
 		replacements.put("<<<PARAMETERS>>>", parameterString);
 		replacements.put("<<<MORPHCLASS>>>", morphClass);
 		replacements.put("<<<EXPECTEDMORPHEDCLASS>>>", morphRelation);
-		replacements.put("<<<ALLOWEDVIOLATIONS>>>", allowedViolations);
+		replacements.put("<<<ISEXACTEVALUATION>>>", isExact);
 		return replacements;
 	}
 	

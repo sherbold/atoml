@@ -48,9 +48,9 @@ public class Algorithm {
 	/**
 	 * properties supported by the algorithm
 	 */
-	private final Map<String, String> properties;
+	private final Map<String, RelationType> properties;
 	
-	public Algorithm(String name, String algorithmType, String framework, String className, String algorithmPackage, List<Parameter> parameters, FeatureType features, Map<String, String> properties) {
+	public Algorithm(String name, String algorithmType, String framework, String className, String algorithmPackage, List<Parameter> parameters, FeatureType features, Map<String, RelationType> properties) {
 		this.name = name;
 		this.algorithmType = algorithmType;
 		this.framework = framework;
@@ -89,7 +89,7 @@ public class Algorithm {
 		return parameters;
 	}
 	
-	public Map<String, String> getProperties() {
+	public Map<String, RelationType> getProperties() {
 		return properties;
 	}
 	

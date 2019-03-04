@@ -51,11 +51,12 @@ public class YamlClassifierGenerator {
 	    		}
 	    	}
 	    	FeatureType features = FeatureType.valueOf(((String) algorithm.get("features")).toUpperCase());
-	    	Map<String, String> properties = new HashMap<>();
+	    	Map<String, RelationType> properties = new HashMap<>();
 	    	if( algorithm.get("properties")!=null ) {
 	    		Map<String, String> internalPropertyMap = (Map<String, String>) algorithm.get("properties");
 	    		for( String property : internalPropertyMap.keySet()) {
-	    			properties.put(property.toUpperCase(), internalPropertyMap.get(property));
+	    			RelationType relation = RelationType.valueOf(internalPropertyMap.get(property).toUpperCase());
+	    			properties.put(property.toUpperCase(), relation);
 	    		}
 	    		
 	    	}

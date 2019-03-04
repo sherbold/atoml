@@ -49,10 +49,14 @@
                 }
             }
             if( deviations>0 ) {
-	            double pValueCounts = TestUtils.chiSquareTestDataSetsComparison(expectedMorphCounts, morphedCounts);
-	            String message = String.format("results significantly different, p-value = %f (deviations: %d out of %d)", pValueCounts, deviations, data.size());
-                System.out.println(String.format("p-value = %f (deviations: %d out of %d)", pValueCounts, deviations, data.size()));
-                assertTrue(message, pValueCounts>0.05);
+                if( <<<ISEXACTEVALUATION>>> ) {
+                    fail(String.format("results different (deviations: %d out of %d)", deviations, data.size()));
+                } else {
+	                double pValueCounts = TestUtils.chiSquareTestDataSetsComparison(expectedMorphCounts, morphedCounts);
+	                String message = String.format("results significantly different, p-value = %f (deviations: %d out of %d)", pValueCounts, deviations, data.size());
+                    System.out.println(String.format("p-value = %f (deviations: %d out of %d)", pValueCounts, deviations, data.size()));
+                    assertTrue(message, pValueCounts>0.05);
+                }
             }
         }
     }

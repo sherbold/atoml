@@ -4,23 +4,58 @@ type: classification
 package: weka.classifiers.trees
 class: J48
 parameters:
-  unpruned:
-    type: binary
-    default: false
-  confidenceFactor:
+  C: # confidence factor
     type: double
     min: 0.0
     max: 1.0
     default: 0.25
-  minNumObj:
+  M: # min number of objects
     type: integer
     min: 1
     max: inf
     default: 2
 features: double
 properties:
-  same: 0.0
-  scramble: 0.05
+  same: exact
+  scramble: exact
+  opposite: exact
+---
+name: WEKA_RIPPER
+framework: weka
+type: classification
+package: weka.classifiers.rules
+class: JRip
+parameters:
+  N: # minimal weights
+    type: double
+    min: 1
+    max: inf
+    default: 2
+  O: # number of optimization runs
+    type: integer
+    min: 1
+    max: 10
+    default: 2
+features: double
+properties:
+  same: exact
+  scramble: distribution
+  opposite: distribution
+---
+name: WEKA_MLP
+framework: weka
+type: classification
+package: weka.classifiers.functions
+class: MLPClassifier
+parameters:
+
+features: double
+properties:
+  same: exact
+  scramble: distribution
+  opposite: distribution
+  const: distribution
+  reorder: distribution
 ---
 name: SKLEARN_DT
 framework: sklearn
@@ -40,8 +75,8 @@ parameters:
     max: inf
     default: None
 properties:
-  same: 0.0
-  scramble: 0.05
+  same: exact
+  scramble: distribution
 ---
 name: SPARK_DT
 framework: spark
@@ -61,5 +96,5 @@ parameters:
     max: 1.0
     default: 0.1
 properties:
-  same: 0.0
-  scramble: 0.05
+  same: exact
+  scramble: distribution
