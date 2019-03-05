@@ -91,7 +91,7 @@ public class TestcaseGenerator {
 		return classBody;
 	}
 	
-	public String smoketestBody(SmokeTest smokeTest) {
+	private String smoketestBody(SmokeTest smokeTest) {
 		int iterations;
 		if( smokeTest.isRandomized() ) {
 			iterations = this.iterations;

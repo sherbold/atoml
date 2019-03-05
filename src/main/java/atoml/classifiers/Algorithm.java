@@ -1,7 +1,10 @@
 package atoml.classifiers;
 
+import java.util.HashMap;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 /**
  * Description of algorithms that can be tested by ATOML
@@ -96,5 +99,32 @@ public class Algorithm {
 	@Override
 	public String toString() {
 		return String.format("name: %s\ntype: %s\nframework: %s\nclass: %s\npackage: %s\nparameters: %s\nfeatures: %s\nproperties: %s", name, algorithmType, framework, className, algorithmPackage, parameters.toString(), features, properties.toString());
+	}
+	
+	public Set<Map<String,String>> getParameterCombinations() {
+		Set<Map<String,String>> parameterCombinations = new LinkedHashSet<>();
+		for( Parameter changingParameter :parameters) {
+			List<String> parameterValues = changingParameter.getValues();
+			for( String parameterValue : parameterValues ) {
+				Map<String, String> parameterCombination = new HashMap<>();
+				for( Parameter otherParameter : parameters) {
+					if( otherParameter==changingParameter ) {
+						parameterCombination.put(otherParameter.getName(), parameterValue);
+					} else {
+						parameterCombination.put(otherParameter.getName(), otherParameter.getValue("default"));
+					}
+				}
+				parameterCombinations.add(parameterCombination);
+			}
+		}
+		return parameterCombinations;
+	}
+	
+	public Map<String,String> getDefaultParameters() {
+		Map<String, String> defaultParameters = new HashMap<>();
+		for( Parameter otherParameter : parameters) {
+			defaultParameters.put(otherParameter.getName(), otherParameter.getValue("default"));
+		}
+		return defaultParameters;
 	}
 }

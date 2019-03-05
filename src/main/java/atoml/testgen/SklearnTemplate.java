@@ -100,7 +100,7 @@ public class SklearnTemplate implements TemplateEngine {
 		parameters.append("(");
 		for( Parameter parameter : algorithm.getParameters()) {
 			parameters.append(parameter.getName()+"=");
-			parameters.append(parameter.getStringValue("default")+",");
+			parameters.append(parameter.getValue("default")+",");
 			
 		}
 		if( algorithm.getParameters().size()>0 ) {

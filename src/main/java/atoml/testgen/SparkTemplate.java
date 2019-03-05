@@ -124,7 +124,7 @@ public class SparkTemplate implements TemplateEngine {
 		StringBuilder parameters = new StringBuilder();
 		for( Parameter parameter : algorithm.getParameters()) {
 			parameters.append("."+parameter.getName());
-			parameters.append("("+parameter.getStringValue("default")+")");
+			parameters.append("("+parameter.getValue("default")+")");
 			
 		}
 		

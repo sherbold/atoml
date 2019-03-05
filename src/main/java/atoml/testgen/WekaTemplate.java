@@ -2,9 +2,9 @@ package atoml.testgen;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Map.Entry;
 
 import atoml.classifiers.Algorithm;
-import atoml.classifiers.Parameter;
 import atoml.metamorphic.MetamorphicTest;
 import atoml.smoke.SmokeTest;
 
@@ -128,12 +128,12 @@ public class WekaTemplate implements TemplateEngine {
 	private static String getDefaultParameters(Algorithm algorithm) {
 		StringBuilder parameters = new StringBuilder();
 		parameters.append("{");
-		for( Parameter parameter : algorithm.getParameters()) {
-			parameters.append("\"-"+parameter.getName()+"\",");
-			parameters.append("\""+parameter.getStringValue("default")+"\",");
-			
+		for( Entry<String, String> parameter : algorithm.getDefaultParameters().entrySet()) {
+			parameters.append("\"-"+parameter.getKey()+"\",");
+			parameters.append("\""+parameter.getValue()+"\",");
 		}
 		if( algorithm.getParameters().size()>0 ) {
+			// delete final comma that separates parameters
 			parameters.replace(parameters.length()-1, parameters.length(), "");
 		}
 		parameters.append("}");

@@ -6,6 +6,7 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 
 import com.esotericsoftware.yamlbeans.YamlException;
 import com.esotericsoftware.yamlbeans.YamlReader;
@@ -45,7 +46,10 @@ public class YamlClassifierGenerator {
 	    	if( algorithm.get("parameters")!=null ) {
 	    		parameters = (Map<String, Object>) algorithm.get("parameters");
 	    		for( String parameterName: parameters.keySet() ) {
-	    			Map<String,Object> parameterMap = (Map<String,Object>) parameters.get(parameterName);
+	    			Map<String,String> parameterMap = new HashMap<>();
+	    			for( Entry<String, Object> entry : ((Map<String,Object>) parameters.get(parameterName)).entrySet()) {
+	    				parameterMap.put(entry.getKey(), (String) entry.getValue());
+	    			}
 	    			Parameter parameter	= new Parameter(parameterName, parameterMap);
 	    			params.add(parameter);
 	    		}
