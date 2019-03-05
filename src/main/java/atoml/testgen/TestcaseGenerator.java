@@ -16,7 +16,7 @@ import atoml.smoke.SmokeTest;
  * Generates the source code for a test case
  * @author sherbold
  */
-public class TestcaseGeneratorImpl {
+public class TestcaseGenerator {
 	
 	/**
 	 * classifier that is tested
@@ -35,7 +35,7 @@ public class TestcaseGeneratorImpl {
 	 * @param morphtestDataDescriptions descriptions of the data sets used by morph tests
 	 * @param iterations number of iterations for the test (must match with generated data)
 	 */
-	public TestcaseGeneratorImpl(Algorithm algorithmUnderTest, List<DataDescription> morphtestDataDescriptions, int iterations) {
+	public TestcaseGenerator(Algorithm algorithmUnderTest, List<DataDescription> morphtestDataDescriptions, int iterations) {
 		this.algorithmUnderTest = algorithmUnderTest;
 		this.morphtestDataDescriptions = morphtestDataDescriptions;
 		this.iterations = iterations; 

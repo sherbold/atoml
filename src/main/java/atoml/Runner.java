@@ -6,7 +6,7 @@ import org.apache.commons.cli.ParseException;
 
 import atoml.classifiers.Algorithm;
 import atoml.classifiers.YamlClassifierGenerator;
-import atoml.testgen.TestsuiteGeneratorImpl;
+import atoml.testgen.TestsuiteGenerator;
 
 /**
  * Application object that executes the main function.
@@ -33,7 +33,7 @@ public class Runner {
 	    final int numFeatures = cmdParameters.getIntegerValue("nfeat");
 	    
 		List<Algorithm> algorithms = YamlClassifierGenerator.parseFile(yamlFileStr);
-		TestsuiteGeneratorImpl testsuiteGenerator = new TestsuiteGeneratorImpl(numFeatures, numInstances);
+		TestsuiteGenerator testsuiteGenerator = new TestsuiteGenerator(numFeatures, numInstances);
 		System.setProperty("atoml.weka.datapath", "generated-tests/weka/src/test/resources/");
 		System.setProperty("atoml.weka.testcasepath", "generated-tests/weka/src/test/java/");
 		System.setProperty("atoml.sklearn.datapath", "generated-tests/sklearn/");

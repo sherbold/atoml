@@ -16,7 +16,7 @@ import java.util.logging.Logger;
 import atoml.classifiers.Algorithm;
 import atoml.data.DataDescription;
 
-public class TestsuiteGeneratorImpl {
+public class TestsuiteGenerator {
 
 	/**
 	 * logger that is used
@@ -40,7 +40,7 @@ public class TestsuiteGeneratorImpl {
 	 * @param numFeatures number of features for generated data
 	 * @param numInstances number of instances for generated data
 	 */
-	public TestsuiteGeneratorImpl(int numFeatures, int numInstances) {
+	public TestsuiteGenerator(int numFeatures, int numInstances) {
 		this.numFeatures = numFeatures;
 		this.numInstances = numInstances;
 	}
@@ -69,7 +69,7 @@ public class TestsuiteGeneratorImpl {
 		
 		for(Algorithm algorithmUnderTest : algorithmsUnderTest ) {
 			LOGGER.info("creating tests for " + algorithmUnderTest.getName() + "...");
-			TestcaseGeneratorImpl testcaseGenerator = new TestcaseGeneratorImpl(algorithmUnderTest, morphtestDataDescriptions, iterations);
+			TestcaseGenerator testcaseGenerator = new TestcaseGenerator(algorithmUnderTest, morphtestDataDescriptions, iterations);
 			String testclassCode = testcaseGenerator.generateSource();
 			
 			Path path = Paths.get(testcasePaths.get(algorithmUnderTest.getFramework())).resolve(testcaseGenerator.getFilePath());

@@ -16,7 +16,7 @@ import atoml.metamorphic.Scramble;
 import atoml.smoke.MaxDouble;
 import atoml.smoke.SmokeTest;
 import atoml.smoke.Uniform;
-import atoml.testgen.TestcaseGeneratorImpl;
+import atoml.testgen.TestcaseGenerator;
 
 
 public class YamlTestgenerationTest {
@@ -37,7 +37,7 @@ public class YamlTestgenerationTest {
 		int iterations = 2;
 		for(Algorithm alg : algorithms) {
 			System.out.println(alg);
-			TestcaseGeneratorImpl testcaseGenerator = new TestcaseGeneratorImpl(alg, morphtestDataDescriptions, iterations);
+			TestcaseGenerator testcaseGenerator = new TestcaseGenerator(alg, morphtestDataDescriptions, iterations);
 			String source = testcaseGenerator.generateSource();
 			System.out.println(source);
 		}
