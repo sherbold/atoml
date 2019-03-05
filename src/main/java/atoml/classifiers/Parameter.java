@@ -23,6 +23,10 @@ public class Parameter {
 		return metadata.get(name);
 	}
 	
+	public String getDefaultValue() {
+		return metadata.get("default");
+	}
+	
 	public List<String> getValues() {
 		List<String> parameterValues = new LinkedList<>();
 		

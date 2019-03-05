@@ -24,9 +24,9 @@
             }
             morphedData.setClassIndex(morphedData.numAttributes()-1);
             
-            Classifier classifier = AbstractClassifier.forName("<<<CLASSIFIER>>>", new String[]<<<PARAMETERS>>>);
+            Classifier classifier = AbstractClassifier.forName("<<<CLASSIFIER>>>", parameters);
 		    classifier.buildClassifier(data);
-            Classifier morphedClassifier = AbstractClassifier.forName("<<<CLASSIFIER>>>", new String[]<<<PARAMETERS>>>);
+            Classifier morphedClassifier = AbstractClassifier.forName("<<<CLASSIFIER>>>", parameters);
             morphedClassifier.buildClassifier(morphedData);
             
             int deviations = 0;

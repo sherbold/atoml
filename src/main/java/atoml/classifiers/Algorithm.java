@@ -111,7 +111,7 @@ public class Algorithm {
 					if( otherParameter==changingParameter ) {
 						parameterCombination.put(otherParameter.getName(), parameterValue);
 					} else {
-						parameterCombination.put(otherParameter.getName(), otherParameter.getValue("default"));
+						parameterCombination.put(otherParameter.getName(), otherParameter.getDefaultValue());
 					}
 				}
 				parameterCombinations.add(parameterCombination);
@@ -123,7 +123,7 @@ public class Algorithm {
 	public Map<String,String> getDefaultParameters() {
 		Map<String, String> defaultParameters = new HashMap<>();
 		for( Parameter otherParameter : parameters) {
-			defaultParameters.put(otherParameter.getName(), otherParameter.getValue("default"));
+			defaultParameters.put(otherParameter.getName(), otherParameter.getDefaultValue());
 		}
 		return defaultParameters;
 	}

@@ -20,17 +20,11 @@ public class WekaTemplate implements TemplateEngine {
 	final Algorithm algorithmUnderTest;
 	
 	/**
-	 * parameter string for the algorithm
-	 */
-	final String parameterString;
-	
-	/**
 	 * Constructor. Creates a new WekaTemplate. 
 	 * @param algorithmUnderTest
 	 */
 	public WekaTemplate(Algorithm algorithmUnderTest) {
 		this.algorithmUnderTest = algorithmUnderTest;
-		parameterString = getDefaultParameters(algorithmUnderTest);
 	}
 	
 	/* (non-Javadoc)
@@ -54,8 +48,19 @@ public class WekaTemplate implements TemplateEngine {
 	 */
 	@Override
 	public Map<String, String> getClassReplacements() {
+		StringBuilder parameterString = new StringBuilder();
+		if( algorithmUnderTest.getParameterCombinations().size()>0 ) {
+			for( Map<String,String> parameterCombination :  algorithmUnderTest.getParameterCombinations()) {
+				parameterString.append("            " + getParameterString(parameterCombination) + ",\n");
+			}
+			parameterString.replace(parameterString.length()-2, parameterString.length(), "");
+		} else {
+			parameterString = parameterString.append("            new String[]{}, \"default\"");
+		}
+		
 		Map<String, String> replacements = new HashMap<>();
 		replacements.put("<<<PACKAGENAME>>>", algorithmUnderTest.getPackage());
+		replacements.put("<<<HYPERPARAMETERS>>>", parameterString.toString());
 		return replacements;
 	}
 	
@@ -66,7 +71,6 @@ public class WekaTemplate implements TemplateEngine {
 	public Map<String, String> getSmoketestReplacements(SmokeTest smokeTest) {
 		Map<String, String> replacements = new HashMap<>();
 		replacements.put("<<<CLASSIFIER>>>", algorithmUnderTest.getClassName());
-		replacements.put("<<<PARAMETERS>>>", parameterString);
 		return replacements;
 	}
 	
@@ -114,7 +118,6 @@ public class WekaTemplate implements TemplateEngine {
 		Map<String, String> replacements = new HashMap<>();
 		
 		replacements.put("<<<CLASSIFIER>>>", algorithmUnderTest.getClassName());
-		replacements.put("<<<PARAMETERS>>>", parameterString);
 		replacements.put("<<<MORPHCLASS>>>", morphClass);
 		replacements.put("<<<EXPECTEDMORPHEDCLASS>>>", morphRelation);
 		replacements.put("<<<ISEXACTEVALUATION>>>", isExact);
@@ -122,21 +125,25 @@ public class WekaTemplate implements TemplateEngine {
 	}
 	
 	/**
-	 * creates a string that describes the default parameters
+	 * creates a string for the test of a parameter combination
 	 * @return parameters string
 	 */
-	private static String getDefaultParameters(Algorithm algorithm) {
+	private static String getParameterString(Map<String, String> parameterCombination) {
+		StringBuilder parameterName = new StringBuilder();
 		StringBuilder parameters = new StringBuilder();
-		parameters.append("{");
-		for( Entry<String, String> parameter : algorithm.getDefaultParameters().entrySet()) {
+		parameters.append("{ new String[]{");
+		for( Entry<String, String> parameter : parameterCombination.entrySet()) {
 			parameters.append("\"-"+parameter.getKey()+"\",");
 			parameters.append("\""+parameter.getValue()+"\",");
+			parameterName.append("-" + parameter.getKey() + " ");
+			parameterName.append(parameter.getValue() + " ");
 		}
-		if( algorithm.getParameters().size()>0 ) {
+		if( parameterCombination.size()>0 ) {
 			// delete final comma that separates parameters
 			parameters.replace(parameters.length()-1, parameters.length(), "");
 		}
-		parameters.append("}");
+		parameters.append("}, \"" + parameterName.toString().trim() + "\"}");
 		return parameters.toString();
 	}
+	
 }
