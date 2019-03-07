@@ -42,6 +42,6 @@ public class ManyCategories extends AbstractSmokeTest {
 	 */
 	@Override
 	public FeatureType getFeatureType() {
-		return FeatureType.CATEGORIAL;
+		return FeatureType.CATEGORICAL;
 	}
 }

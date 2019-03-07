@@ -6,7 +6,7 @@ class: J48
 parameters:
   C: # confidence factor
     type: double
-    min: 0.0
+    min: 0.05
     max: 0.95
     stepsize: 0.05
     default: 0.25
@@ -16,8 +16,59 @@ parameters:
     max: 10
     stepsize: 1
     default: 2
+  D: # dummy
+    type: flag
+    default: true
+  E: # dummy 2
+    type: categories
+    values: [1,2,3,4]
+    default: foo
 features: double
 properties:
   same: exact
-  scramble: exact
-  opposite: exact
+  scramble: distribution
+  opposite: classification
+---
+name: SKLEARN_DT
+framework: sklearn
+type: classification
+package:  sklearn.tree
+class: DecisionTreeClassifier
+features: float
+parameters:
+  min_samples_split:
+    type: integer
+    min: 2
+    max: inf
+    default: 2
+  max_depth:
+    type: integer
+    min: 1
+    max: inf
+    default: None
+properties:
+  same: exact
+  scramble: classification
+  opposite: score
+---
+name: SPARK_DT
+framework: spark
+type: classification
+package:  org.apache.spark.ml.classification
+class: DecisionTreeClassifier
+features: float
+parameters:
+  setMaxDepth:
+    type: integer
+    min: 1
+    max: inf
+    default: 5
+  setMinInfoGain:
+    type: double
+    min: 0.0
+    max: 1.0
+    default: 0.1
+properties:
+  same: exact
+  scramble: classification
+  opposite: score

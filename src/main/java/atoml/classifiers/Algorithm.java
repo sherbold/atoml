@@ -46,14 +46,14 @@ public class Algorithm {
 	/**
 	 * features supported by the algorithm
 	 */
-	private final FeatureType features;
+	private final List<FeatureType> features;
 	
 	/**
 	 * properties supported by the algorithm
 	 */
 	private final Map<String, RelationType> properties;
 	
-	public Algorithm(String name, String algorithmType, String framework, String className, String algorithmPackage, List<Parameter> parameters, FeatureType features, Map<String, RelationType> properties) {
+	public Algorithm(String name, String algorithmType, String framework, String className, String algorithmPackage, List<Parameter> parameters, List<FeatureType> features, Map<String, RelationType> properties) {
 		this.name = name;
 		this.algorithmType = algorithmType;
 		this.framework = framework;
@@ -84,7 +84,7 @@ public class Algorithm {
 		return algorithmPackage;
 	}
 	
-	public FeatureType getFeatures() {
+	public List<FeatureType> getFeatures() {
 		return features;
 	}
 	
@@ -108,10 +108,18 @@ public class Algorithm {
 			for( String parameterValue : parameterValues ) {
 				Map<String, String> parameterCombination = new HashMap<>();
 				for( Parameter otherParameter : parameters) {
+					String value;
 					if( otherParameter==changingParameter ) {
-						parameterCombination.put(otherParameter.getName(), parameterValue);
+						value = parameterValue;
 					} else {
-						parameterCombination.put(otherParameter.getName(), otherParameter.getDefaultValue());
+						value = otherParameter.getDefaultValue();
+					}
+					if( otherParameter.isFlag() ) {
+						if( "enabled".equalsIgnoreCase(value) ) {
+							parameterCombination.put(otherParameter.getName(), null);
+						}
+					} else {
+						parameterCombination.put(otherParameter.getName(), value);
 					}
 				}
 				parameterCombinations.add(parameterCombination);

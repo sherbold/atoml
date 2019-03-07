@@ -1,29 +1,9 @@
     @Test(timeout=21600000)
     public void test_<<<NAME>>>_<<<DATASET>>>() throws Exception {
         for(int iter=1; iter<=<<<ITERATIONS>>>; iter++) {
-            Instances data;
-            InputStreamReader originalFile = new InputStreamReader(
-                     this.getClass().getResourceAsStream("/morphdata/<<<DATASET>>>_" + iter + ".arff"));
-            try(BufferedReader reader = new BufferedReader(originalFile);) {
-                data = new Instances(reader);
-                reader.close();
-            }
-            catch (IOException e) {
-                throw new RuntimeException("error reading file:  morphdata/<<<DATASET>>>_" + iter + ".arff", e);
-            }
-            data.setClassIndex(data.numAttributes()-1);
-            Instances morphedData;
-            InputStreamReader morphedFile = new InputStreamReader(
-                     this.getClass().getResourceAsStream("/morphdata/<<<DATASET>>>_" + iter + "_<<<NAME>>>.arff"));
-            try(BufferedReader reader = new BufferedReader(morphedFile);) {
-                morphedData = new Instances(reader);
-                reader.close();
-            }
-            catch (IOException e) {
-                throw new RuntimeException("error reading file:  morphdata/<<<DATASET>>>_" + iter + "_<<<NAME>>>.arff", e);
-            }
-            morphedData.setClassIndex(morphedData.numAttributes()-1);
-            
+            Instances data = loadData("/morphdata/<<<DATASET>>>_" + iter + ".arff");
+            Instances morphedData = loadData("/morphdata/<<<DATASET>>>_" + iter + "_<<<NAME>>>.arff");
+
             Classifier classifier = AbstractClassifier.forName("<<<CLASSIFIER>>>", parameters);
 		    classifier.buildClassifier(data);
             Classifier morphedClassifier = AbstractClassifier.forName("<<<CLASSIFIER>>>", parameters);
@@ -49,14 +29,7 @@
                 }
             }
             if( deviations>0 ) {
-                if( <<<ISEXACTEVALUATION>>> ) {
-                    fail(String.format("results different (deviations: %d out of %d)", deviations, data.size()));
-                } else {
-	                double pValueCounts = TestUtils.chiSquareTestDataSetsComparison(expectedMorphCounts, morphedCounts);
-	                String message = String.format("results significantly different, p-value = %f (deviations: %d out of %d)", pValueCounts, deviations, data.size());
-                    System.out.println(String.format("p-value = %f (deviations: %d out of %d)", pValueCounts, deviations, data.size()));
-                    assertTrue(message, pValueCounts>0.05);
-                }
+                assertMorphTest(<<<EVALUATIONTYPE>>>, deviations, data.size(), expectedMorphCounts, morphedCounts, expectedMorphDistributions, morphedDistributions);
             }
         }
     }

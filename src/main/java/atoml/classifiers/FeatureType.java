@@ -1,12 +1,12 @@
 package atoml.classifiers;
 
 public enum FeatureType {
-	DOUBLE, FLOAT, POSITIVEDOUBLE, POSITIVEFLOAT, UNIT, CATEGORIAL;
+	DOUBLE, FLOAT, POSITIVEDOUBLE, POSITIVEFLOAT, UNIT, CATEGORICAL;
 
 	public static boolean isSupported(FeatureType featuresAlgorithm, FeatureType featuresTest) {
 		switch(featuresAlgorithm) {
-		case CATEGORIAL:
-			return featuresTest==CATEGORIAL;
+		case CATEGORICAL:
+			return featuresTest==CATEGORICAL;
 		case DOUBLE:
 			return featuresTest==DOUBLE || featuresTest==FLOAT || featuresTest==FeatureType.POSITIVEDOUBLE || featuresTest==FeatureType.POSITIVEFLOAT || featuresTest==UNIT;
 		case FLOAT:

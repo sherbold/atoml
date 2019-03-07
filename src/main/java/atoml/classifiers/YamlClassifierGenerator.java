@@ -6,7 +6,6 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
 
 import com.esotericsoftware.yamlbeans.YamlException;
 import com.esotericsoftware.yamlbeans.YamlReader;
@@ -46,15 +45,21 @@ public class YamlClassifierGenerator {
 	    	if( algorithm.get("parameters")!=null ) {
 	    		parameters = (Map<String, Object>) algorithm.get("parameters");
 	    		for( String parameterName: parameters.keySet() ) {
-	    			Map<String,String> parameterMap = new HashMap<>();
-	    			for( Entry<String, Object> entry : ((Map<String,Object>) parameters.get(parameterName)).entrySet()) {
-	    				parameterMap.put(entry.getKey(), (String) entry.getValue());
-	    			}
+	    			Map<String,Object> parameterMap = (Map<String,Object>) parameters.get(parameterName);
 	    			Parameter parameter	= new Parameter(parameterName, parameterMap);
 	    			params.add(parameter);
 	    		}
 	    	}
-	    	FeatureType features = FeatureType.valueOf(((String) algorithm.get("features")).toUpperCase());
+	    	List<FeatureType> features = new LinkedList<>();
+	    	if( algorithm.get("features") instanceof String ) {
+	    		features.add(FeatureType.valueOf(((String) algorithm.get("features")).toUpperCase()));
+	    	}
+	    	else if( algorithm.get("features") instanceof List<?> ) {
+	    		for( Object entry : (List<?>) algorithm.get("features") ) {
+	    			features.add(FeatureType.valueOf(((String) entry).toUpperCase()));
+	    		}
+	    	}
+	    	
 	    	Map<String, RelationType> properties = new HashMap<>();
 	    	if( algorithm.get("properties")!=null ) {
 	    		Map<String, String> internalPropertyMap = (Map<String, String>) algorithm.get("properties");

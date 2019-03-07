@@ -55,7 +55,7 @@ public class WekaTemplate implements TemplateEngine {
 			}
 			parameterString.replace(parameterString.length()-2, parameterString.length(), "");
 		} else {
-			parameterString = parameterString.append("            new String[]{}, \"default\"");
+			parameterString = parameterString.append("            { new String[]{}, \"default\"}");
 		}
 		
 		Map<String, String> replacements = new HashMap<>();
@@ -103,13 +103,16 @@ public class WekaTemplate implements TemplateEngine {
 			throw new RuntimeException("could not generate tests, unknown morph prediction relation type");
 		}
 		
-		String isExact; 
+		String evaluationType; 
 		switch(algorithmUnderTest.getProperties().get(metamorphicTest.getClass().getSimpleName().toUpperCase())) {
-		case DISTRIBUTION:
-			isExact = "false";
+		case SCORE:
+			evaluationType = "\"score\"";
+			break;
+		case CLASSIFICATION:
+			evaluationType = "\"classification\"";
 			break;
 		case EXACT:
-			isExact = "true";
+			evaluationType = "\"exact\"";
 			break;
 		default:
 			throw new RuntimeException("could not generate tests, unknown morph test evalation relation type");
@@ -120,7 +123,7 @@ public class WekaTemplate implements TemplateEngine {
 		replacements.put("<<<CLASSIFIER>>>", algorithmUnderTest.getClassName());
 		replacements.put("<<<MORPHCLASS>>>", morphClass);
 		replacements.put("<<<EXPECTEDMORPHEDCLASS>>>", morphRelation);
-		replacements.put("<<<ISEXACTEVALUATION>>>", isExact);
+		replacements.put("<<<EVALUATIONTYPE>>>", evaluationType);
 		return replacements;
 	}
 	
@@ -134,9 +137,11 @@ public class WekaTemplate implements TemplateEngine {
 		parameters.append("{ new String[]{");
 		for( Entry<String, String> parameter : parameterCombination.entrySet()) {
 			parameters.append("\"-"+parameter.getKey()+"\",");
-			parameters.append("\""+parameter.getValue()+"\",");
 			parameterName.append("-" + parameter.getKey() + " ");
-			parameterName.append(parameter.getValue() + " ");
+			if( parameter.getValue()!=null ) {
+				parameters.append("\""+parameter.getValue()+"\",");
+				parameterName.append(parameter.getValue() + " ");
+			}
 		}
 		if( parameterCombination.size()>0 ) {
 			// delete final comma that separates parameters

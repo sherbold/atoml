@@ -147,11 +147,14 @@ public class TestcaseGenerator {
 		return "/"+algorithmUnderTest.getFramework()+"-"+algorithmUnderTest.getAlgorithmType();
 	}
 	
-	private List<SmokeTest> getSmoketests(FeatureType featureType) {
+	private List<SmokeTest> getSmoketests(List<FeatureType> features) {
 			List<SmokeTest> supportedSmokeTests = new LinkedList<>();
 		for( SmokeTest smokeTest : TestCatalog.SMOKETESTS ) {
-			if(FeatureType.isSupported(featureType, smokeTest.getFeatureType())) {
-				supportedSmokeTests.add(smokeTest);
+			for( FeatureType featureType : features ) {
+				if(FeatureType.isSupported(featureType, smokeTest.getFeatureType())) {
+					supportedSmokeTests.add(smokeTest);
+					break;
+				}
 			}
 		}
 		return supportedSmokeTests;
