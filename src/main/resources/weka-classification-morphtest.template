@@ -9,7 +9,8 @@
             Classifier morphedClassifier = AbstractClassifier.forName("<<<CLASSIFIER>>>", parameters);
             morphedClassifier.buildClassifier(morphedData);
             
-            int deviations = 0;
+            int deviationsCounts = 0;
+            int deviationsScores = 0;
             long[] expectedMorphCounts = new long[2];
             double[] expectedMorphDistributions = new double[data.size()];
             long[] morphedCounts = new long[2] ;
@@ -19,18 +20,19 @@
                 double expectedMorphedClass;
 			    <<<EXPECTEDMORPHEDCLASS>>>
                 expectedMorphCounts[(int) expectedMorphedClass]++;
-                expectedMorphDistributions[i] = classifier.distributionForInstance(data.instance(i))[(int) expectedMorphedClass]; 
-                double morphedClass = morphedClassifier.classifyInstance(data.instance(i));
+                expectedMorphDistributions[i] = classifier.distributionForInstance(data.instance(i))[(int) originalClass]; 
+                double morphedClass = morphedClassifier.classifyInstance(<<<TESTDATA>>>.instance(i));
 			    morphedCounts[(int) morphedClass]++;
-			    morphedDistributions[i] = classifier.distributionForInstance(data.instance(i))[(int) morphedClass]; 
+			    morphedDistributions[i] = morphedClassifier.distributionForInstance(<<<TESTDATA>>>.instance(i))[(int) morphedClass]; 
 			    
                 if (!(Double.compare(expectedMorphedClass, morphedClass) == 0)) {
-                    deviations++;
+                    deviationsCounts++;
+                }
+                if (!(Double.compare(expectedMorphDistributions[i], morphedDistributions[i]) == 0)) {
+                    deviationsScores++;
                 }
             }
-            if( deviations>0 ) {
-                assertMorphTest(<<<EVALUATIONTYPE>>>, deviations, data.size(), expectedMorphCounts, morphedCounts, expectedMorphDistributions, morphedDistributions);
-            }
+            assertMorphTest(<<<EVALUATIONTYPE>>>, deviationsCounts, deviationsScores, data.size(), expectedMorphCounts, morphedCounts, expectedMorphDistributions, morphedDistributions);
         }
     }
 

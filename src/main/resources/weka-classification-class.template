@@ -43,18 +43,29 @@ public class <<<CLASSNAME>>> {
     @Parameter(1)
     public String parameterName;
 
-    private void assertMorphTest(String evaluationType, int deviations, int testsize, long[] expectedMorphCounts, long[] morphedCounts, double[] expectedMorphedDistributions, double[] morphedDistributions) {
+    private void assertMorphTest(String evaluationType, int deviationsCounts, int deviationsScores, int testsize, long[] expectedMorphCounts, long[] morphedCounts, double[] expectedMorphedDistributions, double[] morphedDistributions) {
         if( "exact".equalsIgnoreCase(evaluationType) ) {
-            fail(String.format("results different (deviations: %d out of %d)", deviations, testsize));
+            String message = String.format("results different (deviations of classes: %d out of %d)", deviationsCounts, testsize);
+            assertTrue(message, deviationsCounts==0);
         }
         else if( "classification".equalsIgnoreCase(evaluationType) ) {
-            double pValueCounts = TestUtils.chiSquareTestDataSetsComparison(expectedMorphCounts, morphedCounts);
-            String message = String.format("results significantly different, p-value = %f (deviations: %d out of %d)", pValueCounts, deviations, testsize);
+            double pValueCounts;
+            if( deviationsCounts>0 ) {
+                pValueCounts = TestUtils.chiSquareTestDataSetsComparison(expectedMorphCounts, morphedCounts);
+            } else {
+                pValueCounts = 1.0;
+            }
+            String message = String.format("results significantly different, p-value = %f (deviations of classes: %d out of %d)", pValueCounts, deviationsCounts, testsize);
             assertTrue(message, pValueCounts>0.05);
         } 
         else if( "score".equalsIgnoreCase(evaluationType) ) {
-            double pValueKS = TestUtils.kolmogorovSmirnovTest(expectedMorphedDistributions, morphedDistributions);
-            String message = String.format("score distributions significantly different, p-value = %f (deviations: %d out of %d)", pValueKS, deviations, testsize);
+            double pValueKS;
+            if( deviationsScores>0 ) {
+                pValueKS = TestUtils.kolmogorovSmirnovTest(expectedMorphedDistributions, morphedDistributions);
+            } else {
+                pValueKS = 1.0;
+            }
+            String message = String.format("score distributions significantly different, p-value = %f (deviations of scores: %d out of %d)", pValueKS, deviationsScores, testsize);
             assertTrue(message, pValueKS>0.05);
         } else {
             throw new RuntimeException("invalid evaluation type for morph test: " + evaluationType + " (allowed: exact, classification, score)");

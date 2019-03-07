@@ -79,13 +79,13 @@ public class WekaTemplate implements TemplateEngine {
 	 */
 	@Override
 	public Map<String, String> getMorphtestReplacements(MetamorphicTest metamorphicTest) {
-		String morphClass;
+		String testdata;
 		switch(metamorphicTest.getPredictionType()) {
 		case ORDERED_DATA:
-			morphClass = "double morphedClass = morphedClassifier.classifyInstance(morphedData.instance(i));\n";
+			testdata = "morphedData";
 			break;
 		case SAME_CLASSIFIER:
-			morphClass = "double morphedClass = morphedClassifier.classifyInstance(data.instance(i));\n";
+			testdata = "data";
 			break;
 		default:
 			throw new RuntimeException("could not generate unit tests, unknown morph test class");
@@ -97,7 +97,7 @@ public class WekaTemplate implements TemplateEngine {
 			morphRelation = "expectedMorphedClass = originalClass;";
 			break;
 		case INVERTED:
-			morphRelation = "expectedMorphedClass = originalClass==0.0 ? 1.0 : 0.0;";
+			morphRelation = "expectedMorphedClass = Double.compare(originalClass, 0.0)==0 ? 1.0 : 0.0;";
 			break;
 		default:
 			throw new RuntimeException("could not generate tests, unknown morph prediction relation type");
@@ -121,7 +121,7 @@ public class WekaTemplate implements TemplateEngine {
 		Map<String, String> replacements = new HashMap<>();
 		
 		replacements.put("<<<CLASSIFIER>>>", algorithmUnderTest.getClassName());
-		replacements.put("<<<MORPHCLASS>>>", morphClass);
+		replacements.put("<<<TESTDATA>>>", testdata);
 		replacements.put("<<<EXPECTEDMORPHEDCLASS>>>", morphRelation);
 		replacements.put("<<<EVALUATIONTYPE>>>", evaluationType);
 		return replacements;
