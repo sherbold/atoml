@@ -26,7 +26,7 @@ public class Runner {
 			return;
 		}
 		
-	    final String yamlFileStr = cmdParameters.getStringValue("yaml");
+	    final String yamlFileStr = cmdParameters.getStringValue("file");
 	    
 		final int iterations = cmdParameters.getIntegerValue("iterations");
 	    final int numInstances = cmdParameters.getIntegerValue("ninst");

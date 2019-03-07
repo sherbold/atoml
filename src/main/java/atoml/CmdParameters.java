@@ -66,7 +66,7 @@ public class CmdParameters {
 	 * prepares the options for the command line parser
 	 */
 	private void prepareOptions() {
-		Option yamlFile = new Option("y", "yaml", true, "input file in yaml format");
+		Option yamlFile = new Option("f", "file", true, "input file in yaml format");
 		yamlFile.setRequired(true);
 		options.addOption(yamlFile);
 
@@ -76,13 +76,13 @@ public class CmdParameters {
 		options.addOption(iterations);
 		defaults.put("iterations", "1");
 
-		Option numInstances = new Option("n", "ninst", true,
+		Option numInstances = new Option("n", "instances", true,
 				"number of instances generated for each test set (default: 100)");
 		numInstances.setRequired(false);
 		options.addOption(numInstances);
 		defaults.put("ninst", "100");
 
-		Option numFeatures = new Option("m", "nfeat", true,
+		Option numFeatures = new Option("m", "features", true,
 				"number of features for each generated test set (default: 10)");
 		numFeatures.setRequired(false);
 		options.addOption(numFeatures);
