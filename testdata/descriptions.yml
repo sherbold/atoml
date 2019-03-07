@@ -1,8 +1,55 @@
-name: WEKA_DT
-framework: weka
+# name of the test, should be unique (duplicate name within same package+framework will lead to problems) 
+name: WEKA_C45_PRUNED
+# type of the algorithm
+# supported values:
+#  - classification
+#  - clustering+regression planned
 type: classification
+# machine learning framework that where the current algorithm is defined
+# supported values:
+#  - weka
+#  - spark
+#  - sklearn
+framework: weka
+# package and class name of the algorithm
 package: weka.classifiers.trees
 class: J48
+
+# defines which features can be used for the training with this algorithm
+# supported feature types:
+#  - DOUBLE          all double values (Java)
+#  - FLOAT           all float values (Java)
+#  - POSITIVEDOUBLE  positive double values (Java)
+#  - POSITIVEFLOAT   positive float values (Java)
+#  - UNIT            floating point numbers in [0,1]
+#  - CATEGORICAL      categorical data
+features: [double,categorical]
+
+# supported properties:
+#  - same      re-train with the same data --> expect classes/scores to be the same
+#  - scramble  re-train with randomly reordered instances --> expect classes/scores to be the same
+#  - reorder   re-train with randomly reordered features --> expect classes/scores to be the same
+#  - const     re-train with +1 added to all numeric features --> expect classes/scores to be the same
+#  - opposite  re-train with all class labels flipped --> expect classes to be the same, scores inverted (1-priorScore)
+# supported evaluations:
+#  - exact           classifications must be exactly the same after re-training
+#  - classification  classifications must not be significantly different from expectation after re-training (chi-squared test)
+#  - score           scores of distributionForInstance must not be significantly different from expectation after re-training (KS test)
+properties:
+  same: exact
+  scramble: score
+  reorder: classification
+  const: score
+  opposite: score
+
+# list of parameters from the algorithm
+# every parameter must specify a default value; the default value can be different from the default in the application
+# allowed types:
+#  - double     double values; if min, max, and stepsize are defined these values will be tested together with the default values of all other parameters
+#  - integer    integer values; if min, max, and stepsize are defined these values will be tested together with the default values of all other parameters
+#  - flag       flag that is either enabled or disabled; both will be tested with the default values of the other parameters
+#  - fixedflag  a flag that is always used with the default value - probably only makes sense with the value enabled.
+#  - values     list of values that will be tested with the default values of the other parameters
 parameters:
   C: # confidence factor
     type: double
@@ -16,18 +63,101 @@ parameters:
     max: 10
     stepsize: 1
     default: 2
-  D: # dummy
+  O: # collapse tree if training error is not reduced
     type: flag
-    default: true
-  E: # dummy 2
-    type: categories
-    values: [1,2,3,4]
-    default: foo
-features: double
+    default: disabled
+  doNotMakeSplitPointActualValue:
+    type: flag
+    default: disabled
+  S: # subtree raising when pruning
+    type: flag
+    default: disabled
+  A: # use laplace correction
+    type: flag
+    default: disabled
+  J: # use MDL correction
+  # not compatible with doNotMakeSplitPointActualValue, but not both used in combination currently
+    type: flag
+    default: disabled
+# "---" starts next algorithm description
+---
+name: WEKA_C45_UNPRUNED
+type: classification
+framework: weka
+package: weka.classifiers.trees
+class: J48
+features: [double,categorical]
 properties:
   same: exact
-  scramble: distribution
-  opposite: classification
+  scramble: score
+  reorder: classification
+  const: score
+  opposite: score
+parameters:
+  U: # unpruned
+    type: fixedflag
+    default: enabled
+  M: # min number of objects
+    type: integer
+    min: 1
+    max: 10
+    stepsize: 1
+    default: 2
+  O: # collapse tree if training error is not reduced
+    type: flag
+    default: disabled
+  doNotMakeSplitPointActualValue:
+    type: flag
+    default: disabled
+  A: # use laplace correction
+    type: flag
+    default: disabled
+  J: # use MDL correction
+  # not compatible with doNotMakeSplitPointActualValue, but not both used in combination currently
+    type: flag
+    default: disabled
+---
+name: WEKA_C45_REP
+type: classification
+framework: weka
+package: weka.classifiers.trees
+class: J48
+features: [double,categorical]
+properties:
+  same: exact
+  scramble: score
+  reorder: classification
+  const: score
+  opposite: score
+parameters:
+  R: # unpruned
+    type: fixedflag
+    default: enabled
+  N: # number of folds for REP
+    type: integer
+    min: 2
+    max: 10
+    stepsize: 1
+    default: 3
+  M: # min number of objects
+    type: integer
+    min: 1
+    max: 10
+    stepsize: 1
+    default: 2
+  O: # collapse tree if training error is not reduced
+    type: flag
+    default: disabled
+  doNotMakeSplitPointActualValue:
+    type: flag
+    default: disabled
+  A: # use laplace correction
+    type: flag
+    default: disabled
+  J: # use MDL correction
+  # not compatible with doNotMakeSplitPointActualValue, but not both used in combination currently
+    type: flag
+    default: disabled
 ---
 name: SKLEARN_DT
 framework: sklearn
@@ -39,12 +169,12 @@ parameters:
   min_samples_split:
     type: integer
     min: 2
-    max: inf
+    max: 10
     default: 2
   max_depth:
     type: integer
     min: 1
-    max: inf
+    max: 10
     default: None
 properties:
   same: exact
@@ -61,7 +191,7 @@ parameters:
   setMaxDepth:
     type: integer
     min: 1
-    max: inf
+    max: 10
     default: 5
   setMinInfoGain:
     type: double
