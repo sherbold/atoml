@@ -24,7 +24,7 @@ public class Parameter {
 	}
 	
 	public boolean isFlag() {
-		return "flag".equalsIgnoreCase((String) metadata.get("type"));
+		return "flag".equalsIgnoreCase((String) metadata.get("type")) || "fixedflag".equalsIgnoreCase((String) metadata.get("type"));
 	}
 	
 	@SuppressWarnings("unchecked")
