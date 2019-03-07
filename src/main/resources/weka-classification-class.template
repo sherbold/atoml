@@ -50,13 +50,11 @@ public class <<<CLASSNAME>>> {
         else if( "classification".equalsIgnoreCase(evaluationType) ) {
             double pValueCounts = TestUtils.chiSquareTestDataSetsComparison(expectedMorphCounts, morphedCounts);
             String message = String.format("results significantly different, p-value = %f (deviations: %d out of %d)", pValueCounts, deviations, testsize);
-            System.out.println(String.format("p-value = %f (deviations: %d out of %d)", pValueCounts, deviations, testsize));
             assertTrue(message, pValueCounts>0.05);
         } 
         else if( "score".equalsIgnoreCase(evaluationType) ) {
             double pValueKS = TestUtils.kolmogorovSmirnovTest(expectedMorphedDistributions, morphedDistributions);
             String message = String.format("score distributions significantly different, p-value = %f (deviations: %d out of %d)", pValueKS, deviations, testsize);
-            System.out.println(String.format("p-value = %f (deviations: %d out of %d)", pValueKS, deviations, testsize));
             assertTrue(message, pValueKS>0.05);
         } else {
             throw new RuntimeException("invalid evaluation type for morph test: " + evaluationType + " (allowed: exact, classification, score)");
