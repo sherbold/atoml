@@ -32,7 +32,9 @@
                     deviationsScores++;
                 }
             }
-            assertMorphTest(<<<EVALUATIONTYPE>>>, deviationsCounts, deviationsScores, data.size(), expectedMorphCounts, morphedCounts, expectedMorphDistributions, morphedDistributions);
+            String testname = new Object(){}.getClass().getEnclosingMethod().getName();
+            <<<MYSQLEVALMORPH>>>
+            assertMorphTest("score", testname, iter, deviationsCounts, deviationsScores, data.size(), expectedMorphCounts, morphedCounts, expectedMorphDistributions, morphedDistributions);
         }
     }
 

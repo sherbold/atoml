@@ -21,6 +21,8 @@ dependencies {
 	compile group: 'org.apache.ant', name: 'ant', version: '1.10.3'
 	
 	compile group: 'com.esotericsoftware.yamlbeans', name: 'yamlbeans', version: '1.13'
+	compile group: 'mysql', name: 'mysql-connector-java', version: '5.1.47'
+	
 	
 	// we are working against the latest dev version of Weka as available in maven central on 2018-08-10
 	compile group: 'nz.ac.waikato.cms.weka', name: 'weka-dev', version: '3.9.3'

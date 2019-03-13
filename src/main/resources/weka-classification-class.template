@@ -22,6 +22,8 @@ import weka.classifiers.AbstractClassifier;
 import weka.core.Instances;
 import weka.core.Instance;
 
+<<<MYSQLIMPORTS>>>
+
 /**
  * Automatically generated smoke and metamorphic tests.
  */
@@ -29,6 +31,8 @@ import weka.core.Instance;
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
 @RunWith(Parameterized.class)
 public class <<<CLASSNAME>>> {
+
+    <<<MYSQLHANDLER>>>
 
     @Parameters(name = "{1}")
     public static Collection<Object[]> data() {
@@ -43,7 +47,7 @@ public class <<<CLASSNAME>>> {
     @Parameter(1)
     public String parameterName;
 
-    private void assertMorphTest(String evaluationType, int deviationsCounts, int deviationsScores, int testsize, long[] expectedMorphCounts, long[] morphedCounts, double[] expectedMorphedDistributions, double[] morphedDistributions) {
+    private void assertMorphTest(String evaluationType, String testcaseName, int iteration, int deviationsCounts, int deviationsScores, int testsize, long[] expectedMorphCounts, long[] morphedCounts, double[] expectedMorphedDistributions, double[] morphedDistributions) {
         if( "exact".equalsIgnoreCase(evaluationType) ) {
             String message = String.format("results different (deviations of classes: %d out of %d)", deviationsCounts, testsize);
             assertTrue(message, deviationsCounts==0);

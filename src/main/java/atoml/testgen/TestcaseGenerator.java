@@ -84,9 +84,24 @@ public class TestcaseGenerator {
 		Map<String, String> replacementMap = templateEngine.getClassReplacements();
 		replacementMap.put("<<<CLASSNAME>>>", templateEngine.getClassName());
 		replacementMap.put("<<<METHODS>>>", testmethods.toString());
+		
+		boolean useMysql = true;
+		String mysqlImports = "";
+		String mysqlHandler = "";
+		String mysqlEvalMorph = "";
+		if( useMysql ) {
+			mysqlImports = new Scanner(this.getClass().getResourceAsStream(getResourcePrefix()+"-mysql-imports.template"), "UTF-8").useDelimiter("\\A").next();
+			mysqlHandler = new Scanner(this.getClass().getResourceAsStream(getResourcePrefix()+"-mysql-handler.template"), "UTF-8").useDelimiter("\\A").next();
+			mysqlEvalMorph = new Scanner(this.getClass().getResourceAsStream(getResourcePrefix()+"-mysql-morph.template"), "UTF-8").useDelimiter("\\A").next();
+		}
+		replacementMap.put("<<<MYSQLIMPORTS>>>", mysqlImports);
+		replacementMap.put("<<<MYSQLHANDLER>>>", mysqlHandler);
+		
 		for( String key : replacementMap.keySet()) {
 			classBody = classBody.replaceAll(key, replacementMap.get(key));
 		}
+		// ensures this happens after methods replacement
+		classBody = classBody.replaceAll("<<<MYSQLEVALMORPH>>>", mysqlEvalMorph);
 		
 		return classBody;
 	}
