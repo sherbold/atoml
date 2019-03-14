@@ -2,7 +2,9 @@ package <<<PACKAGENAME>>>;
 
 import static org.junit.Assert.*;
 import org.junit.Test;
+import org.junit.rules.TestName;
 import org.junit.FixMethodOrder;
+import org.junit.Rule;
 import org.junit.runner.RunWith;
 import org.junit.runners.MethodSorters;
 import org.junit.runners.Parameterized;
@@ -33,6 +35,9 @@ import weka.core.Instance;
 public class <<<CLASSNAME>>> {
 
     <<<MYSQLHANDLER>>>
+    
+    @Rule
+    public TestName testname = new TestName();
 
     @Parameters(name = "{1}")
     public static Collection<Object[]> data() {
