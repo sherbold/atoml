@@ -37,7 +37,7 @@ public class YamlTestgenerationTest {
 		int iterations = 2;
 		for(Algorithm alg : algorithms) {
 			System.out.println(alg);
-			TestcaseGenerator testcaseGenerator = new TestcaseGenerator(alg, morphtestDataDescriptions, iterations);
+			TestcaseGenerator testcaseGenerator = new TestcaseGenerator(alg, morphtestDataDescriptions, iterations, false, true, true);
 			String source = testcaseGenerator.generateSource();
 			System.out.println(source);
 		}

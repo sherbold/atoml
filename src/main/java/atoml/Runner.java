@@ -31,6 +31,9 @@ public class Runner {
 		final int iterations = cmdParameters.getIntegerValue("iterations");
 	    final int numInstances = cmdParameters.getIntegerValue("ninst");
 	    final int numFeatures = cmdParameters.getIntegerValue("nfeat");
+	    final boolean useMysql = cmdParameters.hasOption("mysql");
+	    final boolean generateSmokeTests = !cmdParameters.hasOption("nosmoke");
+	    final boolean generateMorphTests = !cmdParameters.hasOption("nomorph");
 	    
 		List<Algorithm> algorithms = YamlClassifierGenerator.parseFile(yamlFileStr);
 		TestsuiteGenerator testsuiteGenerator = new TestsuiteGenerator(numFeatures, numInstances);
@@ -40,6 +43,6 @@ public class Runner {
 		System.setProperty("atoml.sklearn.testcasepath", "generated-tests/sklearn/");
 		System.setProperty("atoml.spark.datapath", "generated-tests/spark/src/test/resources/");
 		System.setProperty("atoml.spark.testcasepath", "generated-tests/spark/src/test/java/");
-		testsuiteGenerator.generateTests(algorithms, iterations);
+		testsuiteGenerator.generateTests(algorithms, iterations, useMysql, generateSmokeTests, generateMorphTests);
 	}
 }

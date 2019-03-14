@@ -27,6 +27,12 @@ public class TestcaseGenerator {
 	
 	private final int iterations; 
 	
+	private final boolean useMysql;
+	
+	private final boolean generateSmokeTests;
+	
+	private final boolean generateMorphTests; 
+	
 	private final TemplateEngine templateEngine;
 	
 	/**
@@ -35,10 +41,13 @@ public class TestcaseGenerator {
 	 * @param morphtestDataDescriptions descriptions of the data sets used by morph tests
 	 * @param iterations number of iterations for the test (must match with generated data)
 	 */
-	public TestcaseGenerator(Algorithm algorithmUnderTest, List<DataDescription> morphtestDataDescriptions, int iterations) {
+	public TestcaseGenerator(Algorithm algorithmUnderTest, List<DataDescription> morphtestDataDescriptions, int iterations, boolean useMysql, boolean generateSmokeTests, boolean generateMorphTests) {
 		this.algorithmUnderTest = algorithmUnderTest;
 		this.morphtestDataDescriptions = morphtestDataDescriptions;
 		this.iterations = iterations; 
+		this.useMysql = useMysql;
+		this.generateSmokeTests = generateSmokeTests;
+		this.generateMorphTests = generateMorphTests;
 		switch(algorithmUnderTest.getFramework()) {
 		case "weka":
 			templateEngine = new WekaTemplate(algorithmUnderTest);
@@ -67,25 +76,28 @@ public class TestcaseGenerator {
 
 		StringBuilder testmethods = new StringBuilder();
 		
-		List<MetamorphicTest> metamorphicTests = getMorptests(algorithmUnderTest.getProperties());
-		for( MetamorphicTest metamorphicTest : metamorphicTests) {
-			for( DataDescription morphtestDataDescription : morphtestDataDescriptions ) {
-				if( metamorphicTest.isCompatibleWithData(morphtestDataDescription) ) {
-					testmethods.append(metamorphictestBody(metamorphicTest, morphtestDataDescription));
+		if( generateMorphTests ) {
+			List<MetamorphicTest> metamorphicTests = getMorptests(algorithmUnderTest.getProperties());
+			for( MetamorphicTest metamorphicTest : metamorphicTests) {
+				for( DataDescription morphtestDataDescription : morphtestDataDescriptions ) {
+					if( metamorphicTest.isCompatibleWithData(morphtestDataDescription) ) {
+						testmethods.append(metamorphictestBody(metamorphicTest, morphtestDataDescription));
+					}
 				}
 			}
 		}
 		
-		List<SmokeTest> smokeTests = getSmoketests(algorithmUnderTest.getFeatures());
-		for( SmokeTest smokeTest : smokeTests ) {
-			testmethods.append(smoketestBody(smokeTest));
+		if( generateSmokeTests ) {
+			List<SmokeTest> smokeTests = getSmoketests(algorithmUnderTest.getFeatures());
+			for( SmokeTest smokeTest : smokeTests ) {
+				testmethods.append(smoketestBody(smokeTest));
+			}
 		}
 		
 		Map<String, String> replacementMap = templateEngine.getClassReplacements();
 		replacementMap.put("<<<CLASSNAME>>>", templateEngine.getClassName());
 		replacementMap.put("<<<METHODS>>>", testmethods.toString());
 		
-		boolean useMysql = true;
 		String mysqlImports = "";
 		String mysqlHandler = "";
 		String mysqlEvalMorph = "";

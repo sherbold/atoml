@@ -87,6 +87,21 @@ public class CmdParameters {
 		numFeatures.setRequired(false);
 		options.addOption(numFeatures);
 		defaults.put("nfeat", "10");
+		
+		Option mysql = new Option("mysql", false,
+				"the results are stored in a local MySQL database if this flag is used");
+		mysql.setRequired(false);
+		options.addOption(mysql);
+		
+		Option nosmoke = new Option("nosmoke", false,
+				"no smoke tests are generated if this flag is used");
+		nosmoke.setRequired(false);
+		options.addOption(nosmoke);
+		
+		Option nomorph = new Option("nomorph", false,
+				"no metamorphic testa are generated if this flag is used");
+		nomorph.setRequired(false);
+		options.addOption(nomorph);
 	}
 
 	/**
