@@ -4,38 +4,31 @@ atoml is a software for generating smoke and metamorphic tests for machine learn
 
 # Usage
 
-atoml is a command line tool that can eb used with the following options. 
-
-- -f,--file <arg>: input file that contains classifiers
-- -i,--iterations <arg>: number of iterations used by smoke tester (default: 1)
--  -l,--mllib <arg>: ML library for which tests are generated (default: weka, allowed: weka, scikit)
-- -m,--nfeat <arg>: number of features for each generated test set (default: 10)
--  -n,--ninst <arg>: number of instances generated for each test set (default: 100)
--  -r,--resourcepath <arg>: path where generated test data is stored (default: src/test/resources/)
--  -t,--testpath <arg>: path where generated test cases are stored (default: src/test/java/)
-
-Examples for files that define the classifiers for which tests are generated can be found in the [testdata](testdata) folder. Examples for command line calls for the test generation can be found below.
-
-# Examples
-
-JUnit generation for Weka:
-
+atoml is a command line tool that can be used with the following options. 
 ```
-java -jar atoml.jar -f testdata/wekaclassifiers.txt -i 5 --testpath testres/weka/src/test/java/ --resourcepath testres/weka/src/test/resources/
+-f,--file <arg>         input file in yaml format (mandatory)
+-i,--iterations <arg>   number of iterations used by smoke tester
+                        (default: 1)
+-m,--features <arg>     number of features for each generated test set
+                        (default: 10)
+-mysql                  the results are stored in a local MySQL database
+                        if this flag is used
+-n,--instances <arg>    number of instances generated for each test set
+                        (default: 100)
+-nomorph                no metamorphic testa are generated if this flag
+                        is used
+-nosmoke                no smoke tests are generated if this flag is used
 ```
 
-unittest generation for scikit-learn:
+A call to atoml may look like this:
+```
+java -jar atoml.jar -f testdata/description.yml
+```
 
-```
-java -jar atoml.jar -m 2 -n 10 -l scikit -f testdata/scikitclassifiers.txt -i 5 --testpath testres/scikittests/ --resourcepath testres/scikittests/
-```
+# Definition of Tests
 
-JUnit generation for Spark MLlib
-
-```
-java -jar atoml.jar -l spark -f testdata/sparkclassifiers.txt -i 5 --testpath testres/spark/src/test/java/ --resourcepath testres/spark/src/test/resources/
-```
+Tests for atoml are defined using a YAML file. Within the YAML file the algorithms under test are specified. atoml can generate tests for different learning frameworks and types of algorithms at the same time. The [descriptions.yml](testdata/description.yml) file contains examples for classifier definition as well as a description of the YAML dialect. 
 
 # License
 
-CrossPare is licensed under the Apache License, Version 2.0.
+atoml is licensed under the Apache License, Version 2.0.
