@@ -33,7 +33,7 @@
                 }
             }
             String nameWithoutParams = testname.getMethodName().split("\\\\[")[0]; 
-            <<<MYSQLEVALMORPH>>>assertMorphTest("score", nameWithoutParams, iter, deviationsCounts, deviationsScores, data.size(), expectedMorphCounts, morphedCounts, expectedMorphDistributions, morphedDistributions);
+            <<<MYSQLEVALMORPH>>>assertMorphTest(<<<EVALUATIONTYPE>>>, nameWithoutParams, iter, deviationsCounts, deviationsScores, data.size(), expectedMorphCounts, morphedCounts, expectedMorphDistributions, morphedDistributions);
         }
     }
 

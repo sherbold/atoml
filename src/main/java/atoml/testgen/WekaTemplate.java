@@ -103,20 +103,8 @@ public class WekaTemplate implements TemplateEngine {
 			throw new RuntimeException("could not generate tests, unknown morph prediction relation type");
 		}
 		
-		String evaluationType; 
-		switch(algorithmUnderTest.getProperties().get(metamorphicTest.getClass().getSimpleName().toUpperCase())) {
-		case SCORE:
-			evaluationType = "\"score\"";
-			break;
-		case CLASSIFICATION:
-			evaluationType = "\"classification\"";
-			break;
-		case EXACT:
-			evaluationType = "\"exact\"";
-			break;
-		default:
-			throw new RuntimeException("could not generate tests, unknown morph test evalation relation type");
-		}
+		String evaluationType = algorithmUnderTest.getProperties().get(metamorphicTest.getClass().getSimpleName().toUpperCase()).toString().toLowerCase();
+		evaluationType = "\"" + evaluationType + "\"";
 		
 		Map<String, String> replacements = new HashMap<>();
 		

@@ -79,7 +79,7 @@
 	        this.connectionPool.setUrl("jdbc:mysql://" + dbHost + ":" + dbPort + "/" + dbName + "?useSSL=false");
 	    }
 
-	    public void addResult(String algorithm, String parameters, String testcase, int iteration, int testsize, int deviationsCounts, int deviationsScores, double pvalClassification, double pvalScores, boolean passedExact, boolean passedClassification, boolean passedScores) {
+	    public void addResult(String algorithm, String parameters, String testcase, int iteration, int testsize, int deviationsCounts, int deviationsScores, double pvalClassification, double pvalScores, boolean passedExactScore, boolean passedExactClass, boolean passedStatClass, boolean passedStatScore) {
 	        StringBuilder preparedSql = new StringBuilder();
 	        preparedSql.append("INSERT INTO " + this.resultsTableName + " (");
 	        preparedSql.append("`algorithm`,");
@@ -91,10 +91,11 @@
 	        preparedSql.append("`deviations_scores`,");
 	        preparedSql.append("`pval_counts`,");
 	        preparedSql.append("`pval_scores`,");
-	        preparedSql.append("`passed_exact`,");
-	        preparedSql.append("`passed_classification`,");
-	        preparedSql.append("`passed_distribution`) VALUES ");
-	        preparedSql.append("(?,?,?,?,?,?,?,?,?,?,?,?)");
+	        preparedSql.append("`passed_exact_score`,");
+	        preparedSql.append("`passed_exact_class`,");
+	        preparedSql.append("`passed_stat_class`,");
+	        preparedSql.append("`passed_stat_score`) VALUES ");
+	        preparedSql.append("(?,?,?,?,?,?,?,?,?,?,?,?,?)");
 	        
 	        try(PreparedStatement stmt = this.connectionPool.getConnection().prepareStatement(preparedSql.toString());) {
 	            stmt.setString(1, algorithm);
@@ -106,9 +107,10 @@
 	            stmt.setInt(7, deviationsScores);
 	            stmt.setDouble(8, pvalClassification);
 	            stmt.setDouble(9, pvalScores);
-	            stmt.setInt(10, passedExact?1:0);
-	            stmt.setInt(11, passedClassification?1:0);
-	            stmt.setInt(12, passedScores?1:0);
+	            stmt.setInt(10, passedExactScore?1:0);
+	            stmt.setInt(11, passedExactClass?1:0);
+	            stmt.setInt(12, passedStatClass?1:0);
+	            stmt.setInt(13, passedStatScore?1:0);
 	            
 	            int qryResult = stmt.executeUpdate();
 	            if (qryResult < 1) {
@@ -133,20 +135,21 @@
 	}
 	
 	private void evalMorphTestSQL(String testcaseName, int iteration, int deviationsCounts, int deviationsScores, int testsize, long[] expectedMorphCounts, long[] morphedCounts, double[] expectedMorphedDistributions, double[] morphedDistributions) {
-    	boolean passedExact = deviationsCounts==0;
+	    boolean passedExactScore = deviationsScores==0;
+    	boolean passedExactClass = deviationsCounts==0;
         double pValueCounts;
         if( deviationsCounts>0 ) {
             pValueCounts = TestUtils.chiSquareTestDataSetsComparison(expectedMorphCounts, morphedCounts);
         } else {
             pValueCounts = 1.0;
         }
-        boolean passedClassification = pValueCounts>0.05;
+        boolean passedStatClass = pValueCounts>0.05;
         double pValueKS;
         if( deviationsScores>0 ) {
             pValueKS = TestUtils.kolmogorovSmirnovTest(expectedMorphedDistributions, morphedDistributions);
         } else {
             pValueKS = 1.0;
         }
-        boolean passedScores = pValueKS>0.05;
-        storage.addResult(this.getClass().getSimpleName(), parameterName, testcaseName, iteration, testsize, deviationsCounts, deviationsScores, pValueCounts, pValueKS, passedExact, passedClassification, passedScores);
+        boolean passedStatScore = pValueKS>0.05;
+        storage.addResult(this.getClass().getSimpleName(), parameterName, testcaseName, iteration, testsize, deviationsCounts, deviationsScores, pValueCounts, pValueKS, passedExactScore, passedExactClass, passedStatClass, passedStatScore);
     }

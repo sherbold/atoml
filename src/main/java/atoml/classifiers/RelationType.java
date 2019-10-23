@@ -1,5 +1,5 @@
 package atoml.classifiers;
 
 public enum RelationType {
-	EXACT, CLASSIFICATION, SCORE;
+	SCORE_EXACT, CLASS_EXACT, CLASS_STAT, SCORE_STAT;
 }

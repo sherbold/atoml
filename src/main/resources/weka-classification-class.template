@@ -53,11 +53,15 @@ public class <<<CLASSNAME>>> {
     public String parameterName;
 
     private void assertMorphTest(String evaluationType, String testcaseName, int iteration, int deviationsCounts, int deviationsScores, int testsize, long[] expectedMorphCounts, long[] morphedCounts, double[] expectedMorphedDistributions, double[] morphedDistributions) {
-        if( "exact".equalsIgnoreCase(evaluationType) ) {
+        if( "score_exact".equalsIgnoreCase(evaluationType) ) {
+            String message = String.format("results different (deviations of scores: %d out of %d)", deviationsScores, testsize);
+            assertTrue(message, deviationsScores==0);
+        }
+        else if( "class_exact".equalsIgnoreCase(evaluationType) ) {
             String message = String.format("results different (deviations of classes: %d out of %d)", deviationsCounts, testsize);
             assertTrue(message, deviationsCounts==0);
         }
-        else if( "classification".equalsIgnoreCase(evaluationType) ) {
+        else if( "class_stat".equalsIgnoreCase(evaluationType) ) {
             double pValueCounts;
             if( deviationsCounts>0 ) {
                 pValueCounts = TestUtils.chiSquareTestDataSetsComparison(expectedMorphCounts, morphedCounts);
@@ -67,7 +71,7 @@ public class <<<CLASSNAME>>> {
             String message = String.format("results significantly different, p-value = %f (deviations of classes: %d out of %d)", pValueCounts, deviationsCounts, testsize);
             assertTrue(message, pValueCounts>0.05);
         } 
-        else if( "score".equalsIgnoreCase(evaluationType) ) {
+        else if( "score_stat".equalsIgnoreCase(evaluationType) ) {
             double pValueKS;
             if( deviationsScores>0 ) {
                 pValueKS = TestUtils.kolmogorovSmirnovTest(expectedMorphedDistributions, morphedDistributions);
