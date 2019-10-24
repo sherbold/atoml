@@ -346,11 +346,11 @@ parameters:
     max: 0.101
     stepsize: 0.05
     default: 0.001
-  N: # number of folds that are used for backfitting
+  N: # number of folds that are used for backfitting (0 means no backfitting)
     # this parameters is not visible in the Weka GUI - Possible BUG
     type: integer
-    min: 0
-    max: 3
+    min: 2
+    max: 4
     stepsize: 1
     default: 0 
 # check numFeatures, this is kinda difficult here
@@ -390,11 +390,11 @@ parameters:
     max: 0.101
     stepsize: 0.05
     default: 0.001
-  N: # number of folds that are used for backfitting
+  N: # number of folds that are used for backfitting (0 means no backfitting
     type: integer
-    min: 0
-    max: 3
-    stepsize: 1
+    min: 2
+    max: 6
+    stepsize: 2
     default: 0 
 # check KValue (number of randomly selected instances), kinda difficult
 ---
@@ -441,9 +441,9 @@ parameters:
     default: disabled
   N: # number of cross valdiations used for pruning
     type: integer
-    min: 1
-    max: 5
-    stepsize: 3
+    min: 2
+    max: 6
+    stepsize: 2
     default: 3
   R: # spread initial counts across all values
     type: flag
@@ -479,7 +479,7 @@ parameters:
     default: disabled
   S: # search strategy for attributes
     type: values
-    values: ["weka.attributeSelection.BestFirst -D 1 -N 5", "weka.attributeSelection.GreedyStepwise -T -1.7976931348623157E308 -N -1 -num-slots 1", "weka.attributeSelection.Ranker -T -1.7976931348623157E308 -N -1"]
+    values: ["weka.attributeSelection.BestFirst -D 1 -N 5", "weka.attributeSelection.GreedyStepwise -T -1.7976931348623157E308 -N -1 -num-slots 1"]
     default: "weka.attributeSelection.BestFirst -D 1 -N 5"
 ---
 
@@ -543,6 +543,128 @@ parameters:
     default: 6
 ---
 
+name: WEKA_PART_REP
+type: classification
+framework: weka
+package: weka.classifiers.rules
+class: PART
+features: [double,categorical]
+properties:
+  same: score_exact
+  scramble: score_exact
+  reorder: score_exact
+  const: score_exact
+  opposite: score_exact
+parameters:
+  B: # binary splits
+    type: flag
+    default: disabled
+  doNotMakeSplitPointActualValue:
+    type: flag
+    default: disabled^
+  M: # minimal number of instances
+    type: integer
+    min: 1
+    max: 21
+    stepsize: 10
+    default: 2
+  N: # number of CV folds
+    min: 2
+    max: 6
+    stepize: 2
+    default: 3
+  U: # unpruned
+    type: fixedflag
+    default: disabled
+  R: # reduced error pruning
+    type: fixedflag
+    default: enabled
+  J: # use MDL correction
+  # not compatible with doNotMakeSplitPointActualValue, but not both used in combination currently
+    type: flag
+    default: disabled    
+---
+
+name: WEKA_PART_PRUNED
+type: classification
+framework: weka
+package: weka.classifiers.rules
+class: PART
+features: [double,categorical]
+properties:
+  same: score_exact
+  scramble: score_exact
+  reorder: score_exact
+  const: score_exact
+  opposite: score_exact
+parameters:
+  B: # binary splits
+    type: flag
+    default: disabled
+  doNotMakeSplitPointActualValue:
+    type: flag
+    default: disabled^
+  M: # minimal number of instances
+    type: integer
+    min: 1
+    max: 21
+    stepsize: 10
+    default: 2
+  U: # unpruned
+    type: fixedflag
+    default: disabled
+  R: # reduced error pruning
+    type: fixedflag
+    default: disabled
+  J: # use MDL correction
+  # not compatible with doNotMakeSplitPointActualValue, but not both used in combination currently
+    type: flag
+    default: disabled    
+---
+
+name: WEKA_PART_UNPRUNED
+type: classification
+framework: weka
+package: weka.classifiers.rules
+class: PART
+features: [double,categorical]
+properties:
+  same: score_exact
+  scramble: score_exact
+  reorder: score_exact
+  const: score_exact
+  opposite: score_exact
+parameters:
+  B: # binary splits
+    type: flag
+    default: disabled
+  C: # confidence factor
+    type: double
+    min: 0.01
+    max: 0.04
+    stepsize: 0.01
+    default: 0.25
+  doNotMakeSplitPointActualValue:
+    type: flag
+    default: disabled^
+  M: # minimal number of instances
+    type: integer
+    min: 1
+    max: 21
+    stepsize: 10
+    default: 2
+  U: # unpruned
+    type: fixedflag
+    default: enabled
+  R: # reduced error pruning
+    type: fixedflag
+    default: disabled
+  J: # use MDL correction
+  # not compatible with doNotMakeSplitPointActualValue, but not both used in combination currently
+    type: flag
+    default: disabled    
+---
+
 name: WEKA_ZEROR
 type: classification
 framework: weka
@@ -563,9 +685,7 @@ properties:
 #BFTree_Default_Weka weka.classifiers.trees.BFTree
 
 #ConjunctiveRule_Default_Weka weka.classifiers.rules.ConjunctiveRule
-#PART_Default_Weka weka.classifiers.rules.PART
 #Ridor_Default_Weka weka.classifiers.rules.Ridor
-
 
 #IBk_Default_Weka weka.classifiers.lazy.IBk
 #KStar_Default_Weka weka.classifiers.lazy.KStar
