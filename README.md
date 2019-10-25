@@ -1,3 +1,5 @@
+[![Build Status](https://travis-ci.org/sherbold/atoml.svg?branch=master)](https://travis-ci.org/sherbold/atoml)
+
 # Automated Testing Of Machine Learing (atoml)
 
 atoml is a software for generating smoke and metamorphic tests for machine learning software that is currently under development. The aim of atoml is to make machine learning software more robust, i.e., ensure correct working, even if the data is extreme. 
@@ -15,7 +17,7 @@ atoml is a command line tool that can be used with the following options.
                         if this flag is used
 -n,--instances <arg>    number of instances generated for each test set
                         (default: 100)
--nomorph                no metamorphic testa are generated if this flag
+-nomorph                no metamorphic tests are generated if this flag
                         is used
 -nosmoke                no smoke tests are generated if this flag is used
 ```
