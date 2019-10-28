@@ -101,10 +101,14 @@ public class TestcaseGenerator {
 		String mysqlImports = "";
 		String mysqlHandler = "";
 		String mysqlEvalMorph = "";
+		String mysqlEvalSmokeStart = "";
+		String mysqlEvalSmokeEnd = "";
 		if( useMysql ) {
 			mysqlImports = new Scanner(this.getClass().getResourceAsStream(getResourcePrefix()+"-mysql-imports.template"), "UTF-8").useDelimiter("\\A").next();
 			mysqlHandler = new Scanner(this.getClass().getResourceAsStream(getResourcePrefix()+"-mysql-handler.template"), "UTF-8").useDelimiter("\\A").next();
 			mysqlEvalMorph = new Scanner(this.getClass().getResourceAsStream(getResourcePrefix()+"-mysql-morph.template"), "UTF-8").useDelimiter("\\A").next();
+			mysqlEvalSmokeStart = new Scanner(this.getClass().getResourceAsStream(getResourcePrefix()+"-mysql-smoke-start.template"), "UTF-8").useDelimiter("\\A").next();
+			mysqlEvalSmokeEnd = new Scanner(this.getClass().getResourceAsStream(getResourcePrefix()+"-mysql-smoke-end.template"), "UTF-8").useDelimiter("\\A").next();
 		}
 		replacementMap.put("<<<MYSQLIMPORTS>>>", mysqlImports);
 		replacementMap.put("<<<MYSQLHANDLER>>>", mysqlHandler);
@@ -114,6 +118,8 @@ public class TestcaseGenerator {
 		}
 		// ensures this happens after methods replacement
 		classBody = classBody.replaceAll("<<<MYSQLEVALMORPH>>>", mysqlEvalMorph);
+		classBody = classBody.replaceAll("<<<MYSQLEVALSMOKE_START>>>", mysqlEvalSmokeStart);
+		classBody = classBody.replaceAll("<<<MYSQLEVALSMOKE_END>>>", mysqlEvalSmokeEnd);
 		
 		return classBody;
 	}

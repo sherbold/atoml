@@ -1,9 +1,14 @@
 	public static class MySQLResultStorage {
 
 	    /**
-	     * Name of the table where the results are stored.
+	     * Name of the table where the results of metamorphic tests are stored.
 	     */
-	    final String resultsTableName;
+	    final String morphResultsTableName;
+	    
+	    /**
+	     * Name of the table where the results of smoke tests are stored
+	     */
+	    final String smokeResultsTableName;
 
 	    /**
 	     * Connection pool for the data base.
@@ -46,7 +51,8 @@
 	        String dbName = "atoml";
 	        String dbUser = "atoml";
 	        String dbPass = "atoml";
-	        this.resultsTableName = "results";
+	        this.morphResultsTableName = "results_morphtests";
+	        this.smokeResultsTableName = "results_smoketests";
 	        
 	        connectToDB(dbHost, dbPort, dbName, dbUser, dbPass);
 	    }
@@ -81,7 +87,7 @@
 
 	    public void addResult(String algorithm, String parameters, String testcase, int iteration, int testsize, int deviationsCounts, int deviationsScores, double pvalClassification, double pvalScores, boolean passedExactScore, boolean passedExactClass, boolean passedStatClass, boolean passedStatScore) {
 	        StringBuilder preparedSql = new StringBuilder();
-	        preparedSql.append("INSERT INTO " + this.resultsTableName + " (");
+	        preparedSql.append("INSERT INTO " + this.morphResultsTableName + " (");
 	        preparedSql.append("`algorithm`,");
 	        preparedSql.append("`parameters`,");
 	        preparedSql.append("`testcase`,");
@@ -111,6 +117,43 @@
 	            stmt.setInt(11, passedExactClass?1:0);
 	            stmt.setInt(12, passedStatClass?1:0);
 	            stmt.setInt(13, passedStatScore?1:0);
+	            
+	            int qryResult = stmt.executeUpdate();
+	            if (qryResult < 1) {
+	                System.err.println("Insert failed.");
+	            }
+	        }
+	        catch (SQLException e) {
+	            System.err.println("Problem with MySQL connection: ");
+	            System.err.println("SQLException: " + e.getMessage());
+	            System.err.println("SQLState: " + e.getSQLState());
+	            System.err.println("VendorError: " + e.getErrorCode());
+	            return;
+	        }
+	    }
+	    
+	    public void addSmoketestResult(String algorithm, String parameters, String testcase, int iteration, boolean passed, String exception, String message, String stacktrace) {
+	        StringBuilder preparedSql = new StringBuilder();
+	        preparedSql.append("INSERT INTO " + this.smokeResultsTableName + " (");
+	        preparedSql.append("`algorithm`,");
+	        preparedSql.append("`parameters`,");
+	        preparedSql.append("`testcase`,");
+	        preparedSql.append("`iteration`,");
+	        preparedSql.append("`passed`,");
+	        preparedSql.append("`exception`,");
+	        preparedSql.append("`message`,");
+	        preparedSql.append("`stacktrace`) VALUES ");
+	        preparedSql.append("(?,?,?,?,?,?,?,?)");
+	        
+	        try(PreparedStatement stmt = this.connectionPool.getConnection().prepareStatement(preparedSql.toString());) {
+	            stmt.setString(1, algorithm);
+	            stmt.setString(2, parameters);
+	            stmt.setString(3, testcase);
+	            stmt.setInt(4, iteration);
+	            stmt.setInt(5, passed?1:0);
+	            stmt.setString(6, exception);
+	            stmt.setString(7, message);
+	            stmt.setString(8, stacktrace);
 	            
 	            int qryResult = stmt.executeUpdate();
 	            if (qryResult < 1) {

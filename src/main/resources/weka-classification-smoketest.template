@@ -1,15 +1,14 @@
     @Test(timeout=21600000)
     public void test_<<<NAME>>>() throws Exception {
         for(int iter=1; iter<=<<<ITERATIONS>>>; iter++) {
-            Instances data = loadData("/smokedata/<<<NAME>>>_" + iter + "_training.arff");
+            <<<MYSQLEVALSMOKE_START>>>Instances data = loadData("/smokedata/<<<NAME>>>_" + iter + "_training.arff");
             Instances testdata = loadData("/smokedata/<<<NAME>>>_" + iter + "_test.arff");
             Classifier classifier = AbstractClassifier.forName("<<<CLASSIFIER>>>", Arrays.copyOf(parameters, parameters.length));
             classifier.buildClassifier(data);
             for (Instance instance : testdata) {
                 classifier.classifyInstance(instance);
                 classifier.distributionForInstance(instance);
-            }
+            }<<<MYSQLEVALSMOKE_END>>>
         }
-        
     }
 
