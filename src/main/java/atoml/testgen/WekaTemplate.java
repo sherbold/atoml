@@ -70,6 +70,7 @@ public class WekaTemplate implements TemplateEngine {
 	@Override
 	public Map<String, String> getSmoketestReplacements(SmokeTest smokeTest) {
 		Map<String, String> replacements = new HashMap<>();
+		replacements.put("<<<PACKAGENAME>>>", algorithmUnderTest.getPackage());
 		replacements.put("<<<CLASSIFIER>>>", algorithmUnderTest.getClassName());
 		return replacements;
 	}
@@ -108,6 +109,7 @@ public class WekaTemplate implements TemplateEngine {
 		
 		Map<String, String> replacements = new HashMap<>();
 		
+		replacements.put("<<<PACKAGENAME>>>", algorithmUnderTest.getPackage());
 		replacements.put("<<<CLASSIFIER>>>", algorithmUnderTest.getClassName());
 		replacements.put("<<<TESTDATA>>>", testdata);
 		replacements.put("<<<EXPECTEDMORPHEDCLASS>>>", morphRelation);

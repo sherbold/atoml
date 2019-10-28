@@ -4,9 +4,9 @@
             Instances data = loadData("/morphdata/<<<DATASET>>>_" + iter + ".arff");
             Instances morphedData = loadData("/morphdata/<<<DATASET>>>_" + iter + "_<<<NAME>>>.arff");
 
-            Classifier classifier = AbstractClassifier.forName("<<<CLASSIFIER>>>", Arrays.copyOf(parameters, parameters.length));
+            Classifier classifier = AbstractClassifier.forName("<<<PACKAGENAME>>>.<<<CLASSIFIER>>>", Arrays.copyOf(parameters, parameters.length));
 		    classifier.buildClassifier(data);
-            Classifier morphedClassifier = AbstractClassifier.forName("<<<CLASSIFIER>>>", Arrays.copyOf(parameters, parameters.length));
+            Classifier morphedClassifier = AbstractClassifier.forName("<<<PACKAGENAME>>>.<<<CLASSIFIER>>>", Arrays.copyOf(parameters, parameters.length));
             morphedClassifier.buildClassifier(morphedData);
             
             int deviationsCounts = 0;
