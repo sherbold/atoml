@@ -662,7 +662,7 @@ parameters:
   J: # use MDL correction
   # not compatible with doNotMakeSplitPointActualValue, but not both used in combination currently
     type: flag
-    default: disabled    
+    default: disabled
 ---
 
 name: WEKA_ZEROR
@@ -679,32 +679,440 @@ properties:
   opposite: score_exact
 ---
 
-# TODO for weka
-#NBTree_Default_Weka weka.classifiers.trees.NBTree
-#SimpleCart_Default_Weka weka.classifiers.trees.SimpleCart
-#BFTree_Default_Weka weka.classifiers.trees.BFTree
+# Lazy classifiers from the package weka.classifiers.lazy
 
-#ConjunctiveRule_Default_Weka weka.classifiers.rules.ConjunctiveRule
-#Ridor_Default_Weka weka.classifiers.rules.Ridor
+name: WEKA_KNN
+type: classification
+framework: weka
+package: weka.classifiers.lazy
+class: IBk
+features: [double,categorical]
+properties:
+  same: score_exact
+  scramble: score_exact
+  reorder: score_exact
+  const: score_exact
+  opposite: score_exact
+parameters:
+  K: # number of neighbors
+    type: integer
+    min: 1
+    max: 10
+    stepsize: 3
+    default: 1
+  X: # use cross-validation to determine best K
+    type: flag
+    default: disabled
+  I: # weight by 1/distance (not compatible with F)
+    type: flag
+    default: disabled
+  F: # weight by 1-distance (not compatible with I)
+    type: flag
+    default: disabled
+  E: # weather mean-squared error is used instead of mean absolute error for CV
+    type: flag
+    default: disabled
+  A: # distance metric
+    type: values
+    values: ["weka.core.neighboursearch.LinearNNSearch -A \\\\\"weka.core.EuclideanDistance -R first-last\\\\\"", "weka.core.neighboursearch.BallTree -A \\\\\"weka.core.EuclideanDistance -R first-last\\\\\" -C \\\\\"weka.core.neighboursearch.balltrees.TopDownConstructor -S weka.core.neighboursearch.balltrees.PointsClosestToFurthestChildren -N 40\\\\\"", "weka.core.neighboursearch.CoverTree -A \\\\\"weka.core.EuclideanDistance -R first-last\\\\\" -B 1.3", "weka.core.neighboursearch.FilteredNeighbourSearch -F \\\\\"weka.filters.AllFilter \\\\\" -S \\\\\"weka.core.neighboursearch.LinearNNSearch -A \\\\\\\\\\\\\\\"weka.core.EuclideanDistance -R first-last\\\\\\\\\\\\\\\"\\\\\"", "weka.core.neighboursearch.KDTree -A \\\\\"weka.core.EuclideanDistance -R first-last\\\\\" -S weka.core.neighboursearch.kdtrees.SlidingMidPointOfWidestSide -W 0.01 -L 40 -N"]
+    default: "weka.core.neighboursearch.FilteredNeighbourSearch -F \\\\\"weka.filters.AllFilter \\\\\" -S \\\\\"weka.core.neighboursearch.LinearNNSearch -A \\\\\\\\\\\\\\\"weka.core.EuclideanDistance -R first-last\\\\\\\\\\\\\\\"\\\\\""
+---
 
-#IBk_Default_Weka weka.classifiers.lazy.IBk
-#KStar_Default_Weka weka.classifiers.lazy.KStar
+name: WEKA_KSTAR
+type: classification
+framework: weka
+package: weka.classifiers.lazy
+class: KStar
+features: [double,categorical]
+properties:
+  same: score_exact
+  scramble: score_exact
+  reorder: score_exact
+  const: score_exact
+  opposite: score_exact
+parameters:
+  E: # weather entropy blending is used
+    type: flag
+    default: disabled
+  B: # global blending parameter
+    type: integer
+    min: 10
+    max: 30
+    stepsize: 10
+    default: 20
+  M: # mode for handling missing data
+    type: values
+    values: [d,m,n,a]
+    default: a 
+---
 
-#BayesNet_Default_Weka weka.classifiers.bayes.BayesNet
-#NaiveBayes_Default_Weka weka.classifiers.bayes.NaiveBayes
+# Bayesian classifiers from the package weka.classifiers.bayes
 
-#KernelLogisticRegression_Default_Weka weka.classifiers.functions.KernelLogisticRegression
-#Logistic_Default_Weka weka.classifiers.functions.Logistic
-#MLPClassifier_Default_Weka weka.classifiers.functions.MLPClassifier
-#RBFNetwork_Default_Weka weka.classifiers.functions.RBFNetwork
-#SimpleLogistic_Default_Weka weka.classifiers.functions.SimpleLogistic
-#SVM_Poly_Weka weka.classifiers.functions.SMO
-#SVM_RBF_Weka weka.classifiers.functions.SMO -K weka.classifiers.functions.supportVector.RBFKernel
-#SPegasus_Default_Weka weka.classifiers.functions.SPegasos
-#VotedPerceptron_Default_Weka weka.classifiers.functions.VotedPerceptron
+name: WEKA_BAYESNET
+type: classification
+framework: weka
+package: weka.classifiers.bayes
+class: BayesNet
+features: [double,categorical]
+properties:
+  same: score_exact
+  scramble: score_exact
+  reorder: score_exact
+  const: score_exact
+  opposite: score_exact
+parameters:
+  E: # estimator
+    # There is also the weka.classifiers.bayes.net.estimate.MultiNomialBMAEstimator, but this one does not support a lot of data, which is why it is currently left out
+    type: values
+    values: ["weka.classifiers.bayes.net.estimate.SimpleEstimator", "weka.classifiers.bayes.net.estimate.BMAEstimator"]
+    default: "weka.classifiers.bayes.net.estimate.SimpleEstimator"
+  Q: # search algorithm
+    type: values
+    values: ["weka.classifiers.bayes.net.search.local.HillClimber", "weka.classifiers.bayes.net.search.local.K2", "weka.classifiers.bayes.net.search.local.LAGDHillClimber", "weka.classifiers.bayes.net.search.local.TabuSearch", "weka.classifiers.bayes.net.search.local.TAN"]
+    # TODO: "weka.classifiers.bayes.net.search.local.RepeatedHillClimber" <--- extremely slow
+    # TODO:  "weka.classifiers.bayes.net.search.local.SimulatedAnnealing" <--- extremely slow 
+    # TODO: "weka.classifiers.bayes.net.search.local.GeneticSearch" <--- problem with parameters
+    default: "weka.classifiers.bayes.net.search.local.K2"
+  D: # if enabled, no ADTree is used
+    type: flag
+    default: disabled
+---
 
-#HyperPipes_Default_Weka weka.classifiers.misc.HyperPipes
-#VFI_Default_Weka weka.classifiers.misc.VFI
+name: WEKA_NAIVEBAYES
+type: classification
+framework: weka
+package: weka.classifiers.bayes
+class: NaiveBayes
+features: [double,categorical]
+properties:
+  same: score_exact
+  scramble: score_exact
+  reorder: score_exact
+  const: score_exact
+  opposite: score_exact
+parameters:
+  K: # use gaussian kernel estimator
+    type: flag
+    default: disabled
+  D: # use supervised discretization
+    type: flag
+    default: disabled
+---
+
+name: WEKA_NAIVEBAYES_MULTINOMIAL
+type: classification
+framework: weka
+package: weka.classifiers.bayes
+class: NaiveBayesMultinomial
+features: [positivedouble] # can also binary but do not have that feature type yet
+properties:
+  same: score_exact
+  scramble: score_exact
+  reorder: score_exact
+  const: score_exact
+  opposite: score_exact
+---
+
+# Functions as classifiers from the package weka.classifiers.functions
+
+name: WEKA_LOGISTIC
+type: classification
+framework: weka
+package: weka.classifiers.functions
+class: Logistic
+features: [double,categorical]
+properties:
+  same: score_exact
+  scramble: score_exact
+  reorder: score_exact
+  const: score_exact
+  opposite: score_exact
+parameters:
+  R: # ridge value of the log likelihood
+    type: double
+    min: 1.0E-9
+    max: 1.0E-7
+    stepsize: 0.9E-8
+    default: 1.0E-8
+  C: # use conjugate gradiant descent
+    type: flag
+    default: disabled
+---
+
+# Functions as classifiers from the package weka.classifiers.functions
+
+name: WEKA_MLP
+type: classification
+framework: weka
+package: weka.classifiers.functions
+class: MultilayerPerceptron
+features: [double,categorical]
+properties:
+  same: score_exact
+  scramble: score_exact
+  reorder: score_exact
+  const: score_exact
+  opposite: score_exact
+parameters:
+  D: # decay, i.e., decreasing learning rate
+    type: flag
+    default: disabled
+  H: # number of hidden layers (allows numbers and some wildcards, therefore, we use values)
+    type: values
+    values: [a, i, o, t, 1, 2, 3]
+    default: a
+  L: # learning rate of the gradiant descent
+    type: double
+    min: 0.001
+    max: 0.5
+    stepsize: 0.099
+    default: 0.3
+  M: # momentum applied to weight updates
+    type: double
+    min: 0.001
+    max: 0.5
+    stepsize: 0.099
+    default: 0.2
+  B: # no nominal to binary filter
+    type: flag
+    default: disabled
+  I: # no normalization of attributes
+    type: flag
+    default: disabled
+  C: # no internal normalization of numeric class attributes
+    type: flag
+    default: disabled
+  R: # no reset of network with lower learning rate in case of convergence
+    type: flag
+    default: disabled
+  N: # number of epochs for training
+    type: integer
+    min: 100
+    max: 900
+    stepsize: 400
+    default: 500
+  V: # validation set size
+    type: integer
+    min: 0
+    max: 90
+    stepsize: 30
+    default: 0
+  E: # validation threshold
+    type: integer
+    min: 1
+    max: 39
+    stepsize: 19
+    default: 20
+---
+
+name: WEKA_SGD
+type: classification
+framework: weka
+package: weka.classifiers.functions
+class: SGD
+features: [double,categorical]
+properties:
+  same: score_exact
+  scramble: score_exact
+  reorder: score_exact
+  const: score_exact
+  opposite: score_exact
+parameters:
+  N: # do not normalize
+    type: flag
+    default: disabled
+  E: # epochs
+    type: integer
+    min: 100
+    max: 900
+    stepsize: 400
+    default: 500
+  C: # epsilon for loss function
+    type: double
+    min: 0.0001
+    max: 0.02
+    stepsize: 0.05
+    default: 0.001
+  R: # regularization constant
+    type: double
+    min: 0.00001
+    max: 0.001
+    stepsize: 0.0005
+    default: 0.0001
+  L: # learning rate
+    type: double
+    min: 0.001
+    max: 0.5
+    stepsize: 0.099
+    default: 0.3
+  F: #
+    type: values
+    values: [0,1] # 0=hinge, 1=logistic (other types for regression)
+    default: 0
+---
+
+name: WEKA_SimpleLogistic
+type: classification
+framework: weka
+package: weka.classifiers.functions
+class: SimpleLogistic
+features: [double,categorical]
+properties:
+  same: score_exact
+  scramble: score_exact
+  reorder: score_exact
+  const: score_exact
+  opposite: score_exact
+parameters:
+  P: # error on probabilities
+    type: flag
+    default: disabled
+  H: # heuristic stoping criterion
+    type: integer
+    min: 0
+    max: 100
+    stepsize: 50
+    default: 50
+  M: # maximum of boosting iterations (actually, zero is allowed - is this a bug?)
+    type: integer
+    min: 1
+    max: 999
+    stepsize: 499
+    default: 500
+  I: # sets a fixed number of boosting iterations
+    type: integer
+    min: 0
+    max: 1000
+    stepsize: 500
+    default: 0
+  A: # use AIC to determine number of boosting iterations
+    type: flag
+    default: disabled
+  S: # whether cross-validation is used for determining the number of boosting iterations
+    type: flag
+    default: disabled
+  W: # beta value for weight trimming of boosting
+    type: double
+    min: 0.0
+    max: 0.9
+    stepsize: 0.3
+    default: 0.0
+---
+    
+name: WEKA_SVM
+type: classification
+framework: weka
+package: weka.classifiers.functions
+class: SMO
+features: [double,categorical]
+properties:
+  same: score_exact
+  scramble: score_exact
+  reorder: score_exact
+  const: score_exact
+  opposite: score_exact
+parameters:
+  M: # build calibration models
+    type: fixedflag
+    default: disabled
+  N: # preprocessing of data
+    type: values
+    values: [0,1,2] # 0=normalize, 1=standardize, 2=nothing
+    default: 0
+  C: # complexity parameter
+    type: double
+    min: 0.5
+    max: 2.0
+    stepsize: 0.5
+    default: 1.0
+  P: # epsilon for round-off error (should not be changed from default, according to documentation
+    type: values
+    values: [1E-12]
+    default: 1E-12
+  K: # Kernel
+    type: values
+    values: ["weka.classifiers.functions.supportVector.PolyKernel -E 1.0 -C 250007","weka.classifiers.functions.supportVector.NormalizedPolyKernel -E 2.0 -C 250007","weka.classifiers.functions.supportVector.RBFKernel -C 250007 -G 0.01","weka.classifiers.functions.supportVector.Puk -O 1.0 -S 1.0 -C 250007"]
+    default: "weka.classifiers.functions.supportVector.PolyKernel -E 1.0 -C 250007"
+---
+
+name: WEKA_SVM_CALIBRATED
+type: classification
+framework: weka
+package: weka.classifiers.functions
+class: SMO
+features: [double,categorical]
+properties:
+  same: score_exact
+  scramble: score_exact
+  reorder: score_exact
+  const: score_exact
+  opposite: score_exact
+parameters:
+  M: # build calibration models
+    type: fixedflag
+    default: disabled
+  N: # preprocessing of data
+    type: values
+    values: [0,1,2] # 0=normalize, 1=standardize, 2=nothing
+    default: 0
+  C: # complexity parameter
+    type: double
+    min: 0.5
+    max: 2.0
+    stepsize: 0.5
+    default: 1.0
+  P: # epsilon for round-off error (should not be changed from default, according to documentation
+    type: values
+    values: [1E-12]
+    default: 1E-12
+  K: # Kernel
+    type: values
+    values: ["weka.classifiers.functions.supportVector.PolyKernel -E 1.0 -C 250007","weka.classifiers.functions.supportVector.NormalizedPolyKernel -E 2.0 -C 250007","weka.classifiers.functions.supportVector.RBFKernel -C 250007 -G 0.01","weka.classifiers.functions.supportVector.Puk -O 1.0 -S 1.0 -C 250007"]
+    default: "weka.classifiers.functions.supportVector.PolyKernel -E 1.0 -C 250007"
+  V: # number of folds for training calibration models (-1 means use training data)
+    type: integer
+    min: -1
+    max: 3
+    stepsize: 2
+    default: -1
+  calibrator:
+    type: values
+    values: ["weka.classifiers.functions.Logistic -R 1.0E-8 -M -1 -num-decimal-places 4","weka.classifiers.functions.SimpleLogistic -I 0 -M 500 -H 50 -W 0.0"]
+    default: "weka.classifiers.functions.Logistic -R 1.0E-8 -M -1 -num-decimal-places 4"
+---
+
+name: WEKA_VOTEDPERCEPTRON
+type: classification
+framework: weka
+package: weka.classifiers.functions
+class: VotedPerceptron
+features: [double,categorical]
+properties:
+  same: score_exact
+  scramble: score_exact
+  reorder: score_exact
+  const: score_exact
+  opposite: score_exact
+parameters:
+  E: # exponent of the polynomial kernel
+    type: double
+    min: 1.0
+    max: 3.0
+    stepsize: 1.0
+    default: 1.0
+  I: # number of iterations
+    type: integer
+    min: 1
+    max: 9
+    stepsize: 4
+    default: 1
+  M: # maximum number of alterations of the perceptron
+    type: integer
+    min: 1
+    max: 20001
+    stepsize: 5000
+    default: 10000
+---
 
 # Examples for sklearn and Spark. Due to rewrite currently not yet fully supported again. 
 
