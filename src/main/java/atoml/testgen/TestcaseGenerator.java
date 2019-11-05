@@ -80,7 +80,20 @@ public class TestcaseGenerator {
 			List<MetamorphicTest> metamorphicTests = getMorptests(algorithmUnderTest.getProperties());
 			for( MetamorphicTest metamorphicTest : metamorphicTests) {
 				for( DataDescription morphtestDataDescription : morphtestDataDescriptions ) {
-					if( metamorphicTest.isCompatibleWithData(morphtestDataDescription) ) {
+					// check if  algorithm is compatible with data
+					boolean allSupported = true;
+					for( FeatureType featureTypeRequired : morphtestDataDescription.getRequiredFeatureTypes() ) {
+						boolean isSupported = false;
+						for( FeatureType featureTypeSupported : algorithmUnderTest.getFeatures() ) {
+							isSupported |= FeatureType.isSupported(featureTypeSupported, featureTypeRequired);
+						}
+						if( !isSupported ) {
+							allSupported = false;
+							break;
+						}
+					}
+					// only generate test if both data and test case are compatible
+					if( allSupported && metamorphicTest.isCompatibleWithData(morphtestDataDescription) ) {
 						testmethods.append(metamorphictestBody(metamorphicTest, morphtestDataDescription));
 					}
 				}

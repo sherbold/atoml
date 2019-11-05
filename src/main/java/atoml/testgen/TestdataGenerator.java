@@ -9,11 +9,13 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.stream.IntStream;
 
 import org.apache.commons.math3.distribution.UniformRealDistribution;
 
+import atoml.classifiers.FeatureType;
 import atoml.data.DataDescription;
 import atoml.data.DataGenerator;
 import atoml.metamorphic.MetamorphicTest;
@@ -87,15 +89,15 @@ public class TestdataGenerator {
 		
 		int[] featureTypes = IntStream.generate(() -> 10).limit(numFeatures).toArray();
 		List<DataDescription> morphtestDataDescriptions = new ArrayList<>();
-		morphtestDataDescriptions.add(new DataDescription("RANDNUM", numFeatures, 0, numInstances, new UniformRealDistribution(), 0.5, null));
-		morphtestDataDescriptions.add(new DataDescription("UNIFORM", numFeatures, numFeatures/2, numInstances, new UniformRealDistribution(), 0.1, null));
-		morphtestDataDescriptions.add(new DataDescription("RANDCAT",numFeatures, 0, numInstances, new UniformRealDistribution(), 0.5, featureTypes));
-		morphtestDataDescriptions.add(new DataDescription("CATEGORICAL", numFeatures, numFeatures/2, numInstances, new UniformRealDistribution(), 0.1, featureTypes));
-		morphtestDataDescriptions.add(new DataDescription("CREDITG", "/morphdata/creditg.arff", false, true));
-		morphtestDataDescriptions.add(new DataDescription("IONOSPHERE", "/morphdata/ionosphere.arff", true, false));
-		morphtestDataDescriptions.add(new DataDescription("UNBALANCE", "/morphdata/unbalanced.arff", true, false));
-		morphtestDataDescriptions.add(new DataDescription("WEATHERNOMINAL", "/morphdata/weathernominal.arff", false, true));
-		morphtestDataDescriptions.add(new DataDescription("WEATHERNUMERIC", "/morphdata/weathernumeric.arff", true, true));
+		morphtestDataDescriptions.add(new DataDescription("RANDNUM", numFeatures, 0, numInstances, new UniformRealDistribution(), 0.5, null, Arrays.asList(FeatureType.UNIT)));
+		morphtestDataDescriptions.add(new DataDescription("UNIFORM", numFeatures, numFeatures/2, numInstances, new UniformRealDistribution(), 0.1, null, Arrays.asList(FeatureType.UNIT)));
+		morphtestDataDescriptions.add(new DataDescription("RANDCAT",numFeatures, 0, numInstances, new UniformRealDistribution(), 0.5, featureTypes, Arrays.asList(FeatureType.CATEGORICAL)));
+		morphtestDataDescriptions.add(new DataDescription("CATEGORICAL", numFeatures, numFeatures/2, numInstances, new UniformRealDistribution(), 0.1, featureTypes, Arrays.asList(FeatureType.CATEGORICAL)));
+		morphtestDataDescriptions.add(new DataDescription("CREDITG", "/morphdata/creditg.arff", false, true, Arrays.asList(FeatureType.CATEGORICAL, FeatureType.POSITIVEFLOAT)));
+		morphtestDataDescriptions.add(new DataDescription("IONOSPHERE", "/morphdata/ionosphere.arff", true, false, Arrays.asList(FeatureType.FLOAT)));
+		morphtestDataDescriptions.add(new DataDescription("UNBALANCE", "/morphdata/unbalanced.arff", true, false, Arrays.asList(FeatureType.FLOAT)));
+		morphtestDataDescriptions.add(new DataDescription("WEATHERNOMINAL", "/morphdata/weathernominal.arff", false, true, Arrays.asList(FeatureType.CATEGORICAL)));
+		morphtestDataDescriptions.add(new DataDescription("WEATHERNUMERIC", "/morphdata/weathernumeric.arff", true, true, Arrays.asList(FeatureType.CATEGORICAL, FeatureType.POSITIVEFLOAT)));
 		
 		for( int iteration=1; iteration<=this.iterations; iteration++) {
 			for( SmokeTest smokeTest : smokeTests ) {

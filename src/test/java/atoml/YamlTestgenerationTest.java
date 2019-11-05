@@ -1,6 +1,7 @@
 package atoml;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -8,6 +9,7 @@ import org.apache.commons.math3.distribution.UniformRealDistribution;
 import org.junit.Test;
 
 import atoml.classifiers.Algorithm;
+import atoml.classifiers.FeatureType;
 import atoml.classifiers.YamlClassifierGenerator;
 import atoml.data.DataDescription;
 import atoml.metamorphic.MetamorphicTest;
@@ -33,7 +35,7 @@ public class YamlTestgenerationTest {
 		metamorphicTests.add(new Scramble());
 		metamorphicTests.add(new Same());
 		List<DataDescription> morphtestDataDescriptions = new ArrayList<>();
-		morphtestDataDescriptions.add(new DataDescription("UNIFORM", numFeatures, numFeatures/2, numInstances, new UniformRealDistribution(), 0.1, null));
+		morphtestDataDescriptions.add(new DataDescription("UNIFORM", numFeatures, numFeatures/2, numInstances, new UniformRealDistribution(), 0.1, null, Arrays.asList(FeatureType.CATEGORICAL)));
 		int iterations = 2;
 		for(Algorithm alg : algorithms) {
 			System.out.println(alg);
