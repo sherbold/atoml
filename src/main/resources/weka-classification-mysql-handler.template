@@ -103,7 +103,8 @@
 	        preparedSql.append("`passed_stat_score`) VALUES ");
 	        preparedSql.append("(?,?,?,?,?,?,?,?,?,?,?,?,?)");
 	        
-	        try(PreparedStatement stmt = this.connectionPool.getConnection().prepareStatement(preparedSql.toString());) {
+	        try(Connection con = this.connectionPool.getConnection();
+		        PreparedStatement stmt = con.prepareStatement(preparedSql.toString());) {
 	            stmt.setString(1, algorithm);
 	            stmt.setString(2, parameters);
 	            stmt.setString(3, testcase);
@@ -145,7 +146,8 @@
 	        preparedSql.append("`stacktrace`) VALUES ");
 	        preparedSql.append("(?,?,?,?,?,?,?,?)");
 	        
-	        try(PreparedStatement stmt = this.connectionPool.getConnection().prepareStatement(preparedSql.toString());) {
+	        try(Connection con = this.connectionPool.getConnection();
+		        PreparedStatement stmt = con.prepareStatement(preparedSql.toString());) {
 	            stmt.setString(1, algorithm);
 	            stmt.setString(2, parameters);
 	            stmt.setString(3, testcase);
