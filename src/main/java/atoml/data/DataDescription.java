@@ -1,5 +1,6 @@
 package atoml.data;
 
+import java.util.List;
 import java.util.stream.IntStream;
 
 import org.apache.commons.math3.distribution.AbstractRealDistribution;
@@ -78,8 +79,10 @@ public class DataDescription {
 	 */
 	private final DescriptionType type;
 	
-	// TODO real init
-	private final FeatureType featureType = FeatureType.UNIT;
+	/**
+	 * list of feature types that algorithms must support for working with this data
+	 */
+	private final List<FeatureType> requiredFeatureTypes;
 
 	/**
 	 * Creates a new data description for data that is loaded from a file
@@ -93,7 +96,7 @@ public class DataDescription {
 	 * @param hasCategorical
 	 *            defines if the data contains categorical features
 	 */
-	public DataDescription(String name, String file, boolean hasNumeric, boolean hasCategorical) {
+	public DataDescription(String name, String file, boolean hasNumeric, boolean hasCategorical, List<FeatureType> requiredFeatureTypes) {
 		this.name = name;
 		this.file = file;
 
@@ -107,7 +110,9 @@ public class DataDescription {
 		this.hasNumericFeatures = hasNumeric;
 		this.hasCategoricalFeatures = hasCategorical;
 		this.isRandomized = false;
-
+		
+		this.requiredFeatureTypes = requiredFeatureTypes;
+		
 		this.type = DescriptionType.FILE;
 	}
 
@@ -132,7 +137,7 @@ public class DataDescription {
 	 *            value defines the number of categories
 	 */
 	public DataDescription(String name, int numFeatures, int numInformative, int numInstances,
-			AbstractRealDistribution distribution, double noiseRate, int[] featureTypes) {
+			AbstractRealDistribution distribution, double noiseRate, int[] featureTypes, List<FeatureType> requiredFeatureTypes) {
 		this.name = name;
 		this.numFeatures = numFeatures;
 		this.numInformative = numInformative;
@@ -164,6 +169,9 @@ public class DataDescription {
 		}
 		this.file = null;
 		this.isRandomized = true;
+		
+		this.requiredFeatureTypes = requiredFeatureTypes;
+		
 		this.type = DescriptionType.GENERATED;
 	}
 
@@ -287,10 +295,10 @@ public class DataDescription {
 	
 
 	/**
-	 * the minimal requirements for the features to be supported by the algorithms, mainly described by the data range
-	 * @return the feature type
+	 * the minimal requirements for the features to be supported by the algorithms, mainly described by the data range and data types (categorical, numerical)
+	 * @return the required feature types that must be supported for working with this data
 	 */
-	public FeatureType getFeatureType() {
-		return this.featureType;
+	public List<FeatureType> getRequiredFeatureTypes() {
+		return this.requiredFeatureTypes;
 	}
 }
