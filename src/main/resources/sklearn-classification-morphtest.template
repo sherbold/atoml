@@ -1,5 +1,6 @@
+    @parameterized.expand(params)
     @timeout(21600)
-    def test_<<<NAME>>>_<<<DATASET>>>(self):
+    def test_<<<NAME>>>_<<<DATASET>>>(self, name, kwargs):
         for iter in range(1,<<<ITERATIONS>>>+1):
             data_original, meta_original = loadarff('morphdata/<<<DATASET>>>_%i.arff' % iter)
             data_morphed, meta_morphed = loadarff('morphdata/<<<DATASET>>>_%i_<<<NAME>>>.arff' % iter)
@@ -30,5 +31,40 @@
             classifier_morph.fit(np.delete(data_morph_df.values, class_index_morph, axis=1),data_morph_df.values[:,class_index_morph])
             prediction_original = classifier_original.predict(np.delete(data_original_df.values, class_index_original, axis=1))
             prediction_morph = classifier_morph.predict(np.delete(<<<MORPHTESTDATA>>>.values, <<<MORPHCLASSINDEX>>>, axis=1))
-            <<<MORPHRELATION>>>
+            
+            scores_original = classifier_original.predict_proba(np.delete(data_original_df.values, class_index_original, axis=1))
+            scores_morph = classifier_morph.predict_proba(np.delete(<<<MORPHTESTDATA>>>.values, <<<MORPHCLASSINDEX>>>, axis=1))
+            
+            <<<EXPECTEDMORPHEDCLASS>>>
+            
+            deviations_class = sum(prediction_morph!=prediction_expected)
+            deviations_score = sum(scores_morph[:,0]!=scores_expected)
+            count_expected_1 = prediction_expected.sum()
+            count_expected_0 = len(prediction_expected)-count_expected_1
+            count_morph_1 = prediction_morph.sum()
+            count_morph_0 = len(prediction_morph)-count_morph_1
+            pval_chisquare = chisquare([count_morph_0,count_morph_1], [count_expected_0, count_expected_1]).pvalue
+            pval_kstest = ks_2samp(scores_morph[:,0], scores_expected).pvalue
+            
+            # handles situation if all data is in one class
+            if math.isnan(pval_chisquare) and deviations_class==0:
+                pval_chisquare = 1.0
+            
+            results_dict = {
+                'algorithm': self.__class__.__name__,
+                'parameters': name,
+                'testcase': inspect.stack()[0][3],
+                'iteration': iter,
+                'testsize': len(data_original),
+                'deviations_counts': int(deviations_class),
+                'deviations_scores': int(deviations_score),
+                'pval_counts': float(pval_chisquare),
+                'pval_scores': float(pval_kstest),
+                'passed_exact_score': int(deviations_score==0),
+                'passed_exact_class': int(deviations_class==0),
+                'passed_stat_class': int(pval_chisquare<0.05),
+                'passed_stat_score': int(pval_kstest<0.05),
+            }
+            write_morph_to_db(results_dict)
+#            <<<MORPHRELATION>>>
 

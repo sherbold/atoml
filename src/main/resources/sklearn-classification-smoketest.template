@@ -1,24 +1,46 @@
+    @parameterized.expand(params)
     @timeout(21600)
-    def test_<<<NAME>>>(self):
+    def test_<<<NAME>>>(self, name, kwargs):
         for iter in range(1,<<<ITERATIONS>>>+1):
-            data, meta = loadarff('smokedata/<<<NAME>>>_%i_training.arff' % iter)
-            testdata, testmeta = loadarff('smokedata/<<<NAME>>>_%i_test.arff' % iter)
-            lb_make = LabelEncoder()
-            data_df = pd.DataFrame(data)
-            data_df["classAtt"] = lb_make.fit_transform(data_df["classAtt"])
-            data_df = pd.get_dummies(data_df)
+            no_exception = True
+            exception_type = None
+            exception_message = None
+            exception_stacktrace = None
+            try:
+                data, meta = loadarff('smokedata/<<<NAME>>>_%i_training.arff' % iter)
+                testdata, testmeta = loadarff('smokedata/<<<NAME>>>_%i_test.arff' % iter)
+                lb_make = LabelEncoder()
+                data_df = pd.DataFrame(data)
+                data_df["classAtt"] = lb_make.fit_transform(data_df["classAtt"])
+                data_df = pd.get_dummies(data_df)
             
-            testdata_df = pd.DataFrame(data)
-            testdata_df["classAtt"] = lb_make.fit_transform(testdata_df["classAtt"])
-            testdata_df = pd.get_dummies(testdata_df, sparse=True)
+                testdata_df = pd.DataFrame(data)
+                testdata_df["classAtt"] = lb_make.fit_transform(testdata_df["classAtt"])
+                testdata_df = pd.get_dummies(testdata_df, sparse=True)
             
-            classIndex = -1
-            for i, s in enumerate(data_df.columns):
-                if 'classAtt' in s:
-                    classIndex = i
+                classIndex = -1
+                for i, s in enumerate(data_df.columns):
+                    if 'classAtt' in s:
+                        classIndex = i
 
-            classifier = <<<CLASSIFIER>>>
-            np.random.seed(42)
-            classifier.fit(np.delete(data_df.values, classIndex, axis=1),data_df.values[:,classIndex])
-            classifier.predict(np.delete(testdata_df.values, classIndex, axis=1))
+                classifier = <<<CLASSIFIER>>>
+                np.random.seed(42)
+                classifier.fit(np.delete(data_df.values, classIndex, axis=1),data_df.values[:,classIndex])
+                classifier.predict(np.delete(testdata_df.values, classIndex, axis=1))
+            except Exception as e:
+                no_exception = False
+                exception_type = type(e).__name__
+                exception_message = str(e)
+                exception_stacktrace = traceback.format_exc()
+            results_dict = {
+                'algorithm': self.__class__.__name__,
+                'parameters': name,
+                'testcase': inspect.stack()[0][3],
+                'iteration': iter,
+                'passed': int(no_exception),
+                'exception': exception_type,
+                'message': exception_message,
+                'stacktrace': exception_stacktrace,
+            }
+            write_smoke_to_db(results_dict)
 
