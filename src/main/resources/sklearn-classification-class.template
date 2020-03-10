@@ -22,7 +22,7 @@ db_connection = db.create_engine(db_connection_str)
 
 metadata = db.MetaData()
 
-db_results_morph = db.Table('results_morphtests_sklearn', metadata,
+db_results_morph = db.Table('results_morphtests', metadata,
     db.Column('id', db.Integer()),
     db.Column('algorithm', db.String(200), nullable=False),
     db.Column('parameters', db.String(200), default=None),
@@ -38,7 +38,7 @@ db_results_morph = db.Table('results_morphtests_sklearn', metadata,
     db.Column('passed_stat_class', db.Integer(), default=None),
     db.Column('passed_stat_score', db.Integer(), default=None))
     
-db_results_smoke = db.Table('results_smoketests_sklearn', metadata,
+db_results_smoke = db.Table('results_smoketests', metadata,
     db.Column('id', db.Integer()),
     db.Column('algorithm', db.String(200), nullable=False),
     db.Column('parameters', db.String(200), default=None),
