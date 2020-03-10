@@ -4,6 +4,8 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
 
+import org.apache.commons.lang3.math.NumberUtils;
+
 import atoml.classifiers.Algorithm;
 import atoml.metamorphic.MetamorphicTest;
 import atoml.smoke.SmokeTest;
@@ -117,7 +119,11 @@ public class SklearnTemplate implements TemplateEngine {
 		for( Entry<String, String> parameter : parameterCombination.entrySet()) {
 			parameters.append("'"+parameter.getKey()+"':");
 			// TODO need to use parameter type here to decide whether there are quotes
-			parameters.append(""+parameter.getValue()+",");
+			String value = parameter.getValue();
+			if (!"None".equals(value) && !NumberUtils.isParsable(value)) {
+				value = "'"+value+"'";
+			}
+			parameters.append(""+value+",");
 		}
 		parameters.append("}");
 		return parameters.toString();
