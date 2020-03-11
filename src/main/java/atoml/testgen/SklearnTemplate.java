@@ -120,12 +120,16 @@ public class SklearnTemplate implements TemplateEngine {
 			parameters.append("'"+parameter.getKey()+"':");
 			// TODO need to use parameter type here to decide whether there are quotes
 			String value = parameter.getValue();
-			if (!"None".equals(value) && !NumberUtils.isParsable(value)) {
+			if (needsQuotes(value)) {
 				value = "'"+value+"'";
 			}
 			parameters.append(""+value+",");
 		}
 		parameters.append("}");
 		return parameters.toString();
+	}
+	
+	private static boolean needsQuotes(String value) {
+		return !"True".equals(value) && !"False".equals(value) &&  !"None".equals(value) && !NumberUtils.isParsable(value);
 	}
 }
