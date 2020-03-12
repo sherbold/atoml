@@ -32,8 +32,12 @@
             prediction_original = classifier_original.predict(np.delete(data_original_df.values, class_index_original, axis=1))
             prediction_morph = classifier_morph.predict(np.delete(<<<MORPHTESTDATA>>>.values, <<<MORPHCLASSINDEX>>>, axis=1))
             
-            scores_original = classifier_original.predict_proba(np.delete(data_original_df.values, class_index_original, axis=1))
-            scores_morph = classifier_morph.predict_proba(np.delete(<<<MORPHTESTDATA>>>.values, <<<MORPHCLASSINDEX>>>, axis=1))
+            if hasattr(classifier_original, 'predict_proba'):
+	            scores_original = classifier_original.predict_proba(np.delete(data_original_df.values, class_index_original, axis=1))
+	            scores_morph = classifier_morph.predict_proba(np.delete(<<<MORPHTESTDATA>>>.values, <<<MORPHCLASSINDEX>>>, axis=1))
+            else:
+	            scores_original = np.array([prediction_original, abs(1-prediction_original)])
+	            scores_morph = np.array([prediction_morph, abs(1-prediction_morph)])
             
             <<<EXPECTEDMORPHEDCLASS>>>
             
