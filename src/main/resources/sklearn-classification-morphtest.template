@@ -47,8 +47,10 @@
             count_expected_0 = len(prediction_expected)-count_expected_1
             count_morph_1 = prediction_morph.sum()
             count_morph_0 = len(prediction_morph)-count_morph_1
-            pval_chisquare = chisquare([count_morph_0,count_morph_1], [count_expected_0, count_expected_1]).pvalue
-            pval_kstest = ks_2samp(scores_morph[:,0], scores_expected).pvalue
+            with warnings.catch_warnings():
+                warnings.simplefilter("ignore")
+                pval_chisquare = chisquare([count_morph_0,count_morph_1], [count_expected_0, count_expected_1]).pvalue
+                pval_kstest = ks_2samp(scores_morph[:,0], scores_expected).pvalue
             
             # handles situation if all data is in one class
             if math.isnan(pval_chisquare) and deviations_class==0:

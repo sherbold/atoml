@@ -7,6 +7,7 @@ import functools
 import inspect
 import math
 import traceback
+import warnings
 
 from parameterized import parameterized
 from scipy.io.arff import loadarff
