@@ -1114,30 +1114,1286 @@ parameters:
     default: 10000
 ---
 
-# Examples for sklearn and Spark. Due to rewrite currently not yet fully supported again. 
+#################################
+# Scikit-Learn 0.22 Classifiers #
+#################################
 
-#---
-#name: SKLEARN_DT
-#framework: sklearn
-#type: classification
-#package:  sklearn.tree
-#class: DecisionTreeClassifier
-#features: float
-#parameters:
-#  min_samples_split:
-#    type: integer
-#    min: 2
-#    max: 10
-#    default: 2
-#  max_depth:
-#    type: integer
-#    min: 1
-#    max: 10
-#    default: None
-#properties:
-#  same: score_exact
-#  scramble: score_exact
-#  opposite: score_exact
+name: SKLEARN_DecisionTreeClassifier
+framework: sklearn
+type: classification
+package:  sklearn.tree
+class: DecisionTreeClassifier
+features: double
+properties:
+  same: score_exact
+  scramble: score_exact
+  reorder: score_exact
+  const: score_exact
+  opposite: score_exact
+parameters:
+  criterion:
+    type: values
+    values: [gini, entropy]
+    default: gini
+  splitter:
+    type: values
+    values: [best, random]
+    default: best
+  min_samples_split:
+    type: integer
+    min: 2
+    max: 10
+    stepsize: 2
+    default: 2
+  max_depth:
+    type: integer
+    min: 1
+    max: 5
+    stepsize: 1
+    default: 2 
+  min_samples_leaf:
+    type: integer
+    min: 1
+    max: 13
+    stepsize: 4
+    default: 1
+  min_weight_fraction_leaf:
+    type: double
+    min: 0.0
+    max: 0.5
+    stepsize: 0.25
+    default: 0.0
+  max_features:
+    type: values
+    values: [auto, sqrt, log2, 0.1, 0.5, 0.8, None]
+    default: None
+  max_leaf_nodes:
+    type: integer
+    min: 10
+    max: 20
+    stepsize: 5
+    default: None
+  min_impurity_decrease:
+    type: double
+    min: 0.0
+    max: 0.4
+    stepsize: 0.2
+    default: 0.0
+  class_weight:
+    type: values
+    values: [balanced, None]
+    default: None
+  ccp_alpha:
+    type: double
+    min: 0.0
+    max: 0.4
+    stepsize: 0.2
+    default: 0.0
+---
+
+name: SKLEARN_ExtraTreeClassifier
+framework: sklearn
+type: classification
+package:  sklearn.tree
+class: ExtraTreeClassifier
+features: double
+properties:
+  same: score_exact
+  scramble: score_exact
+  reorder: score_exact
+  const: score_exact
+  opposite: score_exact
+parameters:
+  criterion:
+    type: values
+    values: [gini, entropy]
+    default: gini
+  splitter:
+    type: values
+    values: [best, random]
+    default: best
+  min_samples_split:
+    type: integer
+    min: 2
+    max: 10
+    stepsize: 2
+    default: 2
+  max_depth:
+    type: integer
+    min: 1
+    max: 5
+    stepsize: 1
+    default: 2 
+  min_samples_leaf:
+    type: integer
+    min: 1
+    max: 13
+    stepsize: 4
+    default: 1
+  min_weight_fraction_leaf:
+    type: double
+    min: 0.0
+    max: 0.5
+    stepsize: 0.25
+    default: 0.0
+  max_features:
+    type: values
+    values: [auto, sqrt, log2, 0.1, 0.5, 0.8, None]
+    default: None
+  max_leaf_nodes:
+    type: integer
+    min: 10
+    max: 20
+    stepsize: 5
+    default: None
+  min_impurity_decrease:
+    type: double
+    min: 0.0
+    max: 0.4
+    stepsize: 0.2
+    default: 0.0
+  class_weight:
+    type: values
+    values: [balanced, None]
+    default: None
+  ccp_alpha:
+    type: double
+    min: 0.0
+    max: 0.4
+    stepsize: 0.2
+    default: 0.0
+---
+
+name: SKLEARN_RandomForestClassifier
+framework: sklearn
+type: classification
+package:  sklearn.ensemble
+class: RandomForestClassifier
+features: double
+properties:
+  same: score_exact
+  scramble: score_exact
+  reorder: score_exact
+  const: score_exact
+  opposite: score_exact
+parameters:
+  n_estimators:
+    type: integer
+    min: 1
+    max: 100
+    stepsize: 100
+    default: 100
+  criterion:
+    type: values
+    values: [gini, entropy]
+    default: gini
+  min_samples_split:
+    type: integer
+    min: 2
+    max: 10
+    stepsize: 2
+    default: 2
+  max_depth:
+    type: integer
+    min: 1
+    max: 5
+    stepsize: 1
+    default: 2 
+  min_samples_leaf:
+    type: integer
+    min: 1
+    max: 13
+    stepsize: 4
+    default: 1
+  min_weight_fraction_leaf:
+    type: double
+    min: 0.0
+    max: 0.5
+    stepsize: 0.25
+    default: 0.0
+  max_features:
+    type: values
+    values: [auto, sqrt, log2, 0.1, 0.5, 0.8, None]
+    default: None
+  max_leaf_nodes:
+    type: integer
+    min: 10
+    max: 20
+    stepsize: 5
+    default: None
+  min_impurity_decrease:
+    type: double
+    min: 0.0
+    max: 0.4
+    stepsize: 0.2
+    default: 0.0
+  class_weight:
+    type: values
+    values: [balanced, balanced_subsample, None]
+    default: None
+  bootstrap:
+    type: values
+    values: [True, False]
+    default: True
+  ccp_alpha:
+    type: double
+    min: 0.0
+    max: 0.4
+    stepsize: 0.2
+    default: 0.0
+---
+
+name: SKLEARN_DummyClassifier
+framework: sklearn
+type: classification
+package:  sklearn.dummy
+class: DummyClassifier
+features: double
+properties:
+  same: score_exact
+  scramble: score_exact
+  reorder: score_exact
+  const: score_exact
+  opposite: score_exact
+parameters:
+  strategy:
+    type: values
+    values: [stratified, most_frequent, prior, uniform, constant]
+    default: stratified
+  constant:
+    type: integer
+    min: 0
+    max: 1
+    stepsize: 1
+    default: 0
+---
+ 
+name: SKLEARN_GaussianProcessClassifier
+framework: sklearn
+type: classification
+package:  sklearn.gaussian_process
+class: GaussianProcessClassifier
+features: double
+properties:
+  same: score_exact
+  scramble: score_exact
+  reorder: score_exact
+  const: score_exact
+  opposite: score_exact
+parameters:
+  optimizer:
+    type: values
+    values: [fmin_l_bfgs_b]
+  n_restarts_optimizer:
+    type: integer
+    min: 0
+    max: 2
+    stepsize: 1
+    default: 0
+  max_iter_predict:
+    type: integer
+    min: 1
+    max: 199
+    stepsize: 99
+    default: 100
+  copy_X_train:
+    type: values
+    values: [True, False]
+    default: True
+# multi_class ignored because we only have binary data so far
+# kernel ignored, but may be added (this would require additional imports, which is not supported so far
+---
+
+name: SKLEARN_PassiveAggressiveClassifier
+framework: sklearn
+type: classification
+package:  sklearn.linear_model
+class: PassiveAggressiveClassifier
+features: double
+properties:
+  same: score_exact
+  scramble: score_exact
+  reorder: score_exact
+  const: score_exact
+  opposite: score_exact
+parameters:
+  C: # regularization parameter
+    type: double
+    min: 0.5
+    max: 1.5
+    stepsize: 0.5
+    default: 1.0
+  fit_intercept:
+    type: values
+    values: [True, False]
+    default: False
+  max_iter:
+    type: integer
+    min: 500
+    max: 1500
+    stepsize: 500
+    default: 1000
+  tol:
+    type: values
+    values: [0.001]
+    default: 0.001
+  early_stopping:
+    type: values
+    values: [True, False]
+    default: False
+  n_iter_no_change:
+    type: integer
+    min: 1
+    max: 9
+    stepsize: 4
+    default: 5
+  shuffle:
+    type: values
+    values: [True, False]
+    default: True
+  loss:
+    type: values
+    values: [hinge, squared_hinge]
+    default: hinge
+  class_weight:
+    type: values
+    values: [balanced, None]
+    default: None
+  average:
+    type: values
+    values: [True, False, 10]
+    default: False
+---
+
+name: SKLEARN_RidgeClassifier
+framework: sklearn
+type: classification
+package:  sklearn.linear_model
+class: RidgeClassifier
+features: double
+properties:
+  same: score_exact
+  scramble: score_exact
+  reorder: score_exact
+  const: score_exact
+  opposite: score_exact
+parameters:
+  alpha:
+    type: double
+    min: 0.0
+    max: 1.5
+    stepsize: 0.5
+    default: 1.0
+  fit_intercept:
+    type: values
+    values: [True, False]
+    default: True
+  normalize:
+    type: values
+    values: [True, False]
+    default: False
+  copy_X:
+    type: values
+    values: [True, False]
+    default: True
+  max_iter:
+    type: values
+    values: [100, 1000, 10000, None]
+    default: None
+  tol:
+    type: values
+    values: [0.001]
+    default: 0.001
+  class_weight:
+    type: values
+    values: [balanced, None]
+    default: None
+  solver:
+    type: values
+    values: [auto, svd, cholesky, lsqr, sparse_cg, sag, saga]
+    default: auto
+---
+
+name: SKLEARN_SGDClassifier
+framework: sklearn
+type: classification
+package:  sklearn.linear_model
+class: SGDClassifier
+features: double
+properties:
+  same: score_exact
+  scramble: score_exact
+  reorder: score_exact
+  const: score_exact
+  opposite: score_exact
+parameters:
+  loss:
+    type: values
+    values: [hinge, log, modified_huber, squared_hinge, perceptron]
+    default: hinge
+  penalty:
+    type: values
+    values: [l2, l1, elasticnet]
+    default: l2
+  alpha:
+    type: values
+    values: [0.00001, 0.0001, 0.001]
+    default: 0.0001
+  l1_ratio:
+    type: double
+    min: 0.0
+    max: 1.0
+    stepsize: 0.5
+    default: 0.15
+  max_iter:
+    type: integer
+    min: 1
+    max: 1999
+    stepsize: 999
+    default: 1000
+  tol:
+    type: values
+    values: [0.001]
+    default: 0.001
+  shuffle:
+    type: values
+    values: [True, False]
+    default: True
+  learning_rate:
+    type: values
+    values: [constant, optimal, invscaling, adaptive]
+  eta0:
+    type: double
+    min: 0.0
+    max: 0.1
+    stepsize: 0.05
+    default: 0.0
+  power_t:
+    type: double
+    min: 0.1
+    max: 0.9
+    stepsize: 0.4
+    default: 0.5
+  early_stopping:
+    type: values
+    values: [True, False]
+    default: False
+  validation_fraction:
+    type: double
+    min: 0.1
+    max: 0.9
+    stepsize: 0.4
+    default: 0.1
+  n_iter_no_change:
+    type: integer
+    min: 1
+    max: 9
+    stepsize: 4
+    default: 5
+  class_weight:
+    type: values
+    values: [balanced, None]
+    default: None
+  average:
+    type: values
+    values: [True, False, 10]
+    default: False
+---
+    
+name: SKLEARN_BernoulliNB
+framework: sklearn
+type: classification
+package:  sklearn.naive_bayes
+class: BernoulliNB
+features: double
+properties:
+  same: score_exact
+  scramble: score_exact
+  reorder: score_exact
+  const: score_exact
+  opposite: score_exact
+parameters:
+  alpha:
+    type: double
+    min: 0.0
+    max: 1.5
+    stepsize: 0.5
+    default: 1.0
+  binarize:
+    type: double
+    min: 0.0
+    max: 1.5
+    stepsize: 0.5
+    default: 0.0
+  fit_prior:
+    type: values
+    values: [True, False]
+    default: True
+#  class_prior: missing because arrays are not yet supported
+---
+
+name: SKLEARN_CategoricalNB
+framework: sklearn
+type: classification
+package:  sklearn.naive_bayes
+class: SGDClassifier
+features: categorical
+properties:
+  same: score_exact
+  scramble: score_exact
+  reorder: score_exact
+  const: score_exact
+  opposite: score_exact
+parameters:
+  alpha:
+    type: double
+    min: 0.0
+    max: 1.5
+    stepsize: 0.5
+    default: 1.0
+  fit_prior: # somehow not supported?!
+    type: values
+    values: [True, False]
+    default: True
+#  class_prior: missing because arrays are not yet supported
+---
+
+name: SKLEARN_ComplementNB
+framework: sklearn
+type: classification
+package:  sklearn.naive_bayes
+class: ComplementNB
+features: positivedouble
+properties:
+  same: score_exact
+  scramble: score_exact
+  reorder: score_exact
+  const: score_exact
+  opposite: score_exact
+parameters:
+  alpha:
+    type: double
+    min: 0.0
+    max: 1.5
+    stepsize: 0.5
+    default: 1.0
+  fit_prior:
+    type: values
+    values: [True, False]
+    default: True
+  norm:
+    type: values
+    values: [True, False]
+    default: False
+#  class_prior: missing because arrays are not yet supported
+---
+
+name: SKLEARN_GaussianNB
+framework: sklearn
+type: classification
+package:  sklearn.naive_bayes
+class: GaussianNB
+features: double
+properties:
+  same: score_exact
+  scramble: score_exact
+  reorder: score_exact
+  const: score_exact
+  opposite: score_exact
+parameters:
+  var_smoothing:
+    type: values
+    values: [0.000000001, 0.0000001]
+    default: 0.000000001
+#  priors: missing because arrays are not yet supported
+---
+
+name: SKLEARN_MultinomialNB
+framework: sklearn
+type: classification
+package:  sklearn.naive_bayes
+class: MultinomialNB
+features: positivedouble
+properties:
+  same: score_exact
+  scramble: score_exact
+  reorder: score_exact
+  const: score_exact
+  opposite: score_exact
+parameters:
+  alpha:
+    type: double
+    min: 0.0
+    max: 1.5
+    stepsize: 0.5
+    default: 1.0
+  fit_prior:
+    type: values
+    values: [True, False]
+    default: True
+#  class_prior: missing because arrays are not yet supported
+---
+
+name: SKLEARN_KNeighborsClassifier
+framework: sklearn
+type: classification
+package:  sklearn.neighbors
+class: KNeighborsClassifier
+features: double
+properties:
+  same: score_exact
+  scramble: score_exact
+  reorder: score_exact
+  const: score_exact
+  opposite: score_exact
+parameters:
+  n_neighbors:
+    type: integer
+    min: 1
+    max: 9
+    stepsize: 4
+    default: 5
+  weights:
+    type: values
+    values: [uniform, distance]
+    default: uniform
+  algorithm:
+    type: values
+    values: [ball_tree, kd_tree, brute, auto] # execution shows that brute is incompatible with most metrics, even though this is not documented.
+    default: auto
+  leaf_size:
+    type: integer
+    min: 1
+    max: 59
+    stepsize: 29
+    default: 30
+  p: # the p for the lp norm
+    type: integer
+    min: 1
+    max: 3
+    stepsize: 1
+    default: 2
+  metric:
+    type: values
+    values: [euclidean, manhatten, chebyshev, minkowski] # wminkowski, seuclidean, mahalanobis maybe need additional classifiers, because they take arguments
+    default: minkowski
+# ommitted metric_params, n_jobs
+---
+
+name: SKLEARN_RadiusNeighborsClassifier
+framework: sklearn
+type: classification
+package:  sklearn.neighbors
+class: RadiusNeighborsClassifier
+features: double
+properties:
+  same: score_exact
+  scramble: score_exact
+  reorder: score_exact
+  const: score_exact
+  opposite: score_exact
+parameters:
+  radius:
+    type: double
+    min: 0.1
+    max: 1.9
+    stepsize: 0.9
+    default: 1.0
+  weights:
+    type: values
+    values: [uniform, distance]
+    default: uniform
+  algorithm:
+    type: values
+    values: [ball_tree, kd_tree, brute, auto]
+    default: auto
+  leaf_size:
+    type: integer
+    min: 1
+    max: 59
+    stepsize: 29
+    default: 30
+  p: # the p for the lp norm
+    type: integer
+    min: 1
+    max: 3
+    stepsize: 1
+    default: 2
+  metric:
+    type: values
+    values: [euclidean, manhatten, chebyshev, minkowski, wminkowski, seuclidean, mahalabonis]
+    default: minkowski
+  outlier_label:
+    type: values
+    values: [None, most_frequent, 1.0, 0.0]
+    default: None
+# ommitted metric_params, n_jobs
+---
+
+name: SKLEARN_MLPClassifier
+framework: sklearn
+type: classification
+package:  sklearn.neural_network
+class: MLPClassifier
+features: double
+properties:
+  same: score_exact
+  scramble: score_exact
+  reorder: score_exact
+  const: score_exact
+  opposite: score_exact
+parameters:
+  activation:
+    type: values
+    values: [identity, logistic, tanh, relu]
+    default: relu
+  solver:
+    type: values
+    values: [lbfgs, sgd, adam]
+    default: adam
+  alpha:
+    type: values
+    values: [0.001, 0.0001, 0.00001]
+    default: 0.0001
+  batch_size:
+    type: integer
+    min: 1
+    max: 19
+    stepsize: 9
+    default: auto
+  learning_rate:
+    type: values
+    values: [constant, invscaling, adaptive]
+    default: constant
+  learning_rate_init:
+    type: values
+    values: [0.01, 0.001, 0.0001]
+    default: 0.001
+  power_t:
+    type: double
+    min: 0.1
+    max: 0.9
+    stepsize: 0.4
+    default: 0.4
+  shuffle:
+    type: values
+    values: [True, False]
+    default: True
+  tol:
+    type: values
+    values: [0.0001]
+    default: 0.0001
+  momentum:
+    type: double
+    min: 0.1
+    max: 0.9
+    stepsize: 0.4
+    default: 0.9
+  early_stopping:
+    type: values
+    values: [True, False]
+    default: False
+  validation_fraction:
+    type: double
+    min: 0.1
+    max: 0.9
+    stepsize: 0.4
+    default: 0.1
+  beta_1:
+    type: double
+    min: 0.0
+    max: 0.9
+    stepsize: 0.45
+    default: 0.9
+  beta_2:
+    type: double
+    min: 0.0
+    max: 0.9
+    stepsize: 0.45
+    default: 0.9
+  epsilon:
+    type: values
+    values: [0.00000001]
+    default: 0.00000001
+  n_iter_no_change:
+    type: integer
+    min: 1
+    max: 9
+    stepsize: 4
+    default: 5
+  max_fun:
+    type: integer
+    min: 10000
+    max: 20000
+    stepsize: 5000
+    default: 15000
+#  hidden_layer_sizes: # tuples not yet supported
+---
+
+name: SKLEARN_LinearSVC
+framework: sklearn
+type: classification
+package:  sklearn.svm
+class: LinearSVC
+features: double
+properties:
+  same: score_exact
+  scramble: score_exact
+  reorder: score_exact
+  const: score_exact
+  opposite: score_exact
+parameters:
+  penalty:
+    type: values
+    values: [l1, l2]
+    default: l2
+  loss:
+    type: values
+    values: [hinge, squared_hinge]
+    default: squared_hinge
+  dual:
+    type: values
+    values: [True, False]
+    default: True
+  tol:
+    type: values
+    values: [0.0001]
+    default: 0.0001
+  C: # regularization parameter
+    type: double
+    min: 0.1
+    max: 1.9
+    stepsize: 0.9
+    default: 1.0
+  fit_intercept:
+    type: values
+    values: [True, False]
+    default: True
+  intercept_scaling:
+    type: double
+    min: 0.5
+    max: 1.5
+    stepsize: 0.5
+    default: 1.0
+  class_weight:
+    type: values
+    values: [balanced, None]
+    default: None
+  max_iter:
+    type: integer
+    min: 1
+    max: 1999
+    stepsize: 999
+    default: 1000
+# ignored multi_class
+---
+
+name: SKLEARN_NuSVC
+framework: sklearn
+type: classification
+package:  sklearn.svm
+class: NuSVC
+features: double
+properties:
+  same: score_exact
+  scramble: score_exact
+  reorder: score_exact
+  const: score_exact
+  opposite: score_exact
+parameters:
+  nu:
+    type: double
+    min: 0.1
+    max: 0.7
+    stepsize: 0.3
+    default: 0.5
+  kernel:
+    type: values
+    values: [linear, rbf]
+    default: rbf
+  gamma:
+    type: values
+    values: [scale, auto, 0.1]
+    default: scale
+  shrinking:
+    type: values
+    values: [True, False]
+    default: True
+  probability:
+    type: values
+    values: [True, False]
+    default: False
+  tol:
+    type: values
+    values: [0.001]
+    default: 0.001
+# max_iter ignored
+# decision_function_shape, break_ties ignored because we only have binary problems so far    
+---
+
+name: SKLEARN_NuSVC_Poly
+framework: sklearn
+type: classification
+package:  sklearn.svm
+class: NuSVC
+features: double
+properties:
+  same: score_exact
+  scramble: score_exact
+  reorder: score_exact
+  const: score_exact
+  opposite: score_exact
+parameters:
+  nu:
+    type: double
+    min: 0.1
+    max: 0.7
+    stepsize: 0.3
+    default: 0.5
+  kernel:
+    type: values
+    values: [poly]
+    default: poly
+  degree:
+    type: integer
+    min: 1
+    max: 3
+    stepsize: 1
+    default: 3
+  coef0:
+    type: double
+    min: 0.0
+    max: 1.5
+    stepsize: 0.5 
+    default: 0.0
+  shrinking:
+    type: values
+    values: [True, False]
+    default: True
+  probability:
+    type: values
+    values: [True, False]
+    default: False
+  tol:
+    type: values
+    values: [0.001]
+    default: 0.001
+# max_iter ignored
+# decision_function_shape, break_ties ignored because we only have binary problems so far    
+---
+
+name: SKLEARN_NuSVC_Sigmoid
+framework: sklearn
+type: classification
+package:  sklearn.svm
+class: NuSVC
+features: double
+properties:
+  same: score_exact
+  scramble: score_exact
+  reorder: score_exact
+  const: score_exact
+  opposite: score_exact
+parameters:
+  nu:
+    type: double
+    min: 0.1
+    max: 0.7
+    stepsize: 0.3
+    default: 0.5
+  kernel:
+    type: values
+    values: [linear, rbf]
+    default: rbf
+  gamma:
+    type: values
+    values: [scale, auto, 0.1]
+    default: scale
+  coef0:
+    type: double
+    min: 0.0
+    max: 1.5
+    stepsize: 0.5 
+    default: 0.0
+  shrinking:
+    type: values
+    values: [True, False]
+    default: True
+  probability:
+    type: values
+    values: [True, False]
+    default: False
+  tol:
+    type: values
+    values: [0.001]
+    default: 0.001
+# max_iter ignored
+# decision_function_shape, break_ties ignored because we only have binary problems so far    
+---
+
+name: SKLEARN_SVC
+framework: sklearn
+type: classification
+package:  sklearn.svm
+class: SVC
+features: double
+properties:
+  same: score_exact
+  scramble: score_exact
+  reorder: score_exact
+  const: score_exact
+  opposite: score_exact
+parameters:
+  C: # regularization parameter
+    type: double
+    min: 0.1
+    max: 1.9
+    stepsize: 0.9
+    default: 1.0
+  kernel:
+    type: values
+    values: [linear, rbf]
+    default: rbf
+  gamma:
+    type: values
+    values: [scale, auto, 0.1]
+    default: scale
+  shrinking:
+    type: values
+    values: [True, False]
+    default: True
+  probability:
+    type: values
+    values: [True, False]
+    default: False
+  tol:
+    type: values
+    values: [0.001]
+    default: 0.001
+  class_weight:
+    type: values
+    values: [balanced, None]
+    default: None
+# max_iter ignored
+# decision_function_shape, break_ties ignored because we only have binary problems so far    
+---
+
+name: SKLEARN_SVC_Poly
+framework: sklearn
+type: classification
+package:  sklearn.svm
+class: SVC
+features: double
+properties:
+  same: score_exact
+  scramble: score_exact
+  reorder: score_exact
+  const: score_exact
+  opposite: score_exact
+parameters:
+  C: # regularization parameter
+    type: double
+    min: 0.1
+    max: 1.9
+    stepsize: 0.9
+    default: 1.0
+  kernel:
+    type: values
+    values: [poly]
+    default: poly
+  degree:
+    type: integer
+    min: 1
+    max: 3
+    stepsize: 1
+    default: 3
+  coef0:
+    type: double
+    min: 0.0
+    max: 1.5
+    stepsize: 0.5 
+    default: 0.0
+  shrinking:
+    type: values
+    values: [True, False]
+    default: True
+  probability:
+    type: values
+    values: [True, False]
+    default: False
+  tol:
+    type: values
+    values: [0.001]
+    default: 0.001
+  class_weight:
+    type: values
+    values: [balanced, None]
+    default: None
+# max_iter ignored
+# decision_function_shape, break_ties ignored because we only have binary problems so far    
+---
+
+name: SKLEARN_SVC_Sigmoid
+framework: sklearn
+type: classification
+package:  sklearn.svm
+class: SVC
+features: double
+properties:
+  same: score_exact
+  scramble: score_exact
+  reorder: score_exact
+  const: score_exact
+  opposite: score_exact
+parameters:
+  C: # regularization parameter
+    type: double
+    min: 0.1
+    max: 1.9
+    stepsize: 0.9
+    default: 1.0
+  kernel:
+    type: values
+    values: [linear, rbf]
+    default: rbf
+  gamma:
+    type: values
+    values: [scale, auto, 0.1]
+    default: scale
+  coef0:
+    type: double
+    min: 0.0
+    max: 1.5
+    stepsize: 0.5 
+    default: 0.0
+  shrinking:
+    type: values
+    values: [True, False]
+    default: True
+  probability:
+    type: values
+    values: [True, False]
+    default: False
+  tol:
+    type: values
+    values: [0.001]
+    default: 0.001
+  class_weight:
+    type: values
+    values: [balanced, None]
+    default: None
+# max_iter ignored
+# decision_function_shape, break_ties ignored because we only have binary problems so far    
+---
+
+name: SKLEARN_LinearDiscriminantAnalysis_SVD
+framework: sklearn
+type: classification
+package:  sklearn.discriminant_analysis
+class: LinearDiscriminantAnalysis
+features: double
+properties:
+  same: score_exact
+  scramble: score_exact
+  reorder: score_exact
+  const: score_exact
+  opposite: score_exact
+parameters:
+  solver:
+    type: values
+    values: [svd]
+    default: svd
+  shrinkage:
+    type: values
+    values: [None]
+    default: None
+  n_components:
+    type: integer
+    min: 1
+    max: 1
+    stepsize: 1
+    default: None
+  store_covariance:
+    type: values
+    values: [True, False]
+    default: False
+  tol:
+    type: values
+    values: [0.0001]
+    default: 0.0001
+# priors ignored
+---
+
+name: SKLEARN_LinearDiscriminantAnalysis_LsqrEigen
+framework: sklearn
+type: classification
+package:  sklearn.discriminant_analysis
+class: LinearDiscriminantAnalysis
+features: double
+properties:
+  same: score_exact
+  scramble: score_exact
+  reorder: score_exact
+  const: score_exact
+  opposite: score_exact
+parameters:
+  solver:
+    type: values
+    values: [lsqr, eigen]
+    default: lsqr
+  shrinkage:
+    type: values
+    values: [None, auto, 0.1, 0.5, 0.9]
+    default: None
+  n_components:
+    type: integer
+    min: 1
+    max: 1
+    stepsize: 1
+    default: None
+  store_covariance:
+    type: values
+    values: [True, False]
+    default: False
+  tol:
+    type: values
+    values: [0.0001]
+    default: 0.0001
+# priors ignored
+---
+
+name: SKLEARN_QuadraticDiscriminantAnalysis
+framework: sklearn
+type: classification
+package:  sklearn.discriminant_analysis
+class: QuadraticDiscriminantAnalysis
+features: double
+properties:
+  same: score_exact
+  scramble: score_exact
+  reorder: score_exact
+  const: score_exact
+  opposite: score_exact
+parameters:
+  reg_param:
+    type: double
+    min: 0.0
+    max: 1.0
+    stepsize: 0.5
+    default: 0.0
+  store_covariance:
+    type: values
+    values: [True, False]
+    default: False
+  tol:
+    type: values
+    values: [0.0001]
+    default: 0.0001
+---
+
+
+# Example for Spark. Due to rewrite currently not yet fully supported again. 
+
 #---
 #name: SPARK_DT
 #framework: spark
