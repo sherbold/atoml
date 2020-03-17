@@ -118,6 +118,7 @@ for framework in frameworks:
 
     # create smoke test overview page
     smoke_grouped = pd.read_sql("SELECT * FROM smoketest_view WHERE passed=0 and framework='%s' GROUP BY testcase, `algorithm`, parameters, exception" % framework.lower(), con=db_connection)
+    smoke_grouped['parameters'] = smoke_grouped['parameters'].str.replace(",'", ", '")
 
     pages['%s/smoketests'%framework.lower()] = html.Div([
         html.H1(children='Overview of Smoke Tests Failures'),
@@ -128,7 +129,10 @@ for framework in frameworks:
                 'overflow': 'hidden',
                 'textOverflow': 'ellipsis',
                 'maxWidth': 0,
+                'textAlign': 'left',
             },
+            sort_action="native",
+            sort_mode="multi",
             column_selectable="multi",
             columns=[{"name": 'Testcase', "id": 'testcase'},
                      {'name': 'Algorithm', 'id': 'algorithm'},
@@ -146,7 +150,7 @@ for framework in frameworks:
     def update_styles(selected_columns):
         if selected_columns is not None:
             return [{
-                'if': { 'column_id': i },
+                'if': {'column_id': i},
                 'whiteSpace': 'normal',
                 'height': 'auto',
             } for i in selected_columns]
