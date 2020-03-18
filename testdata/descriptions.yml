@@ -1384,6 +1384,7 @@ parameters:
   optimizer:
     type: values
     values: [fmin_l_bfgs_b]
+    default: fmin_l_bfgs_b
   n_restarts_optimizer:
     type: integer
     min: 0
@@ -1844,6 +1845,10 @@ properties:
   const: score_exact
   opposite: score_exact
 parameters:
+  hidden_layer_sizes:
+    type: values
+    values: ['(100,50,10)', '(1, 1)', '(10, 20)']
+    default: '(100,)'
   activation:
     type: values
     values: [identity, logistic, tanh, relu]
@@ -1928,7 +1933,6 @@ parameters:
     max: 20000
     stepsize: 5000
     default: 15000
-#  hidden_layer_sizes: # tuples not yet supported
 ---
 
 name: SKLEARN_LinearSVC

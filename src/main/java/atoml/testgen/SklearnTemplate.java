@@ -129,7 +129,19 @@ public class SklearnTemplate implements TemplateEngine {
 		return parameters.toString();
 	}
 	
+	/**
+	 * Helper function that checks is a parameter value must be quoted (i.e. string) or not
+	 *  
+	 * @param value true if quotes are needed
+	 * @return
+	 */
 	private static boolean needsQuotes(String value) {
-		return !"True".equals(value) && !"False".equals(value) &&  !"None".equals(value) && !NumberUtils.isParsable(value);
+		boolean isNone = "None".equals(value);
+		boolean isBoolean = "True".equals(value) || "False".equals(value);
+		boolean isNumber = NumberUtils.isParsable(value);
+		boolean isTuple = value.startsWith("(") && value.endsWith(")");
+		boolean isList = value.startsWith("[") && value.endsWith("]");
+		boolean isDict = value.startsWith("{") && value.endsWith("}");
+		return  !(isNone || isBoolean || isNumber || isTuple || isList || isDict);
 	}
 }
