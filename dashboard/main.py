@@ -131,6 +131,12 @@ for framework in frameworks:
                 'maxWidth': 0,
                 'textAlign': 'left',
             },
+            style_cell_conditional=[
+                {'if': {'column_id': 'testcase'},
+                 'width': '130px'},
+                {'if': {'column_id': 'algorithm'},
+                 'width': '200px'},
+            ],
             sort_action="native",
             sort_mode="multi",
             column_selectable="multi",
