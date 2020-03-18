@@ -89,7 +89,7 @@ def timeout(duration, default=None):
             it = InterruptableThread(args, kwargs)
             it.start()
             it.join(duration)
-            if it.isAlive():
+            if it.is_alive():
                 raise TestTimeoutException('timeout after %i seconds for test %s' % (duration, func))
             if it.exception:
                 raise it.exception
