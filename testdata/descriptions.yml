@@ -1562,6 +1562,7 @@ parameters:
   learning_rate:
     type: values
     values: [constant, optimal, invscaling, adaptive]
+    default: optimal
   eta0:
     type: double
     min: 0.0
@@ -1636,7 +1637,7 @@ name: SKLEARN_CategoricalNB
 framework: sklearn
 type: classification
 package:  sklearn.naive_bayes
-class: SGDClassifier
+class: CategoricalNB
 features: categorical
 properties:
   same: score_exact
