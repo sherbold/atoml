@@ -122,7 +122,22 @@ Atoml generates the tests such that they can be executed with the test runner th
 
 # Using the MySQL/Maria Database and the Dashboard
 
-Atoml also provides the option to store results in a MySQL/Maria database. In this mode, the assertions of the test runners are replaced with code that stores the results in the MySQL database. The [create_mysql_schema.sql](scripts/create_mysql_schema.sql) contains the code to generate the schema for the database. There is also a simple [dashboard](dashboard/main.py) that can be used to visualize the results.
+Atoml also provides the option to store results in a MySQL/Maria database. In this mode, the assertions of the test runners are replaced with code that stores the results in the MySQL database. The [create_mysql_schema.sql](scripts/create_mysql_schema.sql) contains the code to generate the schema for the database. There is also a simple [dashboard](dashboard/main.py) that can be used to visualize the results. We recommend the creation of a virtual environment for the dashboard as follows.
+
+```
+cd dashboard
+python3 -m venv .
+source bin/activate
+pip install -r requirements.txt
+deactivate
+```
+
+The dashboard can then be started.
+
+```
+source bin/activate
+python main.py
+```
 
 # License
 
