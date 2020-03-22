@@ -2,9 +2,9 @@ package atoml.testgen;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Map.Entry;
 
 import atoml.classifiers.Algorithm;
-import atoml.classifiers.Parameter;
 import atoml.metamorphic.MetamorphicTest;
 import atoml.smoke.SmokeTest;
 
@@ -20,17 +20,11 @@ public class SparkTemplate implements TemplateEngine {
 	final Algorithm algorithmUnderTest;
 	
 	/**
-	 * parameter string for the algorithm
-	 */
-	final String createString;
-	
-	/**
 	 * Constructor. Creates a new SparkTemplate. 
 	 * @param algorithmUnderTest
 	 */
 	public SparkTemplate(Algorithm algorithmUnderTest) {
 		this.algorithmUnderTest = algorithmUnderTest;
-		this.createString = getDefaultCreateString(algorithmUnderTest);
 	}
 	
 	/* (non-Javadoc)
@@ -54,8 +48,19 @@ public class SparkTemplate implements TemplateEngine {
 	 */
 	@Override
 	public Map<String, String> getClassReplacements() {
+		StringBuilder parameterString = new StringBuilder();
+		if( algorithmUnderTest.getParameterCombinations().size()>0 ) {
+			for( Map<String,String> parameterCombination :  algorithmUnderTest.getParameterCombinations()) {
+				parameterString.append("            " + getParameterString(parameterCombination) + ",\n");
+			}
+			parameterString.replace(parameterString.length()-2, parameterString.length(), "");
+		} else {
+			parameterString = parameterString.append("            { new String[]{}, \"default\"}");
+		}
+		
 		Map<String, String> replacements = new HashMap<>();
 		replacements.put("<<<PACKAGENAME>>>", algorithmUnderTest.getPackage());
+		replacements.put("<<<HYPERPARAMETERS>>>", parameterString.toString());
 		return replacements;
 	}
 	
@@ -65,8 +70,8 @@ public class SparkTemplate implements TemplateEngine {
 	@Override
 	public Map<String, String> getSmoketestReplacements(SmokeTest smokeTest) {
 		Map<String, String> replacements = new HashMap<>();
-		replacements.put("<<<CLASSNAME>>>", algorithmUnderTest.getClassName());
-		replacements.put("<<<CLASSIFIER>>>", createString);
+		replacements.put("<<<PACKAGENAME>>>", algorithmUnderTest.getPackage());
+		replacements.put("<<<CLASSIFIER>>>", algorithmUnderTest.getClassName());
 		return replacements;
 	}
 	
@@ -75,13 +80,13 @@ public class SparkTemplate implements TemplateEngine {
 	 */
 	@Override
 	public Map<String, String> getMorphtestReplacements(MetamorphicTest metamorphicTest) {
-		String morphClass;
+		String testdata;
 		switch(metamorphicTest.getPredictionType()) {
 		case ORDERED_DATA:
-			morphClass = "List<Row> predictionMorphed = morphedModel.transform(morpheddata).select(\"prediction\").collectAsList();\n";
+			testdata = "morphedData";
 			break;
 		case SAME_CLASSIFIER:
-			morphClass = "List<Row> predictionMorphed = morphedModel.transform(dataframe).select(\"prediction\").collectAsList();\n";
+			testdata = "data";
 			break;
 		default:
 			throw new RuntimeException("could not generate unit tests, unknown morph test class");
@@ -90,44 +95,49 @@ public class SparkTemplate implements TemplateEngine {
 		String morphRelation;
 		switch(metamorphicTest.getPredictionRelation()) {
 		case EQUAL:
-			morphRelation = "Double.compare(originalClass, morphedClass) == 0";
+			morphRelation = "expectedMorphedClass = originalClass;";
 			break;
 		case INVERTED:
-			morphRelation = "Double.compare(originalClass, morphedClass) != 0";
+			morphRelation = "expectedMorphedClass = Double.compare(originalClass, 0.0)==0 ? 1.0 : 0.0;";
 			break;
 		default:
 			throw new RuntimeException("could not generate tests, unknown morph prediction relation type");
 		}
 		
-		//String allowedViolations = algorithmUnderTest.getProperties().get(metamorphicTest.getClass().getSimpleName().toUpperCase());
+		String evaluationType = algorithmUnderTest.getProperties().get(metamorphicTest.getClass().getSimpleName().toUpperCase()).toString().toLowerCase();
+		evaluationType = "\"" + evaluationType + "\"";
 		
 		Map<String, String> replacements = new HashMap<>();
-		replacements.put("<<<CLASSNAME>>>", algorithmUnderTest.getClassName());
-		replacements.put("<<<CLASSIFIER>>>", createString);
-		replacements.put("<<<MORPHCLASS>>>", morphClass);
-		replacements.put("<<<MORPHRELATION>>>", morphRelation);
-		//replacements.put("<<<ALLOWEDVIOLATIONS>>>", allowedViolations);
 		
+		replacements.put("<<<PACKAGENAME>>>", algorithmUnderTest.getPackage());
+		replacements.put("<<<CLASSIFIER>>>", algorithmUnderTest.getClassName());
+		replacements.put("<<<TESTDATA>>>", testdata);
+		replacements.put("<<<EXPECTEDMORPHEDCLASS>>>", morphRelation);
+		replacements.put("<<<EVALUATIONTYPE>>>", evaluationType);
 		return replacements;
 	}
 	
-	private static String getDefaultCreateString(Algorithm algorithm) {
-		String parameters = getDefaultParameters(algorithm);
-		return algorithm.getClassName()+"()"+parameters;
-	}
-	
 	/**
-	 * creates a string that describes the default parameters
+	 * creates a string for the test of a parameter combination
 	 * @return parameters string
 	 */
-	private static String getDefaultParameters(Algorithm algorithm) {
+	private static String getParameterString(Map<String, String> parameterCombination) {
+		StringBuilder parameterName = new StringBuilder();
 		StringBuilder parameters = new StringBuilder();
-		for( Parameter parameter : algorithm.getParameters()) {
-			parameters.append("."+parameter.getName());
-			parameters.append("("+parameter.getDefaultValue()+")");
-			
+		parameters.append("{ new String[]{");
+		for( Entry<String, String> parameter : parameterCombination.entrySet()) {
+			parameters.append("\""+parameter.getKey()+"\",");
+			parameterName.append("" + parameter.getKey() + " ");
+			if( parameter.getValue()!=null ) {
+				parameters.append("\""+parameter.getValue()+"\",");
+				parameterName.append(parameter.getValue() + " ");
+			}
 		}
-		
+		if( parameterCombination.size()>0 ) {
+			// delete final comma that separates parameters
+			parameters.replace(parameters.length()-1, parameters.length(), "");
+		}
+		parameters.append("}, \"" + parameterName.toString().trim() + "\"}");
 		return parameters.toString();
 	}
 }

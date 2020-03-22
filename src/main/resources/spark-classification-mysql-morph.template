@@ -1,0 +1,2 @@
+evalMorphTestSQL(nameWithoutParams, iter, deviationsCounts, deviationsScores, predictionOriginal.size(), expectedMorphCounts, morphedCounts, expectedMorphDistributions, morphedDistributions);
+            // 

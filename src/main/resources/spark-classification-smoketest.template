@@ -1,10 +1,10 @@
     @Test
     public void test_<<<NAME>>>() throws Exception {
         for(int iter=1; iter<=<<<ITERATIONS>>>; iter++) {
-            Dataset<Row> dataframe = arffToDataset("/smokedata/<<<NAME>>>_" + iter + "_training.arff");
+        	<<<MYSQLEVALSMOKE_START>>>Dataset<Row> dataframe = arffToDataset("/smokedata/<<<NAME>>>_" + iter + "_training.arff");
             Dataset<Row> testdata = arffToDataset("/smokedata/<<<NAME>>>_" + iter + "_test.arff");
             
-            <<<CLASSNAME>>> classifier = new <<<CLASSIFIER>>>;
+            <<<CLASSIFIER>>> classifier = new <<<CLASSIFIER>>>();
             classifier.setLabelCol("classAtt");
             try {
             	Method setSeedMethod = classifier.getClass().getMethod("setSeed", long.class);
@@ -12,9 +12,10 @@
             } catch (NoSuchMethodException | SecurityException e) {
             	// not randomized
             }
+            setParameters(classifier, parameters);
             
             ClassificationModel<?, ?> model = classifier.fit(dataframe);
-            model.transform(testdata);
+            model.transform(testdata);<<<MYSQLEVALSMOKE_END>>>
         }
     }
 

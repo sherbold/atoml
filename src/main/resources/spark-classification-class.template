@@ -2,22 +2,33 @@ package <<<PACKAGENAME>>>;
 
 import static org.junit.Assert.*;
 import org.junit.Test;
+import org.junit.rules.TestName;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.FixMethodOrder;
+import org.junit.Rule;
+import org.junit.runner.RunWith;
 import org.junit.runners.MethodSorters;
+import org.junit.runners.Parameterized;
+import org.junit.runners.Parameterized.Parameter;
+import org.junit.runners.Parameterized.Parameters;
+
 
 
 import javax.annotation.Generated;
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.lang.reflect.Method;
+import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
 import java.io.IOException;
 import weka.core.Attribute;
 import weka.core.Instances;
+import org.apache.commons.math3.stat.inference.TestUtils;
 import org.apache.spark.sql.Dataset;
 import org.apache.spark.sql.Row;
 import org.apache.spark.sql.RowFactory;
@@ -25,16 +36,72 @@ import org.apache.spark.sql.SparkSession;
 import org.apache.spark.sql.types.DataTypes;
 import org.apache.spark.sql.types.StructField;
 import org.apache.spark.sql.types.StructType;
-import org.apache.spark.ml.feature.OneHotEncoderEstimator;
+import org.apache.spark.ml.feature.OneHotEncoder;
 import org.apache.spark.ml.feature.OneHotEncoderModel;
 import org.apache.spark.ml.feature.VectorAssembler;
+import org.apache.spark.ml.linalg.DenseVector;
+
+<<<MYSQLIMPORTS>>>
 
 /**
  * Automatically generated smoke and metamorphic tests.
  */
 @Generated("atoml.testgen.TestclassGenerator")
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
+@RunWith(Parameterized.class)
 public class <<<CLASSNAME>>> {
+
+    <<<MYSQLHANDLER>>>
+    
+    @Rule
+    public TestName testname = new TestName();
+
+    @Parameters(name = "{1}")
+    public static Collection<Object[]> data() {
+        return Arrays.asList(new Object[][] {
+<<<HYPERPARAMETERS>>>
+           });
+    }
+    
+    @Parameter
+    public String[] parameters;
+    
+    @Parameter(1)
+    public String parameterName;
+
+    private void assertMorphTest(String evaluationType, String testcaseName, int iteration, int deviationsCounts, int deviationsScores, int testsize, long[] expectedMorphCounts, long[] morphedCounts, double[] expectedMorphedDistributions, double[] morphedDistributions) {
+        if( "score_exact".equalsIgnoreCase(evaluationType) ) {
+            String message = String.format("results different (deviations of scores: %d out of %d)", deviationsScores, testsize);
+            assertTrue(message, deviationsScores==0);
+        }
+        else if( "class_exact".equalsIgnoreCase(evaluationType) ) {
+            String message = String.format("results different (deviations of classes: %d out of %d)", deviationsCounts, testsize);
+            assertTrue(message, deviationsCounts==0);
+        }
+        else if( "class_stat".equalsIgnoreCase(evaluationType) ) {
+            double pValueCounts;
+            if( deviationsCounts>0 ) {
+                pValueCounts = TestUtils.chiSquareTestDataSetsComparison(expectedMorphCounts, morphedCounts);
+            } else {
+                pValueCounts = 1.0;
+            }
+            String message = String.format("results significantly different, p-value = %f (deviations of classes: %d out of %d)", pValueCounts, deviationsCounts, testsize);
+            assertTrue(message, pValueCounts>0.05);
+        } 
+        else if( "score_stat".equalsIgnoreCase(evaluationType) ) {
+            double pValueKS;
+            if( deviationsScores>0 ) {
+                pValueKS = TestUtils.kolmogorovSmirnovTest(expectedMorphedDistributions, morphedDistributions);
+            } else {
+                pValueKS = 1.0;
+            }
+            String message = String.format("score distributions significantly different, p-value = %f (deviations of scores: %d out of %d)", pValueKS, deviationsScores, testsize);
+            assertTrue(message, pValueKS>0.05);
+        } else {
+            throw new RuntimeException("invalid evaluation type for morph test: " + evaluationType + " (allowed: exact, classification, score)");
+        }
+    }
+    
 
     private SparkSession sparkSession;
 	
@@ -49,7 +116,7 @@ public class <<<CLASSNAME>>> {
         sparkSession.stop();
     }
 
-    public Dataset<Row> arffToDataset(String filename) {
+    private Dataset<Row> arffToDataset(String filename) {
 		Instances data;
 		InputStreamReader file = new InputStreamReader(this.getClass().getResourceAsStream(filename));
 		try (BufferedReader reader = new BufferedReader(file);) {
@@ -86,7 +153,7 @@ public class <<<CLASSNAME>>> {
 			}
 		}
 		if (!nominals.isEmpty()) {
-			OneHotEncoderEstimator oneHot = new OneHotEncoderEstimator().setInputCols(nominals.toArray(new String[0]))
+			OneHotEncoder oneHot = new OneHotEncoder().setInputCols(nominals.toArray(new String[0]))
 					.setOutputCols(nominalsOutput.toArray(new String[0])).setDropLast(false);
 			OneHotEncoderModel oneHotModel = oneHot.fit(dataframe);
 			dataframe = oneHotModel.transform(dataframe);
@@ -102,8 +169,42 @@ public class <<<CLASSNAME>>> {
 		return dataframe;
 	}
     
-    public String getNormalizedName(Attribute attribute) {
+    private String getNormalizedName(Attribute attribute) {
     	return attribute.name().replaceAll("\\.", "_");
+    }
+    
+    private void setParameters(Object classifier, String[] parameters) {
+    	Method[] methods = classifier.getClass().getMethods();
+        for( int i=0; i<parameters.length; i=i+2) {
+        	boolean methodFound = false;
+        	for(Method method : methods) {
+        		if( method.getName().equals(parameters[i])) {
+        			methodFound = true;
+        			for( java.lang.reflect.Parameter param : method.getParameters()) {
+        				try {
+		    				if( "long".equals(param.getType().getName()) ) {
+								method.invoke(classifier, Long.parseLong(parameters[i+1]));
+								
+		    				}
+		    				else if( "int".equals(param.getType().getName()) ) {
+		    					method.invoke(classifier, Integer.parseInt(parameters[i+1]));
+		    				}
+		    				else if( "double".equals(param.getType().getName()) ) {
+		    					method.invoke(classifier, Double.parseDouble(parameters[i+1]));
+		    				}
+		    				else {
+		    					throw new RuntimeException("Hyperparameter type not supported: " + param.getType().getName());
+		    				}
+        				} catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
+							throw new RuntimeException("Failure instantiating hyperparameter: " + parameters[i]);
+						}
+        			}
+        		}
+        	}
+        	if( !methodFound ) {
+        		throw new RuntimeException("Invalid hyperparameters generated by atoml");
+        	}
+        }
     }
 
 <<<METHODS>>>

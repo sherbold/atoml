@@ -4,7 +4,7 @@
             Dataset<Row> dataframe = arffToDataset("/morphdata/<<<DATASET>>>_" + iter + ".arff");
             Dataset<Row> morpheddata = arffToDataset("/morphdata/<<<DATASET>>>_" + iter + "_<<<NAME>>>.arff");
             
-            <<<CLASSNAME>>> classifier = new <<<CLASSIFIER>>>;
+            <<<CLASSIFIER>>> classifier = new <<<CLASSIFIER>>>();
             classifier.setLabelCol("classAtt");
             try {
             	Method setSeedMethod = classifier.getClass().getMethod("setSeed", long.class);
@@ -12,7 +12,8 @@
             } catch (NoSuchMethodException | SecurityException e) {
             	// not randomized
             }
-            <<<CLASSNAME>>> morphedClassifier = new <<<CLASSIFIER>>>;
+            setParameters(classifier, parameters);
+            <<<CLASSIFIER>>> morphedClassifier = new <<<CLASSIFIER>>>();
             morphedClassifier.setLabelCol("classAtt");
             try {
             	Method setSeedMethod = morphedClassifier.getClass().getMethod("setSeed", long.class);
@@ -20,24 +21,42 @@
             } catch (NoSuchMethodException | SecurityException e) {
             	// not randomized
             }
+            setParameters(morphedClassifier, parameters);
             
             ClassificationModel<?, ?> model = classifier.fit(dataframe);
             ClassificationModel<?, ?> morphedModel = morphedClassifier.fit(morpheddata);
             
             List<Row> predictionOriginal = model.transform(dataframe).select("prediction").collectAsList();
-            <<<MORPHCLASS>>>
-            
-            int violations = 0;
+            List<Row> scoresOriginal = model.transform(dataframe).select("probability").collectAsList();
+            List<Row> predictionMorphed = morphedModel.transform(morpheddata).select("prediction").collectAsList();
+            List<Row> scoresMorphed = morphedModel.transform(dataframe).select("probability").collectAsList();
+
+            int deviationsCounts = 0;
+            int deviationsScores = 0;
+            long[] expectedMorphCounts = new long[2];
+            double[] expectedMorphDistributions = new double[predictionOriginal.size()];
+            long[] morphedCounts = new long[2] ;
+            double[] morphedDistributions = new double[predictionOriginal.size()];
             for (int i = 0; i < predictionOriginal.size(); i++) {
                 double originalClass = predictionOriginal.get(i).getDouble(0);
+                double expectedMorphedClass;
+			    <<<EXPECTEDMORPHEDCLASS>>>
+                expectedMorphCounts[(int) expectedMorphedClass]++;
+                expectedMorphDistributions[i] = ((DenseVector) scoresOriginal.get(i).get(0)).values()[(int) originalClass];
                 double morphedClass = predictionMorphed.get(i).getDouble(0);
-                if (!(<<<MORPHRELATION>>>)) {
-                    violations++;
+                morphedCounts[(int) morphedClass]++;
+                morphedDistributions[i] = ((DenseVector) scoresMorphed.get(i).get(0)).values()[(int) morphedClass];
+            	
+                if (!(Double.compare(expectedMorphedClass, morphedClass) == 0)) {
+                    deviationsCounts++;
+                }
+                if (!(Double.compare(expectedMorphDistributions[i], morphedDistributions[i]) == 0)) {
+                    deviationsScores++;
                 }
             }
-            double violationFraction = violations/(double) predictionOriginal.size();
-            String message = "metamorphic relation broken (iteration " + iter + "): " + violationFraction + " percent violations, but only <<<ALLOWEDVIOLATIONS>>> allowed.";
-            assertTrue(message, violationFraction <= <<<ALLOWEDVIOLATIONS>>>);
+            
+            String nameWithoutParams = testname.getMethodName().split("\\\\[")[0]; 
+            <<<MYSQLEVALMORPH>>>assertMorphTest(<<<EVALUATIONTYPE>>>, nameWithoutParams, iter, deviationsCounts, deviationsScores, predictionOriginal.size(), expectedMorphCounts, morphedCounts, expectedMorphDistributions, morphedDistributions);
         }
     }
 
