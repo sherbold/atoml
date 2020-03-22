@@ -1,0 +1,16 @@
+except Exception as e:
+                no_exception = False
+                exception_type = type(e).__name__
+                exception_message = str(e)
+                exception_stacktrace = traceback.format_exc()
+            results_dict = {
+                'algorithm': self.__class__.__name__,
+                'parameters': name,
+                'testcase': inspect.stack()[0][3],
+                'iteration': iter,
+                'passed': int(no_exception),
+                'exception': exception_type,
+                'message': exception_message,
+                'stacktrace': exception_stacktrace,
+            }
+            write_smoke_to_db(results_dict)

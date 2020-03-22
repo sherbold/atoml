@@ -1,0 +1,39 @@
+db_connection_str = 'mysql+pymysql://atoml:atoml@127.0.0.1:3306/atoml'
+db_connection = db.create_engine(db_connection_str)
+
+metadata = db.MetaData()
+
+db_results_morph = db.Table('results_morphtests', metadata,
+    db.Column('id', db.Integer()),
+    db.Column('algorithm', db.String(200), nullable=False),
+    db.Column('parameters', db.String(200), default=None),
+    db.Column('testcase', db.String(200), default=None),
+    db.Column('iteration', db.Integer(), default=None),
+    db.Column('testsize', db.Integer(), default=None),
+    db.Column('deviations_counts', db.Integer(), default=None),
+    db.Column('deviations_scores', db.Integer(), default=None),
+    db.Column('pval_counts', db.Float(), default=None),
+    db.Column('pval_scores', db.Float(), default=None),
+    db.Column('passed_exact_score', db.Integer(), default=None),
+    db.Column('passed_exact_class', db.Integer(), default=None),
+    db.Column('passed_stat_class', db.Integer(), default=None),
+    db.Column('passed_stat_score', db.Integer(), default=None))
+    
+db_results_smoke = db.Table('results_smoketests', metadata,
+    db.Column('id', db.Integer()),
+    db.Column('algorithm', db.String(200), nullable=False),
+    db.Column('parameters', db.String(200), default=None),
+    db.Column('testcase', db.String(200), default=None),
+    db.Column('iteration', db.Integer(), default=None),
+    db.Column('passed', db.Integer(), default=None),
+    db.Column('exception', db.String(200), default=None),
+    db.Column('message', db.String(1000), default=None),
+    db.Column('stacktrace', db.Text(), default=None))
+
+def write_morph_to_db(results_dict):
+    insert_statement = db.insert(db_results_morph).values(**results_dict)
+    db_connection.execute(insert_statement)
+    
+def write_smoke_to_db(results_dict):
+    insert_statement = db.insert(db_results_smoke).values(**results_dict)
+    db_connection.execute(insert_statement)

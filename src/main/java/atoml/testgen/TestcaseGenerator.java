@@ -116,12 +116,14 @@ public class TestcaseGenerator {
 		String mysqlEvalMorph = "";
 		String mysqlEvalSmokeStart = "";
 		String mysqlEvalSmokeEnd = "";
+		String mysqlIndent = "";
 		if( useMysql ) {
 			mysqlImports = new Scanner(this.getClass().getResourceAsStream(getResourcePrefix()+"-mysql-imports.template"), "UTF-8").useDelimiter("\\A").next();
 			mysqlHandler = new Scanner(this.getClass().getResourceAsStream(getResourcePrefix()+"-mysql-handler.template"), "UTF-8").useDelimiter("\\A").next();
 			mysqlEvalMorph = new Scanner(this.getClass().getResourceAsStream(getResourcePrefix()+"-mysql-morph.template"), "UTF-8").useDelimiter("\\A").next();
 			mysqlEvalSmokeStart = new Scanner(this.getClass().getResourceAsStream(getResourcePrefix()+"-mysql-smoke-start.template"), "UTF-8").useDelimiter("\\A").next();
 			mysqlEvalSmokeEnd = new Scanner(this.getClass().getResourceAsStream(getResourcePrefix()+"-mysql-smoke-end.template"), "UTF-8").useDelimiter("\\A").next();
+			mysqlIndent = "    ";
 		}
 		replacementMap.put("<<<MYSQLIMPORTS>>>", mysqlImports);
 		replacementMap.put("<<<MYSQLHANDLER>>>", mysqlHandler);
@@ -133,6 +135,7 @@ public class TestcaseGenerator {
 		classBody = classBody.replaceAll("<<<MYSQLEVALMORPH>>>", mysqlEvalMorph);
 		classBody = classBody.replaceAll("<<<MYSQLEVALSMOKE_START>>>", mysqlEvalSmokeStart);
 		classBody = classBody.replaceAll("<<<MYSQLEVALSMOKE_END>>>", mysqlEvalSmokeEnd);
+		classBody = classBody.replaceAll("<<<MYSQLINDENT>>>", mysqlIndent);
 		
 		return classBody;
 	}

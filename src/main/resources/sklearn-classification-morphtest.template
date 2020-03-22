@@ -56,21 +56,5 @@
             if math.isnan(pval_chisquare) and deviations_class==0:
                 pval_chisquare = 1.0
             
-            results_dict = {
-                'algorithm': self.__class__.__name__,
-                'parameters': name,
-                'testcase': inspect.stack()[0][3],
-                'iteration': iter,
-                'testsize': len(data_original),
-                'deviations_counts': int(deviations_class),
-                'deviations_scores': int(deviations_score),
-                'pval_counts': float(pval_chisquare),
-                'pval_scores': float(pval_kstest),
-                'passed_exact_score': int(deviations_score==0),
-                'passed_exact_class': int(deviations_class==0),
-                'passed_stat_class': int(pval_chisquare<0.05),
-                'passed_stat_score': int(pval_kstest<0.05),
-            }
-            write_morph_to_db(results_dict)
-#            <<<MORPHRELATION>>>
+            <<<MYSQLEVALMORPH>>><<<MORPHRELATION>>>
 
