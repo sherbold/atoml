@@ -1,7 +1,7 @@
 results_dict = {
                 'algorithm': self.__class__.__name__,
                 'parameters': name,
-                'testcase': inspect.stack()[0][3],
+                'testcase': testcase_name,
                 'iteration': iter,
                 'testsize': len(data_original),
                 'deviations_counts': int(deviations_class),
