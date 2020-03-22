@@ -1,0 +1,200 @@
+	public static class MySQLResultStorage {
+
+	    /**
+	     * Name of the table where the results of metamorphic tests are stored.
+	     */
+	    final String morphResultsTableName;
+	    
+	    /**
+	     * Name of the table where the results of smoke tests are stored
+	     */
+	    final String smokeResultsTableName;
+
+	    /**
+	     * Connection pool for the data base.
+	     */
+	    private MysqlDataSource connectionPool = null;
+
+	    /**
+	     * <p>
+	     * Creates a MySQLResultStorage with the default parameter file mysql.cred from the working
+	     * directory.
+	     * </p>
+	     * 
+	     * @see #MySQLResultStorage(String)
+	     */
+	    public MySQLResultStorage() {
+	        this("mysql.cred");
+	    }
+
+	    /**
+	     * <p>
+	     * Creates a new results storage. Tries to read a properties file located in the working
+	     * directory. If this file is not found or any parameter is not defined, the following default
+	     * values are used:
+	     * <ul>
+	     * <li>db.host = localhost</li>
+	     * <li>db.port = 3306</li>
+	     * <li>db.name = atoml</li>
+	     * <li>db.user = atoml</li>
+	     * <li>db.pass = atoml</li>
+	     * <li>db.results.tablename = results</li>
+	     * <li>db.results.createtable = false</li>
+	     * </p>
+	     * 
+	     * @param parameterFile
+	     *            name of the parameter file
+	     */
+	    public MySQLResultStorage(String parameterFile) {
+	        String dbHost = "localhost";
+	        String dbPort = "3306";
+	        String dbName = "atoml";
+	        String dbUser = "atoml";
+	        String dbPass = "atoml";
+	        this.morphResultsTableName = "results_morphtests";
+	        this.smokeResultsTableName = "results_smoketests";
+	        
+	        connectToDB(dbHost, dbPort, dbName, dbUser, dbPass);
+	    }
+
+	    /**
+	     * <p>
+	     * Sets up the database connection
+	     * </p>
+	     *
+	     * @param dbHost
+	     *            host of the database
+	     * @param dbPort
+	     *            port of the database
+	     * @param dbName
+	     *            name of the database
+	     * @param dbUser
+	     *            user of the database
+	     * @param dbPass
+	     *            password of the user
+	     */
+	    private void connectToDB(String dbHost,
+	                             String dbPort,
+	                             String dbName,
+	                             String dbUser,
+	                             String dbPass)
+	    {
+	        this.connectionPool = new MysqlDataSource();
+	        this.connectionPool.setUser(dbUser);
+	        this.connectionPool.setPassword(dbPass);
+	        this.connectionPool.setUrl("jdbc:mysql://" + dbHost + ":" + dbPort + "/" + dbName + "?useSSL=false");
+	    }
+
+	    public void addResult(String algorithm, String parameters, String testcase, int iteration, int testsize, int deviationsCounts, int deviationsScores, double pvalClassification, double pvalScores, boolean passedExactScore, boolean passedExactClass, boolean passedStatClass, boolean passedStatScore) {
+	        StringBuilder preparedSql = new StringBuilder();
+	        preparedSql.append("INSERT INTO " + this.morphResultsTableName + " (");
+	        preparedSql.append("`algorithm`,");
+	        preparedSql.append("`parameters`,");
+	        preparedSql.append("`testcase`,");
+	        preparedSql.append("`iteration`,");
+	        preparedSql.append("`testsize`,");
+	        preparedSql.append("`deviations_counts`,");
+	        preparedSql.append("`deviations_scores`,");
+	        preparedSql.append("`pval_counts`,");
+	        preparedSql.append("`pval_scores`,");
+	        preparedSql.append("`passed_exact_score`,");
+	        preparedSql.append("`passed_exact_class`,");
+	        preparedSql.append("`passed_stat_class`,");
+	        preparedSql.append("`passed_stat_score`) VALUES ");
+	        preparedSql.append("(?,?,?,?,?,?,?,?,?,?,?,?,?)");
+	        
+	        try(Connection con = this.connectionPool.getConnection();
+		        PreparedStatement stmt = con.prepareStatement(preparedSql.toString());) {
+	            stmt.setString(1, algorithm);
+	            stmt.setString(2, parameters);
+	            stmt.setString(3, testcase);
+	            stmt.setInt(4, iteration);
+	            stmt.setInt(5, testsize);
+	            stmt.setInt(6, deviationsCounts);
+	            stmt.setInt(7, deviationsScores);
+	            stmt.setDouble(8, pvalClassification);
+	            stmt.setDouble(9, pvalScores);
+	            stmt.setInt(10, passedExactScore?1:0);
+	            stmt.setInt(11, passedExactClass?1:0);
+	            stmt.setInt(12, passedStatClass?1:0);
+	            stmt.setInt(13, passedStatScore?1:0);
+	            
+	            int qryResult = stmt.executeUpdate();
+	            if (qryResult < 1) {
+	                System.err.println("Insert failed.");
+	            }
+	        }
+	        catch (SQLException e) {
+	            System.err.println("Problem with MySQL connection: ");
+	            System.err.println("SQLException: " + e.getMessage());
+	            System.err.println("SQLState: " + e.getSQLState());
+	            System.err.println("VendorError: " + e.getErrorCode());
+	            return;
+	        }
+	    }
+	    
+	    public void addSmoketestResult(String algorithm, String parameters, String testcase, int iteration, boolean passed, String exception, String message, String stacktrace) {
+	        StringBuilder preparedSql = new StringBuilder();
+	        preparedSql.append("INSERT INTO " + this.smokeResultsTableName + " (");
+	        preparedSql.append("`algorithm`,");
+	        preparedSql.append("`parameters`,");
+	        preparedSql.append("`testcase`,");
+	        preparedSql.append("`iteration`,");
+	        preparedSql.append("`passed`,");
+	        preparedSql.append("`exception`,");
+	        preparedSql.append("`message`,");
+	        preparedSql.append("`stacktrace`) VALUES ");
+	        preparedSql.append("(?,?,?,?,?,?,?,?)");
+	        
+	        try(Connection con = this.connectionPool.getConnection();
+		        PreparedStatement stmt = con.prepareStatement(preparedSql.toString());) {
+	            stmt.setString(1, algorithm);
+	            stmt.setString(2, parameters);
+	            stmt.setString(3, testcase);
+	            stmt.setInt(4, iteration);
+	            stmt.setInt(5, passed?1:0);
+	            stmt.setString(6, exception);
+	            stmt.setString(7, message);
+	            stmt.setString(8, stacktrace);
+	            
+	            int qryResult = stmt.executeUpdate();
+	            if (qryResult < 1) {
+	                System.err.println("Insert failed.");
+	            }
+	        }
+	        catch (SQLException e) {
+	            System.err.println("Problem with MySQL connection: ");
+	            System.err.println("SQLException: " + e.getMessage());
+	            System.err.println("SQLState: " + e.getSQLState());
+	            System.err.println("VendorError: " + e.getErrorCode());
+	            return;
+	        }
+	    }
+	}
+	
+	private static MySQLResultStorage storage;
+	
+	@BeforeClass
+	public static void setUpClass() {
+		storage = new MySQLResultStorage("");
+	}
+	
+	private void evalMorphTestSQL(String testcaseName, int iteration, int deviationsCounts, int deviationsScores, int testsize, long[] expectedMorphCounts, long[] morphedCounts, double[] expectedMorphedDistributions, double[] morphedDistributions) {
+	    boolean passedExactScore = deviationsScores==0;
+    	boolean passedExactClass = deviationsCounts==0;
+        double pValueCounts;
+        if( deviationsCounts>0 ) {
+            pValueCounts = TestUtils.chiSquareTestDataSetsComparison(expectedMorphCounts, morphedCounts);
+        } else {
+            pValueCounts = 1.0;
+        }
+        boolean passedStatClass = pValueCounts>0.05;
+        double pValueKS;
+        if( deviationsScores>0 ) {
+            pValueKS = TestUtils.kolmogorovSmirnovTest(expectedMorphedDistributions, morphedDistributions);
+        } else {
+            pValueKS = 1.0;
+        }
+        boolean passedStatScore = pValueKS>0.05;
+        storage.addResult(this.getClass().getSimpleName(), parameterName, testcaseName, iteration, testsize, deviationsCounts, deviationsScores, pValueCounts, pValueKS, passedExactScore, passedExactClass, passedStatClass, passedStatScore);
+    }
