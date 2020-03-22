@@ -55,6 +55,7 @@
             # handles situation if all data is in one class
             if math.isnan(pval_chisquare) and deviations_class==0:
                 pval_chisquare = 1.0
+            testcase_name = inspect.stack()[0][3]
             
-            <<<MYSQLEVALMORPH>>><<<MORPHRELATION>>>
+            <<<MYSQLEVALMORPH>>>self.assert_morphtest(<<<EVALUATIONTYPE>>>, testcase_name, iter, deviations_class, deviations_score, pval_chisquare, deviations_class)
 

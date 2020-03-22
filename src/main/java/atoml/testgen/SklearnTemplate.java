@@ -101,11 +101,15 @@ public class SklearnTemplate implements TemplateEngine {
 			throw new RuntimeException("could not generate tests, unknown morph prediction relation type");
 		}
 		
+		String evaluationType = algorithmUnderTest.getProperties().get(metamorphicTest.getClass().getSimpleName().toUpperCase()).toString().toLowerCase();
+		evaluationType = "'" + evaluationType + "'";
+		
 		Map<String, String> replacements = new HashMap<>();
 		replacements.put("<<<CLASSIFIER>>>", algorithmUnderTest.getClassName()+"(**kwargs)");
 		replacements.put("<<<MORPHTESTDATA>>>", morphTestdata);
 		replacements.put("<<<MORPHCLASSINDEX>>>", morphClassIndex);
 		replacements.put("<<<EXPECTEDMORPHEDCLASS>>>", morphRelation);
+		replacements.put("<<<EVALUATIONTYPE>>>", evaluationType);
 		return replacements;
 	}
 	

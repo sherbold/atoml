@@ -57,6 +57,18 @@ class <<<CLASSNAME>>>(unittest.TestCase):
 
 <<<HYPERPARAMETERS>>>
 
+    def assert_morphtest(self, evaluation_type, testcase_name, iteration, deviations_class, deviations_score, pval_chisquare, pval_kstest):
+        if evaluation_type=='score_exact':
+            self.assertEqual(deviations_score, 0)
+        elif evaluation_type=='class_exact':
+            self.assertEqual(deviations_class, 0)
+        elif evaluation_type=='score_stat':
+            self.assertTrue(pval_kstest>0.05)
+        elif evaluation_type=='class_stat':
+            self.assertTrue(pval_chisquare>0.05)
+        else:
+            raise ValueError('invalid evaluation_type: %s (allowed: score_exact, class_exact, score_stat, class_stat' % evaluation_type)
+
 <<<METHODS>>>
 
 if __name__ == '__main__':
