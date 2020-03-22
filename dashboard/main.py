@@ -11,7 +11,7 @@ db_connection_str = 'mysql+pymysql://atoml:atoml@127.0.0.1:3306/atoml'
 
 db_connection = create_engine(db_connection_str)
 
-frameworks = ['Weka', 'sklearn']
+frameworks = ['Weka', 'sklearn', 'Spark']
 
 # create app
 external_stylesheets = ['https://codepen.io/chriddyp/pen/bWLwgP.css']
@@ -33,9 +33,12 @@ start_page = html.Div(children=[
             The goal of Atoml is to provide a set of smoke tests that ensure that implementations of learning algorithms are functioning on a basic level. 
             For classification algorithms, this means that they must be able to train a model and perform predictions without crashing.
         '''),
-    dcc.Link('Go to the results for Weka', href='/weka'),
+    dcc.Link('Results for Weka', href='/weka'),
     html.Br(),
-    dcc.Link('Go to the results for sklearn', href='/sklearn'),
+    dcc.Link('Results for sklearn', href='/sklearn'),
+    html.Br(),
+    dcc.Link('Results for Spark', href='/spark')
+
 ])
 
 pages = {}
