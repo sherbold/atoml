@@ -104,7 +104,7 @@ public class <<<CLASSNAME>>> {
     
 
     private SparkSession sparkSession;
-	
+    
     @Before
     public void setUp() {
         sparkSession = SparkSession.builder().appName("Logistic_Default_AtomlTest").master("local[1]").getOrCreate();
@@ -117,93 +117,99 @@ public class <<<CLASSNAME>>> {
     }
 
     private Dataset<Row> arffToDataset(String filename) {
-		Instances data;
-		InputStreamReader file = new InputStreamReader(this.getClass().getResourceAsStream(filename));
-		try (BufferedReader reader = new BufferedReader(file);) {
-			data = new Instances(reader);
-			reader.close();
-		} catch (IOException e) {
-			throw new RuntimeException(filename, e);
-		}
+        Instances data;
+        InputStreamReader file = new InputStreamReader(this.getClass().getResourceAsStream(filename));
+        try (BufferedReader reader = new BufferedReader(file);) {
+            data = new Instances(reader);
+            reader.close();
+        } catch (IOException e) {
+            throw new RuntimeException(filename, e);
+        }
 
-		List<StructField> fields = new LinkedList<>();
-		for (int j = 0; j < data.numAttributes(); j++) {
-			fields.add(DataTypes.createStructField(getNormalizedName(data.attribute(j)), DataTypes.DoubleType, false));
-		}
-		StructType schema = DataTypes.createStructType(fields);
-		List<Row> rows = new LinkedList<>();
-		for (int i = 0; i < data.size(); i++) {
-			List<Double> valueList = new ArrayList<>(data.numAttributes());
-			for (int j = 0; j < data.numAttributes(); j++) {
-				valueList.add(data.instance(i).value(j));
-			}
+        List<StructField> fields = new LinkedList<>();
+        for (int j = 0; j < data.numAttributes(); j++) {
+            fields.add(DataTypes.createStructField(getNormalizedName(data.attribute(j)), DataTypes.DoubleType, false));
+        }
+        StructType schema = DataTypes.createStructType(fields);
+        List<Row> rows = new LinkedList<>();
+        for (int i = 0; i < data.size(); i++) {
+            List<Double> valueList = new ArrayList<>(data.numAttributes());
+            for (int j = 0; j < data.numAttributes(); j++) {
+                valueList.add(data.instance(i).value(j));
+            }
 
-			rows.add(RowFactory.create(valueList.toArray()));
-		}
-		Dataset<Row> dataframe = sparkSession.createDataFrame(rows, schema);
+            rows.add(RowFactory.create(valueList.toArray()));
+        }
+        Dataset<Row> dataframe = sparkSession.createDataFrame(rows, schema);
 
-		List<String> featureNames = new ArrayList<>();
-		List<String> nominals = new LinkedList<>();
-		List<String> nominalsOutput = new LinkedList<>();
-		for (int j = 0; j < data.numAttributes() - 1; j++) {
-			featureNames.add(getNormalizedName(data.attribute(j)));
-			if (data.attribute(j).isNominal()) {
-				nominals.add(getNormalizedName(data.attribute(j)));
-				nominalsOutput.add(getNormalizedName(data.attribute(j)) + "_onehot");
-			}
-		}
-		if (!nominals.isEmpty()) {
-			OneHotEncoder oneHot = new OneHotEncoder().setInputCols(nominals.toArray(new String[0]))
-					.setOutputCols(nominalsOutput.toArray(new String[0])).setDropLast(false);
-			OneHotEncoderModel oneHotModel = oneHot.fit(dataframe);
-			dataframe = oneHotModel.transform(dataframe);
-			dataframe = dataframe.drop(nominals.toArray(new String[0]));
-			for (int j = nominals.size() - 1; j >= 0; j--) {
-				dataframe = dataframe.withColumnRenamed(nominalsOutput.get(j), nominals.get(j));
-			}
-		}
-		VectorAssembler va = new VectorAssembler().setInputCols(featureNames.toArray(new String[0]))
-				.setOutputCol("features");
-		dataframe = va.transform(dataframe);
+        List<String> featureNames = new ArrayList<>();
+        List<String> nominals = new LinkedList<>();
+        List<String> nominalsOutput = new LinkedList<>();
+        for (int j = 0; j < data.numAttributes() - 1; j++) {
+            featureNames.add(getNormalizedName(data.attribute(j)));
+            if (data.attribute(j).isNominal()) {
+                nominals.add(getNormalizedName(data.attribute(j)));
+                nominalsOutput.add(getNormalizedName(data.attribute(j)) + "_onehot");
+            }
+        }
+        if (!nominals.isEmpty()) {
+            OneHotEncoder oneHot = new OneHotEncoder().setInputCols(nominals.toArray(new String[0]))
+                    .setOutputCols(nominalsOutput.toArray(new String[0])).setDropLast(false);
+            OneHotEncoderModel oneHotModel = oneHot.fit(dataframe);
+            dataframe = oneHotModel.transform(dataframe);
+            dataframe = dataframe.drop(nominals.toArray(new String[0]));
+            for (int j = nominals.size() - 1; j >= 0; j--) {
+                dataframe = dataframe.withColumnRenamed(nominalsOutput.get(j), nominals.get(j));
+            }
+        }
+        VectorAssembler va = new VectorAssembler().setInputCols(featureNames.toArray(new String[0]))
+                .setOutputCol("features");
+        dataframe = va.transform(dataframe);
 
-		return dataframe;
-	}
+        return dataframe;
+    }
     
     private String getNormalizedName(Attribute attribute) {
-    	return attribute.name().replaceAll("\\.", "_");
+        return attribute.name().replaceAll("\\.", "_");
     }
     
     private void setParameters(Object classifier, String[] parameters) {
-    	Method[] methods = classifier.getClass().getMethods();
+        Method[] methods = classifier.getClass().getMethods();
         for( int i=0; i<parameters.length; i=i+2) {
-        	boolean methodFound = false;
-        	for(Method method : methods) {
-        		if( method.getName().equals(parameters[i])) {
-        			methodFound = true;
-        			for( java.lang.reflect.Parameter param : method.getParameters()) {
-        				try {
-		    				if( "long".equals(param.getType().getName()) ) {
-								method.invoke(classifier, Long.parseLong(parameters[i+1]));
-								
-		    				}
-		    				else if( "int".equals(param.getType().getName()) ) {
-		    					method.invoke(classifier, Integer.parseInt(parameters[i+1]));
-		    				}
-		    				else if( "double".equals(param.getType().getName()) ) {
-		    					method.invoke(classifier, Double.parseDouble(parameters[i+1]));
-		    				}
-		    				else {
-		    					throw new RuntimeException("Hyperparameter type not supported: " + param.getType().getName());
-		    				}
-        				} catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
-							throw new RuntimeException("Failure instantiating hyperparameter: " + parameters[i]);
-						}
-        			}
-        		}
-        	}
-        	if( !methodFound ) {
-        		throw new RuntimeException("Invalid hyperparameters generated by atoml");
-        	}
+            boolean methodFound = false;
+            for(Method method : methods) {
+                if( method.getName().equals(parameters[i])) {
+                    methodFound = true;
+                    for( java.lang.reflect.Parameter param : method.getParameters()) {
+                        try {
+                            if( "long".equals(param.getType().getName()) ) {
+                                method.invoke(classifier, Long.parseLong(parameters[i+1]));
+                                
+                            }
+                            else if( "int".equals(param.getType().getName()) ) {
+                                method.invoke(classifier, Integer.parseInt(parameters[i+1]));
+                            }
+                            else if( "double".equals(param.getType().getName()) ) {
+                                method.invoke(classifier, Double.parseDouble(parameters[i+1]));
+                            }
+                            else if( "boolean".equals(param.getType().getName()) ) {
+                                method.invoke(classifier, Boolean.parseBoolean(parameters[i+1]));
+                            }
+                            else if( "java.lang.String".equals(param.getType().getName()) ) {
+                                method.invoke(classifier, parameters[i+1]);
+                            }
+                            else {
+                                throw new RuntimeException("Hyperparameter type not supported: " + param.getType().getName());
+                            }
+                        } catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
+                            throw new RuntimeException("Failure instantiating hyperparameter: " + parameters[i]);
+                        }
+                    }
+                }
+            }
+            if( !methodFound ) {
+                throw new RuntimeException("Invalid hyperparameters generated by atoml");
+            }
         }
     }
 
