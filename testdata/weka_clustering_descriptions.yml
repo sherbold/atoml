@@ -89,15 +89,15 @@ parameters:
     default: 100
   periodic-pruning: # how often to prune low density canopies during training
     type: integer
-    min: 10000
-    max: 50000
-    stepsize: 10000
-    default: 10000
+    min: 100
+    max: 500
+    stepsize: 100
+    default: 100
   min-density: # minimum T2-based density below which canopy is pruned during periodic pruning
     type: double
-    min: 0.0
+    min: 1.0
     max: 6.0
-    stepsize: 2.0
+    stepsize: 1.0
     default: 2.0
   t2: # T2 distance
     type: double
