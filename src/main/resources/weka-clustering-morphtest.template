@@ -1,0 +1,45 @@
+    @Test(timeout=21600000)
+    public void test_<<<NAME>>>_<<<DATASET>>>() throws Exception {
+        for(int iter=1; iter<=<<<ITERATIONS>>>; iter++) {
+            Instances data = loadData("/morphdata/<<<DATASET>>>_" + iter + ".arff");
+            Instances morphedData = loadData("/morphdata/<<<DATASET>>>_" + iter + "_<<<NAME>>>.arff");
+
+            Clusterer clusterer = AbstractClusterer.forName("<<<PACKAGENAME>>>.<<<CLASSIFIER>>>", Arrays.copyOf(parameters, parameters.length));
+		    clusterer.buildClusterer(data);
+            Clusterer morphedClusterer = AbstractClusterer.forName("<<<PACKAGENAME>>>.<<<CLASSIFIER>>>", Arrays.copyOf(parameters, parameters.length));
+            morphedClusterer.buildClusterer(morphedData);
+
+            int deviationsCounts = 0;
+            int deviationsScores = 0;
+            long[] expectedMorphCounts = new long[clusterer.numberOfClusters()];
+            double[] expectedMorphDistributions = new double[data.size()];
+            long[] morphedCounts = new long[morphedClusterer.numberOfClusters()];
+            double[] morphedDistributions = new double[data.size()];
+            HashMap<Integer, ArrayList<Integer>> expectedClustersMap = createClusterMap(clusterer.numberOfClusters());
+            HashMap<Integer, ArrayList<Integer>> morphedClustersMap = createClusterMap(morphedClusterer.numberOfClusters());
+            for (int i = 0; i < data.size(); i++) {
+                double originalCluster = clusterer.clusterInstance(data.instance(i));
+                double expectedMorphedCluster;
+                expectedMorphedCluster = originalCluster;
+                expectedMorphCounts[(int) expectedMorphedCluster]++;
+                expectedMorphDistributions[i] = clusterer.distributionForInstance(data.instance(i))[(int) originalCluster];
+                expectedClustersMap.get((int) expectedMorphedCluster).add(i);
+                double morphedCluster = morphedClusterer.clusterInstance(data.instance(i));
+                morphedCounts[(int) morphedCluster]++;
+                morphedDistributions[i] = morphedClusterer.distributionForInstance(data.instance(i))[(int) morphedCluster];
+                morphedClustersMap.get((int) morphedCluster).add(i);
+
+                if (!(Double.compare(expectedMorphedCluster, morphedCluster) == 0)) {
+                    deviationsCounts++;
+                }
+                if (!(Double.compare(expectedMorphDistributions[i], morphedDistributions[i]) == 0)) {
+                    deviationsScores++;
+                }
+            }
+            morphedClustersMap = flipSameClusters(expectedClustersMap, morphedClustersMap);
+
+            String nameWithoutParams = testname.getMethodName().split("\\\\[")[0];
+            <<<MYSQLEVALMORPH>>>assertMorphTest(<<<EVALUATIONTYPE>>>, nameWithoutParams, iter, deviationsCounts, deviationsScores, data.size(), expectedMorphCounts, morphedCounts, expectedMorphDistributions, morphedDistributions, expectedClustersMap, morphedClustersMap);
+        }
+    }
+
