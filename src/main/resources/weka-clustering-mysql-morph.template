@@ -1,2 +1,2 @@
-evalMorphTestSQL(nameWithoutParams, iter, deviationsCounts, deviationsScores, data.size(), expectedMorphCounts, morphedCounts, expectedMorphDistributions, morphedDistributions, expectedClustersMap, morphedClustersMap);
+evalMorphTestSQL(nameWithoutParams, iter, deviationsCounts, deviationsScores, data.size(), expectedMorphDistributions, morphedDistributions, expectedClustersMap, morphedClustersMap, deviationVector);
             //
