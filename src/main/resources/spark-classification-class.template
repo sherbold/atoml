@@ -198,6 +198,14 @@ public class <<<CLASSNAME>>> {
                             else if( "java.lang.String".equals(param.getType().getName()) ) {
                                 method.invoke(classifier, parameters[i+1]);
                             }
+                            else if( "[I".equals(param.getType().getName()) ) {
+                                String[] strNumbers = parameters[i+1].split(",");
+                                int[] intArray = new int[strNumbers.length];
+                                for( int j=0; j<strNumbers.length; j++) {
+                                    intArray[j] = Integer.parseInt(strNumbers[j].trim());
+                                }
+                                method.invoke(classifier, intArray);
+                            }
                             else {
                                 throw new RuntimeException("Hyperparameter type not supported: " + param.getType().getName());
                             }
