@@ -122,7 +122,7 @@ Atoml generates the tests such that they can be executed with the test runner th
 
 # Using the MySQL/Maria Database and the Dashboard
 
-Atoml also provides the option to store results in a MySQL/Maria database. In this mode, the assertions of the test runners are replaced with code that stores the results in the MySQL database. The [create_mysql_schema.sql](scripts/create_mysql_schema.sql) contains the code to generate the schema for the database. There is also a simple [dashboard](dashboard/main.py) that can be used to visualize the results. We recommend the creation of a virtual environment for the dashboard as follows.
+Atoml also provides the option to store results in a MySQL/Maria database. In this mode, the assertions of the test runners are replaced with code that stores the results in the MySQL database. The [create_mysql_schema.sql](scripts/create_mysql_schema.sql) contains the code to generate the schema for the database (notice that atoml currently requires a predefined user to write test results into the database). There is also a simple [dashboard](dashboard/main.py) that can be used to visualize the results. We recommend the creation of a virtual environment for the dashboard as follows.
 
 ```
 cd dashboard
@@ -138,6 +138,8 @@ The dashboard can then be started.
 source bin/activate
 python main.py
 ```
+
+In case of SQL errors regarding Public Key Retrieval it might be required to add the client option "allowPublicKeyRetrieval=true" to the mysql-connector to allow the client to automatically request the public key from the server (do not use this, if the database is not a local database, since it can be used for a Man-In-The-Middle-Attack).
 
 # License
 

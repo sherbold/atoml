@@ -1,0 +1,12 @@
+
+            } catch(Throwable e) {
+                passed = false;
+                message = e.getMessage();
+                exception = e.getClass().getName();
+                StringWriter sw = new StringWriter();
+                PrintWriter pw = new PrintWriter(sw);
+                e.printStackTrace(pw);
+                stacktrace = sw.toString();
+            }
+            String testcaseNameWithoutParams = testname.getMethodName().split("\\\\[")[0];
+            storage.addSmoketestResult(this.getClass().getSimpleName(), parameterName, testcaseNameWithoutParams, iter, passed, exception, message, stacktrace);
