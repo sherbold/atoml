@@ -21,7 +21,6 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 
-import org.apache.commons.math3.stat.inference.TestUtils;
 import weka.core.Instances;
 import weka.core.Instance;
 import weka.filters.Filter;

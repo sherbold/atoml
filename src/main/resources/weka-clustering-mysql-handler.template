@@ -189,12 +189,7 @@
             pValueCounts = 1.0;
         }
         boolean passedStatClust = pValueCounts>0.05;
-        double pValueKS;
-        if( deviationsScores>0 ) {
-            pValueKS = TestUtils.kolmogorovSmirnovTest(expectedMorphedDistributions, morphedDistributions);
-        } else {
-            pValueKS = 1.0;
-        }
+        double pValueKS = 0.0;
         boolean passedStatScore = pValueKS>0.05;
         storage.addResult(this.getClass().getSimpleName(), parameterName, testcaseName, iteration, testsize, deviationsCounts, deviationsScores, pValueCounts, pValueKS, passedExactScore, passedExactClust, passedStatClust, passedStatScore);
     }
