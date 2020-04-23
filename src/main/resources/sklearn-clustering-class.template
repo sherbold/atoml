@@ -1,0 +1,94 @@
+import unittest
+import pandas as pd
+import numpy as np
+import threading
+import functools
+import inspect
+import math
+import warnings
+
+from parameterized import parameterized
+from scipy.io.arff import loadarff
+from scipy.stats import ttest_1samp
+<<<IMPORTCLASSIFIER>>>
+<<<MYSQLIMPORTS>>><<<MYSQLHANDLER>>>
+
+class TestTimeoutException(Exception):
+    def __init__(self, value):
+        self.value = value
+    def __str__(self):
+        return repr(self.value)
+
+# thanks to https://gist.github.com/vadimg/2902788
+def timeout(duration, default=None):
+    def decorator(func):
+        class InterruptableThread(threading.Thread):
+            def __init__(self, args, kwargs):
+                threading.Thread.__init__(self)
+                self.args = args
+                self.kwargs = kwargs
+                self.result = default
+                self.daemon = True
+                self.exception = None
+
+            def run(self):
+                try:
+                    self.result = func(*self.args, **self.kwargs)
+                except Exception as e:
+                    self.exception = e
+
+        @functools.wraps(func)
+        def wrap(*args, **kwargs):
+            it = InterruptableThread(args, kwargs)
+            it.start()
+            it.join(duration)
+            if it.is_alive():
+                raise TestTimeoutException('timeout after %i seconds for test %s' % (duration, func))
+            if it.exception:
+                raise it.exception
+            return it.result
+        return wrap
+    return decorator
+
+class <<<CLASSNAME>>>(unittest.TestCase):
+
+<<<HYPERPARAMETERS>>>
+
+    def assert_morphtest(self, evaluation_type, testcase_name, iteration, deviations_clust, pval_ttest):
+        if evaluation_type=='clust_exact':
+            self.assertEqual(deviations_clust, 0)
+        elif evaluation_type=='clust_stat':
+            self.assertTrue(pval_ttest > 0.05)
+        else:
+            raise ValueError('invalid evaluation_type: %s (allowed: clust_exact, clust_stat)' % evaluation_type)
+
+    def flip_same_clusters(self, morph_clusters, expected_clusters):
+        flipped_clusters = {}
+        for morph_cluster in morph_clusters:
+            flipped = False
+            for exp_cluster in expected_clusters:
+                if morph_clusters[morph_cluster] == expected_clusters[exp_cluster]:
+                    flipped_clusters[exp_cluster] = expected_clusters[exp_cluster]
+                    flipped = True
+                    break
+            if not flipped:
+                flipped_clusters[morph_cluster] = morph_clusters[morph_cluster]
+        return flipped_clusters
+
+    def create_cluster_map(self, data):
+        cluster_map = {}
+        for i, c in enumerate(data):
+            if c not in cluster_map:
+                cluster_map[c] = [i]
+            else:
+                cluster_map[c].append(i)
+        return cluster_map
+
+<<<METHODS>>>
+
+if __name__ == '__main__':
+    unittest.main()
+#    with open('results.xml', 'wb') as output:
+#        unittest.main(
+#            testRunner=xmlrunner.XMLTestRunner(output=output),
+#            failfast=False, buffer=False, catchbreak=False)

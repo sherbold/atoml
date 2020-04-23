@@ -1,0 +1,6 @@
+no_exception = True
+            exception_type = None
+            exception_message = None
+            exception_stacktrace = None
+            try:
+<<<MYSQLINDENT>>><<<MYSQLINDENT>>><<<MYSQLINDENT>>>
