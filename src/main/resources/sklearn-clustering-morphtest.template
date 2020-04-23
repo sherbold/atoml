@@ -46,9 +46,8 @@
                 pval_ttest = 1.0
             testcase_name = inspect.stack()[0][3]
 
-            # fixed to merge classification and clustering results into one table when mysql flag is set
-            deviations_score = 0
-            pval_kstest = 0
+            deviations_score = 0 # TODO: score-matching for soft clustering (to be added later) placeholders
+            pval_kstest = 0 # TODO: score-matching for soft clustering (to be added later) placeholders
 
             <<<MYSQLEVALMORPH>>>self.assert_morphtest(<<<EVALUATIONTYPE>>>, testcase_name, iter, deviations_clust, pval_ttest)
 

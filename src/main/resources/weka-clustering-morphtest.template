@@ -10,7 +10,6 @@
             morphedClusterer.buildClusterer(morphedData);
 
             int deviationsCounts = 0;
-            int deviationsScores = 0;
             double[] deviationVector = new double[data.size()];
             double[] expectedMorphDistributions = new double[data.size()];
             double[] morphedDistributions = new double[data.size()];

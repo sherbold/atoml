@@ -179,8 +179,7 @@
 		storage = new MySQLResultStorage("");
 	}
 
-	private void evalMorphTestSQL(String testcaseName, int iteration, int deviationsCounts, int deviationsScores, int testsize, double[] expectedMorphedDistributions, double[] morphedDistributions, HashMap<Integer, HashSet<Integer>> expectedClustersMap, HashMap<Integer, HashSet<Integer>> morphedClustersMap, double[] deviationVector) {
-	    boolean passedExactScore = deviationsScores==0;
+	private void evalMorphTestSQL(String testcaseName, int iteration, int deviationsCounts, int testsize, double[] deviationVector) {
     	boolean passedExactClust = deviationsCounts==0;
         double pValueCounts;
         if( deviationsCounts>0 ) {
@@ -189,7 +188,9 @@
             pValueCounts = 1.0;
         }
         boolean passedStatClust = pValueCounts>0.05;
-        double pValueKS = 0.0;
-        boolean passedStatScore = pValueKS>0.05;
+        int deviationsScores = 0; //TODO: placeholder for score-matching (to be added later for soft clustering)
+	    boolean passedExactScore = deviationsScores==0; //TODO: placeholder for score-matching (to be added later for soft clustering)
+        double pValueKS = 0.0; //TODO: placeholder for score-matching (to be added later for soft clustering)
+        boolean passedStatScore = pValueKS>0.05; //TODO: placeholder for score-matching (to be added later for soft clustering)
         storage.addResult(this.getClass().getSimpleName(), parameterName, testcaseName, iteration, testsize, deviationsCounts, deviationsScores, pValueCounts, pValueKS, passedExactScore, passedExactClust, passedStatClust, passedStatScore);
     }
