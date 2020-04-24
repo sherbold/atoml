@@ -1,0 +1,53 @@
+    @parameterized.expand(params)
+    @timeout(21600)
+    def test_<<<NAME>>>_<<<DATASET>>>(self, name, kwargs):
+        for iter in range(1,<<<ITERATIONS>>>+1):
+            data_original, meta_original = loadarff('morphdata/<<<DATASET>>>_%i.arff' % iter)
+            data_morphed, meta_morphed = loadarff('morphdata/<<<DATASET>>>_%i_<<<NAME>>>.arff' % iter)
+
+            data_original_df = pd.DataFrame(data_original)
+            data_original_df = pd.get_dummies(data_original_df)
+
+            data_morph_df = pd.DataFrame(data_morphed)
+            data_morph_df = pd.get_dummies(data_morph_df)
+
+            clusterer_original = <<<CLASSIFIER>>>
+            np.random.seed(42)
+            prediction_original = clusterer_original.fit_predict(data_original_df.values)
+            clusterer_morph = <<<CLASSIFIER>>>
+            np.random.seed(42)
+            prediction_morph = clusterer_morph.fit_predict(data_morph_df.values)
+
+            prediction_expected = prediction_original # expectedMorphedClassTemplate
+
+            expected_clusters = self.create_cluster_map(prediction_expected)
+            morph_clusters = self.create_cluster_map(prediction_morph)
+            morph_clusters = self.flip_same_clusters(morph_clusters, expected_clusters)
+
+            deviations_clust = 0
+            deviation_vector = []
+            for i in range(len(data_original)):
+                for cluster in expected_clusters:
+                    if i in expected_clusters[cluster]:
+                        if (cluster in morph_clusters) and (i in morph_clusters[cluster]):
+                            deviation_vector.append(0)
+                            break
+                        else:
+                            deviations_clust += 1
+                            deviation_vector.append(1)
+                            break
+
+            with warnings.catch_warnings():
+                warnings.simplefilter("ignore")
+                pval_ttest = ttest_1samp(deviation_vector, 0.0)[1]
+
+            # handles situation if all data is in one class
+            if math.isnan(pval_ttest) and deviations_clust==0:
+                pval_ttest = 1.0
+            testcase_name = inspect.stack()[0][3]
+
+            deviations_score = 0 # TODO: score-matching for soft clustering (to be added later) placeholders
+            pval_kstest = 0 # TODO: score-matching for soft clustering (to be added later) placeholders
+
+            <<<MYSQLEVALMORPH>>>self.assert_morphtest(<<<EVALUATIONTYPE>>>, testcase_name, iter, deviations_clust, pval_ttest)
+
