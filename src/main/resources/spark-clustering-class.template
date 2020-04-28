@@ -1,0 +1,230 @@
+package <<<PACKAGENAME>>>;
+
+import static org.apache.commons.math3.stat.inference.TestUtils.tTest;
+import static org.junit.Assert.*;
+import org.junit.Test;
+import org.junit.rules.TestName;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.FixMethodOrder;
+import org.junit.Rule;
+import org.junit.runner.RunWith;
+import org.junit.runners.MethodSorters;
+import org.junit.runners.Parameterized;
+import org.junit.runners.Parameterized.Parameter;
+import org.junit.runners.Parameterized.Parameters;
+
+
+import javax.annotation.Generated;
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
+import java.lang.reflect.Method;
+import java.lang.reflect.InvocationTargetException;
+import java.util.*;
+import java.io.IOException;
+import weka.core.Attribute;
+import weka.core.Instances;
+import weka.filters.Filter;
+import org.apache.spark.sql.Dataset;
+import org.apache.spark.sql.Row;
+import org.apache.spark.sql.RowFactory;
+import org.apache.spark.sql.SparkSession;
+import org.apache.spark.sql.types.DataTypes;
+import org.apache.spark.sql.types.StructField;
+import org.apache.spark.sql.types.StructType;
+import org.apache.spark.ml.feature.OneHotEncoder;
+import org.apache.spark.ml.feature.OneHotEncoderModel;
+import org.apache.spark.ml.feature.VectorAssembler;
+
+<<<MYSQLIMPORTS>>>
+
+/**
+ * Automatically generated smoke and metamorphic tests.
+ */
+@Generated("atoml.testgen.TestclassGenerator")
+@FixMethodOrder(MethodSorters.NAME_ASCENDING)
+@RunWith(Parameterized.class)
+public class <<<CLASSNAME>>> {
+
+    <<<MYSQLHANDLER>>>
+
+    @Rule
+    public TestName testname = new TestName();
+
+    @Parameters(name = "{1}")
+    public static Collection<Object[]> data() {
+        return Arrays.asList(new Object[][] {
+<<<HYPERPARAMETERS>>>
+           });
+    }
+
+    @Parameter
+    public String[] parameters;
+
+    @Parameter(1)
+    public String parameterName;
+
+    private void assertMorphTest(String evaluationType, String testcaseName, int iteration, int deviationsCounts, int testsize, double[] deviationVector) {
+        if( "clust_exact".equalsIgnoreCase(evaluationType) ) {
+            String message = String.format("clusters different (deviations of instances: %d out of %d)", deviationsCounts, testsize);
+            assertTrue(message, deviationsCounts==0);
+        }
+        else if( "clust_stat".equalsIgnoreCase(evaluationType) ) {
+            double pValueCounts;
+            if( deviationsCounts>0 ) {
+                pValueCounts = tTest(0.0, deviationVector);
+            } else {
+                pValueCounts = 1.0;
+            }
+            String message = String.format("results significantly different, p-value = %f (deviations of instances: %d out of %d)", pValueCounts, deviationsCounts, testsize);
+            assertTrue(message, pValueCounts>0.05);
+        }
+        else {
+            throw new RuntimeException("invalid evaluation type for morph test: " + evaluationType + " (allowed: clust_exact, clust_stat)");
+        }
+    }
+
+
+    private SparkSession sparkSession;
+
+    @Before
+    public void setUp() {
+        sparkSession = SparkSession.builder().appName("Logistic_Default_AtomlTest").master("local[1]").getOrCreate();
+        sparkSession.sparkContext().setLogLevel("WARN");
+    }
+
+    @After
+    public void tearDown() {
+        sparkSession.stop();
+    }
+
+    private Dataset<Row> arffToDataset(String filename) {
+		Instances data;
+		InputStreamReader file = new InputStreamReader(this.getClass().getResourceAsStream(filename));
+		try (BufferedReader reader = new BufferedReader(file);) {
+			data = new Instances(reader);
+			reader.close();
+		} catch (IOException e) {
+			throw new RuntimeException(filename, e);
+		}
+
+        data.setClassIndex(data.numAttributes()-1);
+        weka.filters.unsupervised.attribute.Remove filter = new weka.filters.unsupervised.attribute.Remove();
+        filter.setAttributeIndices("" + (data.classIndex() + 1));
+        try {
+            filter.setInputFormat(data);
+            data = Filter.useFilter(data, filter);
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new RuntimeException(e);
+        }
+
+		List<StructField> fields = new LinkedList<>();
+		for (int j = 0; j < data.numAttributes(); j++) {
+			fields.add(DataTypes.createStructField(getNormalizedName(data.attribute(j)), DataTypes.DoubleType, false));
+		}
+		StructType schema = DataTypes.createStructType(fields);
+		List<Row> rows = new LinkedList<>();
+		for (int i = 0; i < data.size(); i++) {
+			List<Double> valueList = new ArrayList<>(data.numAttributes());
+			for (int j = 0; j < data.numAttributes(); j++) {
+				valueList.add(data.instance(i).value(j));
+			}
+			rows.add(RowFactory.create(valueList.toArray()));
+		}
+		Dataset<Row> dataframe = sparkSession.createDataFrame(rows, schema);
+
+		List<String> featureNames = new ArrayList<>();
+		List<String> nominals = new LinkedList<>();
+		List<String> nominalsOutput = new LinkedList<>();
+		for (int j = 0; j < data.numAttributes() - 1; j++) {
+			featureNames.add(getNormalizedName(data.attribute(j)));
+			if (data.attribute(j).isNominal()) {
+				nominals.add(getNormalizedName(data.attribute(j)));
+				nominalsOutput.add(getNormalizedName(data.attribute(j)) + "_onehot");
+			}
+		}
+		if (!nominals.isEmpty()) {
+			OneHotEncoder oneHot = new OneHotEncoder().setInputCols(nominals.toArray(new String[0]))
+					.setOutputCols(nominalsOutput.toArray(new String[0])).setDropLast(false);
+			OneHotEncoderModel oneHotModel = oneHot.fit(dataframe);
+			dataframe = oneHotModel.transform(dataframe);
+			dataframe = dataframe.drop(nominals.toArray(new String[0]));
+			for (int j = nominals.size() - 1; j >= 0; j--) {
+				dataframe = dataframe.withColumnRenamed(nominalsOutput.get(j), nominals.get(j));
+			}
+		}
+		VectorAssembler va = new VectorAssembler().setInputCols(featureNames.toArray(new String[0]))
+				.setOutputCol("features");
+		dataframe = va.transform(dataframe);
+
+		return dataframe;
+	}
+
+    private String getNormalizedName(Attribute attribute) {
+    	return attribute.name().replaceAll("\\.", "_");
+    }
+
+    private void setParameters(Object clusterer, String[] parameters) {
+    	Method[] methods = clusterer.getClass().getMethods();
+        for( int i=0; i<parameters.length; i=i+2) {
+        	boolean methodFound = false;
+        	for(Method method : methods) {
+        		if( method.getName().equals(parameters[i])) {
+        			methodFound = true;
+        			for( java.lang.reflect.Parameter param : method.getParameters()) {
+        				try {
+		    				if( "long".equals(param.getType().getName()) ) {
+								method.invoke(clusterer, Long.parseLong(parameters[i+1]));
+
+		    				}
+		    				else if( "int".equals(param.getType().getName()) ) {
+		    					method.invoke(clusterer, Integer.parseInt(parameters[i+1]));
+		    				}
+		    				else if( "double".equals(param.getType().getName()) ) {
+		    					method.invoke(clusterer, Double.parseDouble(parameters[i+1]));
+		    				}
+		    				else {
+		    					throw new RuntimeException("Hyperparameter type not supported: " + param.getType().getName());
+		    				}
+        				} catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
+							throw new RuntimeException("Failure instantiating hyperparameter: " + parameters[i]);
+						}
+        			}
+        		}
+        	}
+        	if( !methodFound ) {
+        		throw new RuntimeException("Invalid hyperparameters generated by atoml");
+        	}
+        }
+    }
+
+    private HashMap<Integer, HashSet<Integer>> flipSameClusters(HashMap<Integer, HashSet<Integer>> expectedClustersMap, HashMap<Integer, HashSet<Integer>> morphedClustersMap) {
+        HashMap<Integer, HashSet<Integer>> flippedMap = new HashMap<Integer, HashSet<Integer>>();
+        for (int i = 0; i < morphedClustersMap.size(); i++) {
+            boolean flipped = false;
+            for (int j = 0; j < expectedClustersMap.size(); j++) {
+                if (morphedClustersMap.get(i).equals(expectedClustersMap.get(j))) {
+                    flippedMap.put(j, new HashSet<>(expectedClustersMap.get(j)));
+                    flipped = true;
+                    break;
+                }
+            }
+            if (!flipped) {
+                flippedMap.put(i, new HashSet<>(morphedClustersMap.get(i)));
+            }
+        }
+        return flippedMap;
+    }
+
+    private HashMap<Integer, HashSet<Integer>> createClusterMap(int numClusters) {
+        HashMap<Integer, HashSet<Integer>> clusterMap = new HashMap<Integer, HashSet<Integer>>();
+        for (int i = 0; i < numClusters; i++) {
+            HashSet<Integer> clusterIndices = new HashSet<Integer>();
+            clusterMap.put(i, clusterIndices);
+        }
+        return clusterMap;
+    }
+
+<<<METHODS>>>
+}

@@ -1,0 +1,5 @@
+boolean passed = true;
+            String message = null;
+            String exception = null;
+            String stacktrace = null;
+            try {
