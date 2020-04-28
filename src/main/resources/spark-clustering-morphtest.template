@@ -1,0 +1,63 @@
+    @Test
+    public void test_<<<NAME>>>_<<<DATASET>>>() throws Exception {
+        for(int iter=1; iter<=<<<ITERATIONS>>>; iter++) {
+            Dataset<Row> data = arffToDataset("/morphdata/<<<DATASET>>>_" + iter + ".arff");
+            Dataset<Row> morpheddata = arffToDataset("/morphdata/<<<DATASET>>>_" + iter + "_<<<NAME>>>.arff");
+
+            <<<CLASSIFIER>>> clusterer = new <<<CLASSIFIER>>>();
+            try {
+            	Method setSeedMethod = clusterer.getClass().getMethod("setSeed", long.class);
+            	setSeedMethod.invoke(clusterer, 42);
+            } catch (NoSuchMethodException | SecurityException e) {
+            	// not randomized
+            }
+            setParameters(clusterer, parameters);
+            <<<CLASSIFIER>>> morphedClusterer = new <<<CLASSIFIER>>>();
+            try {
+            	Method setSeedMethod = morphedClusterer.getClass().getMethod("setSeed", long.class);
+            	setSeedMethod.invoke(morphedClusterer, 42);
+            } catch (NoSuchMethodException | SecurityException e) {
+            	// not randomized
+            }
+            setParameters(morphedClusterer, parameters);
+
+            <<<CLASSIFIER>>>Model model = clusterer.fit(data);
+            <<<CLASSIFIER>>>Model morphedModel = morphedClusterer.fit(morpheddata);
+
+            List<Row> predictionOriginal = model.transform(data).select("prediction").collectAsList();
+            List<Row> predictionMorphed = morphedModel.transform(data).select("prediction").collectAsList();
+
+            int deviationsCounts = 0;
+            double[] deviationVector = new double[predictionOriginal.size()];
+            double[] expectedMorphDistributions = new double[predictionOriginal.size()];
+            double[] morphedDistributions = new double[predictionOriginal.size()];
+            HashMap<Integer, HashSet<Integer>> expectedClustersMap = createClusterMap(model.getK());
+            HashMap<Integer, HashSet<Integer>> morphedClustersMap = createClusterMap(morphedModel.getK());
+            for (int i = 0; i < predictionOriginal.size(); i++) {
+                double originalCluster = predictionOriginal.get(i).getInt(0);
+                double expectedMorphedCluster = originalCluster;
+                expectedClustersMap.get((int) expectedMorphedCluster).add(i);
+                double morphedCluster = predictionMorphed.get(i).getInt(0);
+                morphedClustersMap.get((int) morphedCluster).add(i);
+            }
+            morphedClustersMap = flipSameClusters(expectedClustersMap, morphedClustersMap);
+            for (int i = 0; i < predictionOriginal.size(); i++) {
+                for (int j = 0; j < expectedClustersMap.size(); j++) {
+                    if (expectedClustersMap.get(j).contains(i)) {
+                        if (morphedClustersMap.containsKey(j) && morphedClustersMap.get(j).contains(i)) {
+                            deviationVector[i] = 0;
+                            break;
+                        } else {
+                            deviationsCounts++;
+                            deviationVector[i] = 1;
+                            break;
+                        }
+                    }
+                }
+            }
+
+            String nameWithoutParams = testname.getMethodName().split("\\\\[")[0];
+            <<<MYSQLEVALMORPH>>>assertMorphTest(<<<EVALUATIONTYPE>>>, nameWithoutParams, iter, deviationsCounts, predictionOriginal.size(), deviationVector);
+        }
+    }
+
