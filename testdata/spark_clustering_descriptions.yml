@@ -71,7 +71,6 @@ properties:
   scramble: clust_stat
   reorder: clust_stat
   const: clust_stat
-  opposite: clust_exact
 parameters:
   k: # number of desired clusters
     type: integer
@@ -82,7 +81,7 @@ parameters:
   maxIter: # maximum number of iterations to run
     type: integer
     min: 0
-    max: 150
+    max: 100
     stepsize: 50
     default: 50
   initMode: # either random or k-means initialization
@@ -115,10 +114,9 @@ class: GaussianMixture
 features: double
 properties:
   same: clust_exact
-  scramble: clust_stat
+  scramble: score_stat
   reorder: clust_stat
-  const: clust_stat
-  opposite: clust_exact
+  const: score_stat
 parameters:
   k: # number of desired clusters
     type: integer
@@ -129,7 +127,7 @@ parameters:
   maxIter: # maximum number of iterations to run
     type: integer
     min: 0
-    max: 150
+    max: 100
     stepsize: 50
     default: 50
   tol: # maximum change in log-likelihood at which convergence is considered to be achieved
@@ -176,7 +174,6 @@ properties:
   scramble: clust_stat
   reorder: clust_stat
   const: clust_stat
-  opposite: clust_exact
 parameters:
   k: # number of desired clusters
     type: integer
@@ -187,13 +184,13 @@ parameters:
   maxIter: # maximum number of iterations to run
     type: integer
     min: 0
-    max: 150
+    max: 100
     stepsize: 50
     default: 50
   minDivisibleClusterSize: # the minimum number (if >= 1.0) or minimum proportion of points (if < 1.0) of a divisible cluster
     type: double
-    min: 0.0
-    max: 2.0
-    stepsize: 0.5
+    min: 0.5
+    max: 1.5
+    stepsize: 1.0
     default: 1.0
 ---
