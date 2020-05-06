@@ -1,2 +1,2 @@
-evalMorphTestSQL(nameWithoutParams, iter, deviationsCounts, data.size(), deviationVector);
+evalMorphTestSQL(nameWithoutParams, iter, data.size(), deviationsCounts, deviationVector, deviationsScores, expectedScoresMap, morphedScoresMap);
             //
