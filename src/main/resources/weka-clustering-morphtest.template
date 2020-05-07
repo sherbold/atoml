@@ -44,29 +44,29 @@
                 }
             }
 
-			//score-matching for soft clustering
-			int deviationsScores = 0;
-			HashMap<Integer, ArrayList<Double>> expectedScoresMap = new HashMap<>();
-			HashMap<Integer, ArrayList<Double>> morphedScoresMap = new HashMap<>();
-			if (softScoresCount > 0) {
-				expectedScoresMap = createScoresMap(expectedClustersMap, expectedMorphDistributions);
-				morphedScoresMap = createScoresMap(morphedClustersMap, morphedDistributions);
-				for (Integer cluster: expectedScoresMap.keySet()) {
-    			    if (morphedScoresMap.containsKey(cluster)) {
-    			        for (int i = 0; i < expectedScoresMap.get(cluster).size(); i++) {
-    			            if (i < morphedScoresMap.get(cluster).size()) {
+            //score-matching for soft clustering
+            int deviationsScores = 0;
+            HashMap<Integer, ArrayList<Double>> expectedScoresMap = new HashMap<>();
+            HashMap<Integer, ArrayList<Double>> morphedScoresMap = new HashMap<>();
+            if (softScoresCount > 0) {
+                expectedScoresMap = createScoresMap(expectedClustersMap, expectedMorphDistributions);
+                morphedScoresMap = createScoresMap(morphedClustersMap, morphedDistributions);
+                for (Integer cluster: expectedScoresMap.keySet()) {
+                    if (morphedScoresMap.containsKey(cluster)) {
+                        for (int i = 0; i < expectedScoresMap.get(cluster).size(); i++) {
+                            if (i < morphedScoresMap.get(cluster).size()) {
                                 if (!(Double.compare(expectedScoresMap.get(cluster).get(i), morphedScoresMap.get(cluster).get(i)) == 0)) {
                                     deviationsScores++;
                                 }
                             } else {
-    			                deviationsScores++;
+                                deviationsScores++;
                             }
                         }
                     } else {
-    			        deviationsScores += expectedScoresMap.get(cluster).size();
+                        deviationsScores += expectedScoresMap.get(cluster).size();
                     }
                 }
-			}
+            }
 
             String nameWithoutParams = testname.getMethodName().split("\\\\[")[0];
              <<<MYSQLEVALMORPH>>>assertMorphTest(<<<EVALUATIONTYPE>>>, nameWithoutParams, iter, data.size(), deviationsCounts, deviationVector, deviationsScores, expectedScoresMap, morphedScoresMap);
