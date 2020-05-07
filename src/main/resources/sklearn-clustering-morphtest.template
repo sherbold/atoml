@@ -46,8 +46,35 @@
                 pval_ttest = 1.0
             testcase_name = inspect.stack()[0][3]
 
-            deviations_score = 0 # TODO: score-matching for soft clustering (to be added later) placeholders
-            pval_kstest = 0 # TODO: score-matching for soft clustering (to be added later) placeholders
+            deviations_score = 0
+            deviations_pvals = 0
+            pval_kstest = 0 # TODO: placeholder for pvalues of KS tests to store in DB
+            if hasattr(clusterer_original, 'score_samples') and hasattr(clusterer_morph, 'score_samples'):
+                np.random.seed(42)
+                scores_original = clusterer_original.score_samples(data_original_df.values)
+                np.random.seed(42)
+                scores_morphed = clusterer_morph.score_samples(data_morph_df.values)
+                expected_scores_map = self.create_scores_map(expected_clusters, scores_original)
+                morphed_scores_map = self.create_scores_map(morph_clusters, scores_morphed)
+                print(expected_scores_map)
+                print(morphed_scores_map)
+                pvals_kstest = []
+                for cluster in expected_scores_map:
+                    if cluster in morphed_scores_map:
+                        for instance in expected_scores_map[cluster]:
+                            if instance not in morphed_scores_map[cluster]:
+                                deviations_score += 1
+                        pvals_kstest.append(ks_2samp(expected_scores_map[cluster], morphed_scores_map[cluster]).pvalue)
+                    else:
+                        deviations_score += len(expected_scores_map[cluster])
+                        pvals_kstest.append(1.0)
 
-            <<<MYSQLEVALMORPH>>>self.assert_morphtest(<<<EVALUATIONTYPE>>>, testcase_name, iter, deviations_clust, pval_ttest)
+                for pval in pvals_kstest:
+                    if pval < (0.05 / len(expected_scores_map)):
+                        deviations_pvals += 1
+            else:
+                deviations_score = -1
+                deviations_pvals = -1
+
+            <<<MYSQLEVALMORPH>>>self.assert_morphtest(<<<EVALUATIONTYPE>>>, testcase_name, iter, deviations_clust, pval_ttest, deviations_pvals)
 
