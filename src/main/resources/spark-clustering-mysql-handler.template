@@ -175,7 +175,7 @@
 	private static MySQLResultStorage storage;
 
 	@BeforeClass
-	public static void setUpClass() {
+	public static void setUpStorage() {
 		storage = new MySQLResultStorage("");
 	}
 
@@ -189,7 +189,7 @@
         }
         boolean passedStatClust = pValueCounts>0.05;
         double[] pValuesKS = new double[expectedScoresMap.size()];
-		double pValueKS = -1.0; //TODO: store array of pValues in DB (currently only first value stored or -1 for hard clustering)
+		double pValueKS = 0.0; //TODO: stores 0.0 as placeholder pValue in DB
         int deviationsPValues = 0;
         if (deviationsScores > 0) {
             for (Integer cluster: expectedScoresMap.keySet()) {
@@ -202,7 +202,6 @@
                     deviationsPValues++;
                 }
             }
-            pValueKS = pValuesKS[0]; //TODO: store array of pValues in DB (currently only first value stored or -1 for hard clustering)
         } //no score-matching for hard clustering
         else if (expectedScoresMap.isEmpty()) {
             deviationsScores = -1;

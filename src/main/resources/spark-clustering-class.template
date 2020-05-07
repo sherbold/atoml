@@ -2,12 +2,8 @@ package <<<PACKAGENAME>>>;
 
 import static org.apache.commons.math3.stat.inference.TestUtils.tTest;
 import static org.junit.Assert.*;
-import org.junit.Test;
+import org.junit.*;
 import org.junit.rules.TestName;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.FixMethodOrder;
-import org.junit.Rule;
 import org.junit.runner.RunWith;
 import org.junit.runners.MethodSorters;
 import org.junit.runners.Parameterized;
@@ -107,16 +103,16 @@ public class <<<CLASSNAME>>> {
     }
 
 
-    private SparkSession sparkSession;
+    private static SparkSession sparkSession;
 
-    @Before
-    public void setUp() {
+    @BeforeClass
+    public static void setUp() {
         sparkSession = SparkSession.builder().appName("Logistic_Default_AtomlTest").master("local[1]").getOrCreate();
         sparkSession.sparkContext().setLogLevel("WARN");
     }
 
-    @After
-    public void tearDown() {
+    @AfterClass
+    public static void tearDown() {
         sparkSession.stop();
     }
 

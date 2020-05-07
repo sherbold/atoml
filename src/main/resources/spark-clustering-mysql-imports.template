@@ -1,5 +1,3 @@
-import org.junit.BeforeClass;
-
 import com.mysql.jdbc.jdbc2.optional.MysqlDataSource;
 
 import java.io.PrintWriter;
