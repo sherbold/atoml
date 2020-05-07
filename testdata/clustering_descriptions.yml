@@ -1054,6 +1054,69 @@ parameters:
     default: None
 ---
 
+name: SKLEARN_GaussianMixture
+framework: sklearn
+type: clustering
+package:  sklearn.mixture
+class: GaussianMixture
+features: double
+properties:
+  same: clust_exact
+  scramble: score_stat
+  reorder: score_stat
+  const: score_stat
+  opposite: clust_exact
+parameters:
+  n_components: # number of mixture components in the model
+    type: integer
+    min: 2
+    max: 4
+    stepsize: 1
+    default: 2
+  covariance_type: # type of covariance parameters to use
+    type: values
+    values: [full, tied, diag, spherical]
+    default: full
+  tol: # convergence threshold
+    type: double
+    min: 0.001
+    max: 0.01
+    stepsize: 0.003
+    default: 0.001
+  reg_covar: # regularization added to diagonal of covariance to assure they are all positive
+    type: double
+    min: 0.00001
+    max: 0.00009
+    stepsize: 0.00004
+    default: 0.00005
+  max_iter: # maximum number of EM iterations to perform
+    type: integer
+    min: 50
+    max: 200
+    stepsize: 50
+    default: 100
+  n_init: # number of initializations to perform
+    type: integer
+    min: 1
+    max: 10
+    stepsize: 3
+    default: 1
+  init_params: # initialization method to use
+    type: values
+    values: [kmeans, random]
+    default: kmeans
+  warm_start: # use solution of last fitting as initialization for next call of fit()
+    type: values
+    values: [True, False]
+    default: False
+  verbose: # enable verbose output
+    type: integer
+    min: 0
+    max: 1
+    stepsize: 1
+    default: 0
+---
+
 ####################
 # Apache Spark Clustering Algorithms #
 ####################
