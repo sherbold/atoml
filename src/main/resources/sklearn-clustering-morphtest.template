@@ -56,8 +56,6 @@
                 scores_morphed = clusterer_morph.score_samples(data_morph_df.values)
                 expected_scores_map = self.create_scores_map(expected_clusters, scores_original)
                 morphed_scores_map = self.create_scores_map(morph_clusters, scores_morphed)
-                print(expected_scores_map)
-                print(morphed_scores_map)
                 pvals_kstest = []
                 for cluster in expected_scores_map:
                     if cluster in morphed_scores_map:
