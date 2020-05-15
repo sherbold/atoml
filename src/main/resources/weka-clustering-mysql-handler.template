@@ -207,7 +207,7 @@
             deviationsScores = -1;
             deviationsPValues = -1;
         }
-        boolean passedExactScore = deviationsScores==0;
-        boolean passedStatScore = deviationsPValues==0;
+        boolean passedExactScore = deviationsScores<=0;
+        boolean passedStatScore = deviationsPValues<=0;
         storage.addResult(this.getClass().getSimpleName(), parameterName, testcaseName, iteration, testsize, deviationsCounts, deviationsScores, pValueCounts, pValueKS, passedExactScore, passedExactClust, passedStatClust, passedStatScore);
     }
