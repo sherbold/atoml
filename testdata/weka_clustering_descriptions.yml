@@ -80,7 +80,7 @@ parameters:
     min: 2
     max: 4
     stepsize: 1
-    default: -1
+    default: 2
   max-candidates: # maximum number of candidates to remain in memory during training
     type: integer
     min: 100
@@ -89,10 +89,10 @@ parameters:
     default: 100
   periodic-pruning: # how often to prune low density canopies during training
     type: integer
-    min: 100
+    min: 200
     max: 500
     stepsize: 100
-    default: 100
+    default: 300
   min-density: # minimum T2-based density below which canopy is pruned during periodic pruning
     type: double
     min: 2.0
@@ -150,9 +150,9 @@ parameters:
   C: # category utility threshold by which to prune nodes
     type: double
     min: 0.001
-    max: 0.01
-    stepsize: 0.002
-    default: 0.0028209479177387815
+    max: 0.011
+    stepsize: 0.005
+    default: 0.0028
   save-data: # save instances information for visualization purpose
     type: flag
     default: disabled
@@ -203,7 +203,7 @@ parameters:
     default: 10
   max: # maximum number of clusters to consider during cross-validating
     type: integer
-    min: 1
+    min: 2
     max: 5
     stepsize: 1
     default: 2
