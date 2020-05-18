@@ -179,7 +179,7 @@
 		storage = new MySQLResultStorage("");
 	}
 
-	private void evalMorphTestSQL(String testcaseName, int iteration, int deviationsCounts, int testsize, double[] deviationVector) {
+	private void evalMorphTestSQL(String testcaseName, int iteration, int testsize, int deviationsCounts, double[] deviationVector, int deviationsScores, HashMap<Integer, ArrayList<Double>> expectedScoresMap, HashMap<Integer, ArrayList<Double>> morphedScoresMap) {
     	boolean passedExactClust = deviationsCounts==0;
         double pValueCounts;
         if( deviationsCounts>0 ) {
@@ -188,9 +188,26 @@
             pValueCounts = 1.0;
         }
         boolean passedStatClust = pValueCounts>0.05;
-        int deviationsScores = 0; //TODO: placeholder for score-matching (to be added later for soft clustering)
-	    boolean passedExactScore = deviationsScores==0; //TODO: placeholder for score-matching (to be added later for soft clustering)
-        double pValueKS = 0.0; //TODO: placeholder for score-matching (to be added later for soft clustering)
-        boolean passedStatScore = pValueKS>0.05; //TODO: placeholder for score-matching (to be added later for soft clustering)
+        double[] pValuesKS = new double[expectedScoresMap.size()];
+		double pValueKS = 0.0; //TODO: store array of pValues in DB (currently placeholder 0 stored)
+        int deviationsPValues = 0;
+        if (deviationsScores > 0) {
+            for (Integer cluster: expectedScoresMap.keySet()) {
+                if (morphedScoresMap.containsKey(cluster) && !morphedScoresMap.get(cluster).isEmpty()) {
+                    pValuesKS[cluster] = TestUtils.kolmogorovSmirnovTest(Doubles.toArray(expectedScoresMap.get(cluster)), Doubles.toArray(morphedScoresMap.get(cluster)));
+                } else {
+                    pValuesKS[cluster] = 1.0;
+                }
+                if (pValuesKS[cluster] < (0.05 / (double) expectedScoresMap.size())) {
+                    deviationsPValues++;
+                }
+            }
+        } //no score-matching for hard clustering
+        else if (expectedScoresMap.isEmpty()) {
+            deviationsScores = -1;
+            deviationsPValues = -1;
+        }
+        boolean passedExactScore = deviationsScores<=0;
+        boolean passedStatScore = deviationsPValues<=0;
         storage.addResult(this.getClass().getSimpleName(), parameterName, testcaseName, iteration, testsize, deviationsCounts, deviationsScores, pValueCounts, pValueKS, passedExactScore, passedExactClust, passedStatClust, passedStatScore);
     }

@@ -70,17 +70,17 @@ class: Canopy
 features: [double,categorical]
 properties:
   same: clust_exact
-  scramble: clust_exact
+  scramble: clust_stat
   reorder: clust_stat
   const: clust_stat
   opposite: clust_exact
 parameters:
   N: # number of clusters
     type: integer
-    min: 1
-    max: 3
+    min: 2
+    max: 4
     stepsize: 1
-    default: -1
+    default: 2
   max-candidates: # maximum number of candidates to remain in memory during training
     type: integer
     min: 100
@@ -89,27 +89,27 @@ parameters:
     default: 100
   periodic-pruning: # how often to prune low density canopies during training
     type: integer
-    min: 100
+    min: 200
     max: 500
     stepsize: 100
-    default: 100
+    default: 300
   min-density: # minimum T2-based density below which canopy is pruned during periodic pruning
     type: double
-    min: 1.0
+    min: 2.0
     max: 6.0
     stepsize: 1.0
     default: 2.0
   t2: # T2 distance
     type: double
-    min: 0
+    min: 1.0
     max: 3.0
     stepsize: 1.0
     default: -1.0
   t1: # T1 distance
     type: double
-    min: -0.25
-    max: 2.25
-    stepsize: 1.25
+    min: 0.5
+    max: 2.5
+    stepsize: 1.0
     default: -1.25
   M: # do not replace missing values with means
     type: flag
@@ -117,9 +117,9 @@ parameters:
   S: # random number seed to be used
     type: integer
     min: 0
-    max: 50
-    stepsize: 10
-    default: 10
+    max: 42
+    stepsize: 21
+    default: 42
   output-debug-info: # true: clusterer outputs additional information to console
     type: flag
     default: disabled
@@ -149,18 +149,18 @@ parameters:
     default: 1.0
   C: # category utility threshold by which to prune nodes
     type: double
-    min: 0.0001
-    max: 0.01
-    stepsize: 0.002
-    default: 0.0028209479177387815
+    min: 0.001
+    max: 0.011
+    stepsize: 0.005
+    default: 0.0028
   save-data: # save instances information for visualization purpose
     type: flag
     default: disabled
   S: # random number seed to be used
     type: integer
     min: 0
-    max: 50
-    stepsize: 10
+    max: 42
+    stepsize: 21
     default: 42
   output-debug-info: # true: clusterer outputs additional information to console
     type: flag
@@ -178,23 +178,23 @@ class: EM
 features: [double,categorical]
 properties:
   same: clust_exact
-  scramble: clust_exact
-  reorder: clust_stat
-  const: clust_stat
+  scramble: score_stat
+  reorder: score_stat
+  const: score_stat
   opposite: clust_exact
 parameters:
   I: # max number of iterations
     type: integer
     min: 100
-    max: 500
+    max: 200
     stepsize: 100
     default: 100
   N: # number of clusters
     type: integer
-    min: 1
-    max: 3
+    min: 2
+    max: 4
     stepsize: 1
-    default: -1
+    default: 2
   X: # number of folds to use when cross-validating to find best number of clusters
     type: integer
     min: 8
@@ -203,32 +203,32 @@ parameters:
     default: 10
   max: # maximum number of clusters to consider during cross-validating
     type: integer
-    min: 1
+    min: 2
     max: 5
     stepsize: 1
-    default: -1
+    default: 2
   ll-cv: # minimum improvement in cross-validated log likelihood required to consider increasing number of clusters during cross-validation
     type: double
-    min: 1.0E-7
+    min: 1.0E-6
     max: 1.0E-5
-    stepsize: 0.9E-6
+    stepsize: 3.0E-6
     default: 1.0E-6
   ll-iter: # minimum improvement in log likelihood required to perform another iteration of E and M steps
     type: double
-    min: 1.0E-7
+    min: 1.0E-6
     max: 1.0E-5
-    stepsize: 0.9E-6
+    stepsize: 3.0E-6
     default: 1.0E-6
   M: # minimum allowable standard deviation
     type: double
-    min: 1.0E-7
+    min: 1.0E-6
     max: 1.0E-5
-    stepsize: 0.9E-6
+    stepsize: 3.0E-6
     default: 1.0E-6
   K: # number of kMeans runs to perform
     type: integer
     min: 5
-    max: 35
+    max: 15
     stepsize: 10
     default: 10
   O: # model output in old format
@@ -243,9 +243,9 @@ parameters:
   S: # random number seed to be used
     type: integer
     min: 0
-    max: 300
-    stepsize: 100
-    default: 100
+    max: 42
+    stepsize: 21
+    default: 42
   output-debug-info: # true: clusterer outputs additional information to console
     type: flag
     default: disabled
@@ -269,7 +269,7 @@ properties:
 parameters:
   N: # number of clusters
     type: integer
-    min: 1
+    min: 2
     max: 3
     stepsize: 1
     default: 2
@@ -302,7 +302,7 @@ properties:
 parameters:
   N: # number of clusters
     type: integer
-    min: 1
+    min: 2
     max: 3
     stepsize: 1
     default: 2
@@ -360,10 +360,10 @@ parameters:
     default: 100
   periodic-pruning: # if canopy clustering: how often to prune low density canopies during training
     type: integer
-    min: 5000
-    max: 15000
-    stepsize: 5000
-    default: 10000
+    min: 100
+    max: 1000
+    stepsize: 500
+    default: 1000
   min-density: # if canopy clustering: minimum T2-based density below which canopy is pruned during periodic pruning
     type: double
     min: 0.0
@@ -390,7 +390,7 @@ parameters:
     default: disabled
   N: # number of clusters
     type: integer
-    min: 1
+    min: 2
     max: 4
     stepsize: 1
     default: 2
@@ -421,7 +421,7 @@ parameters:
     min: 0
     max: 42
     stepsize: 21
-    default: 10
+    default: 42
   output-debug-info: # true: clusterer outputs additional information to console
     type: flag
     default: disabled

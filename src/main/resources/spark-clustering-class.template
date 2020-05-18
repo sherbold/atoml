@@ -2,26 +2,33 @@ package <<<PACKAGENAME>>>;
 
 import static org.apache.commons.math3.stat.inference.TestUtils.tTest;
 import static org.junit.Assert.*;
-import org.junit.Test;
-import org.junit.rules.TestName;
-import org.junit.After;
-import org.junit.Before;
+
+import org.junit.AfterClass;
+import org.junit.BeforeClass;
 import org.junit.FixMethodOrder;
 import org.junit.Rule;
+import org.junit.Test;
+import org.junit.rules.TestName;
 import org.junit.runner.RunWith;
 import org.junit.runners.MethodSorters;
 import org.junit.runners.Parameterized;
 import org.junit.runners.Parameterized.Parameter;
 import org.junit.runners.Parameterized.Parameters;
 
-
 import javax.annotation.Generated;
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
+import java.io.IOException;
 import java.lang.reflect.Method;
 import java.lang.reflect.InvocationTargetException;
-import java.util.*;
-import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.LinkedList;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Collection;
+
 import weka.core.Attribute;
 import weka.core.Instances;
 import weka.filters.Filter;
@@ -35,6 +42,9 @@ import org.apache.spark.sql.types.StructType;
 import org.apache.spark.ml.feature.OneHotEncoder;
 import org.apache.spark.ml.feature.OneHotEncoderModel;
 import org.apache.spark.ml.feature.VectorAssembler;
+import org.apache.spark.ml.linalg.DenseVector;
+import org.apache.commons.math3.stat.inference.TestUtils;
+import com.google.common.primitives.Doubles;
 
 <<<MYSQLIMPORTS>>>
 
@@ -64,7 +74,7 @@ public class <<<CLASSNAME>>> {
     @Parameter(1)
     public String parameterName;
 
-    private void assertMorphTest(String evaluationType, String testcaseName, int iteration, int deviationsCounts, int testsize, double[] deviationVector) {
+    private void assertMorphTest(String evaluationType, String testcaseName, int iteration, int testsize, int deviationsCounts, double[] deviationVector, int deviationsScores, HashMap<Integer, ArrayList<Double>> expectedScoresMap, HashMap<Integer, ArrayList<Double>> morphedScoresMap) {
         if( "clust_exact".equalsIgnoreCase(evaluationType) ) {
             String message = String.format("clusters different (deviations of instances: %d out of %d)", deviationsCounts, testsize);
             assertTrue(message, deviationsCounts==0);
@@ -79,22 +89,41 @@ public class <<<CLASSNAME>>> {
             String message = String.format("results significantly different, p-value = %f (deviations of instances: %d out of %d)", pValueCounts, deviationsCounts, testsize);
             assertTrue(message, pValueCounts>0.05);
         }
+        else if ("score_stat".equalsIgnoreCase(evaluationType)) {
+        	if (expectedScoresMap.isEmpty()) {
+        		throw new RuntimeException("no scores found! score-matching available only for soft clustering algorithms!");
+			}
+        	double[] pValuesKS = new double[expectedScoresMap.size()];
+        	int deviationsPValues = 0;
+        	for (Integer cluster: expectedScoresMap.keySet()) {
+        		if (morphedScoresMap.containsKey(cluster) && !morphedScoresMap.get(cluster).isEmpty()) {
+					pValuesKS[cluster] = TestUtils.kolmogorovSmirnovTest(Doubles.toArray(expectedScoresMap.get(cluster)), Doubles.toArray(morphedScoresMap.get(cluster)));
+				} else {
+        			pValuesKS[cluster] = 1.0;
+				}
+        		if (pValuesKS[cluster] < (0.05 / (double) expectedScoresMap.size())) {
+        			deviationsPValues++;
+				}
+			}
+			String message = String.format("scores significantly different (deviations of scores: %d out of %d, %d of %d clusters with significantly different scores)", deviationsScores, testsize, deviationsPValues, expectedScoresMap.size());
+        	assertTrue(message, deviationsScores==0);
+		}
         else {
-            throw new RuntimeException("invalid evaluation type for morph test: " + evaluationType + " (allowed: clust_exact, clust_stat)");
+            throw new RuntimeException("invalid evaluation type for morph test: " + evaluationType + " (allowed: clust_exact, clust_stat, score_stat)");
         }
     }
 
 
-    private SparkSession sparkSession;
+    private static SparkSession sparkSession;
 
-    @Before
-    public void setUp() {
+    @BeforeClass
+    public static void setUpClass() {
         sparkSession = SparkSession.builder().appName("Logistic_Default_AtomlTest").master("local[1]").getOrCreate();
         sparkSession.sparkContext().setLogLevel("WARN");
     }
 
-    @After
-    public void tearDown() {
+    @AfterClass
+    public static void tearDownClass() {
         sparkSession.stop();
     }
 
@@ -225,6 +254,18 @@ public class <<<CLASSNAME>>> {
         }
         return clusterMap;
     }
+
+    private HashMap<Integer, ArrayList<Double>> createScoresMap(HashMap<Integer, HashSet<Integer>> clusterMap, List<Row> scores) {
+		HashMap<Integer, ArrayList<Double>> scoresMap = new HashMap<>();
+		for (Integer cluster: clusterMap.keySet()) {
+			ArrayList<Double> clusterScores = new ArrayList<>();
+			for (Integer instance: clusterMap.get(cluster)) {
+				clusterScores.add(((DenseVector) scores.get(instance).get(0)).values()[cluster]);
+			}
+			scoresMap.put(cluster, clusterScores);
+		}
+		return scoresMap;
+	}
 
 <<<METHODS>>>
 }

@@ -8,10 +8,10 @@ results_dict = {
                 'deviations_scores': int(deviations_score),
                 'pval_counts': float(pval_ttest),
                 'pval_scores': float(pval_kstest),
-                'passed_exact_score': int(deviations_score<0),
+                'passed_exact_score': int(deviations_score<=0),
                 'passed_exact_class': int(deviations_clust==0),
                 'passed_stat_class': int(pval_ttest>0.05),
-                'passed_stat_score': int(pval_kstest>0.05),
+                'passed_stat_score': int(deviations_pvals<=0),
             }
             write_morph_to_db(results_dict)
             #
