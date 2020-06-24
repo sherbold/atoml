@@ -17,7 +17,7 @@ targetCompatibility  = 1.11
 dependencies {
 	// dependencies for atoml core logic
 	compile group: 'org.apache.commons', name: 'commons-math3', version: '3.6.1'
-    compile group: 'com.github.haifengl', name: 'smile-core', version: '2.4.0'
+	compile group: 'com.github.haifengl', name: 'smile-core', version: '2.4.0'
 	compile group: 'commons-cli', name: 'commons-cli', version: '1.4'
 	compile group: 'org.apache.ant', name: 'ant', version: '1.10.3'
 	
