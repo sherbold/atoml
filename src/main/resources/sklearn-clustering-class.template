@@ -6,6 +6,7 @@ import functools
 import inspect
 import math
 import warnings
+import traceback
 
 from parameterized import parameterized
 from scipy.io.arff import loadarff
@@ -54,15 +55,18 @@ class <<<CLASSNAME>>>(unittest.TestCase):
 
 <<<HYPERPARAMETERS>>>
 
-    def assert_morphtest(self, evaluation_type, testcase_name, iteration, deviations_clust, pval_ttest, deviations_pvals):
-        if evaluation_type=='clust_exact':
-            self.assertEqual(deviations_clust, 0)
-        elif evaluation_type=='clust_stat':
-            self.assertTrue(pval_ttest > 0.05)
-        elif evaluation_type=='score_stat':
-            self.assertEqual(deviations_pvals, 0)
+    def assert_morphtest(self, evaluation_type, testcase_name, iteration, deviations_clust, pval_ttest, deviations_pvals, no_exception, exception_type, exception_message, exception_stacktrace):
+        if no_exception:
+            if evaluation_type=='clust_exact':
+                self.assertEqual(deviations_clust, 0)
+            elif evaluation_type=='clust_stat':
+                self.assertTrue(pval_ttest > 0.05)
+            elif evaluation_type=='score_stat':
+                self.assertEqual(deviations_pvals, 0)
+            else:
+                raise ValueError('invalid evaluation_type: %s (allowed: clust_exact, clust_stat, score_stat)' % evaluation_type)
         else:
-            raise ValueError('invalid evaluation_type: %s (allowed: clust_exact, clust_stat, score_stat)' % evaluation_type)
+            raise RuntimeError('%s encountered: %s %s' % exception_type, exception_message, exception_stacktrace)
 
     def flip_same_clusters(self, morph_clusters, expected_clusters):
         flipped_clusters = {}

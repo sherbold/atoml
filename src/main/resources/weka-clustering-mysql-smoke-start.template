@@ -3,4 +3,4 @@ boolean passed = true;
             String exception = null;
             String stacktrace = null;
             try {
-            
+<<<MYSQLINDENT>>><<<MYSQLINDENT>>><<<MYSQLINDENT>>>
