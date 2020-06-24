@@ -3,12 +3,8 @@
     def test_<<<NAME>>>(self, name, kwargs):
         for iter in range(1,<<<ITERATIONS>>>+1):
             <<<MYSQLEVALSMOKE_START>>><<<MYSQLINDENT>>>data, meta = loadarff('smokedata/<<<NAME>>>_%i_training.arff' % iter)
-            <<<MYSQLINDENT>>>testdata, testmeta = loadarff('smokedata/<<<NAME>>>_%i_test.arff' % iter)
             <<<MYSQLINDENT>>>data_df = pd.DataFrame(data)
             <<<MYSQLINDENT>>>data_df = pd.get_dummies(data_df)
-            <<<MYSQLINDENT>>>
-            <<<MYSQLINDENT>>>testdata_df = pd.DataFrame(data)
-            <<<MYSQLINDENT>>>testdata_df = pd.get_dummies(testdata_df, sparse=True)
             <<<MYSQLINDENT>>>
             <<<MYSQLINDENT>>>clusterer = <<<CLASSIFIER>>>
             <<<MYSQLINDENT>>>np.random.seed(42)

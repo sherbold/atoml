@@ -1,15 +1,15 @@
     @Test(timeout=21600000)
     public void test_<<<NAME>>>() throws Exception {
         for(int iter=1; iter<=<<<ITERATIONS>>>; iter++) {
-            <<<MYSQLEVALSMOKE_START>>>Instances data = loadData("/smokedata/<<<NAME>>>_" + iter + "_training.arff");
-            Instances testdata = loadData("/smokedata/<<<NAME>>>_" + iter + "_test.arff");
+            <<<MYSQLEVALSMOKE_START>>><<<MYSQLINDENT>>>Instances data = loadData("/smokedata/<<<NAME>>>_" + iter + "_training.arff");
+            <<<MYSQLINDENT>>>Instances testdata = loadData("/smokedata/<<<NAME>>>_" + iter + "_test.arff");
 
-            Clusterer clusterer = AbstractClusterer.forName("<<<PACKAGENAME>>>.<<<CLASSIFIER>>>", Arrays.copyOf(parameters, parameters.length));
-            clusterer.buildClusterer(data);
-            for (Instance instance : testdata) {
-                clusterer.clusterInstance(instance);
-                clusterer.distributionForInstance(instance);
-            }<<<MYSQLEVALSMOKE_END>>>
+            <<<MYSQLINDENT>>>Clusterer clusterer = AbstractClusterer.forName("<<<PACKAGENAME>>>.<<<CLASSIFIER>>>", Arrays.copyOf(parameters, parameters.length));
+            <<<MYSQLINDENT>>>clusterer.buildClusterer(data);
+            <<<MYSQLINDENT>>>for (Instance instance : testdata) {
+            <<<MYSQLINDENT>>>   clusterer.clusterInstance(instance);
+            <<<MYSQLINDENT>>>    clusterer.distributionForInstance(instance);
+            <<<MYSQLINDENT>>>}<<<MYSQLEVALSMOKE_END>>>
         }
     }
 

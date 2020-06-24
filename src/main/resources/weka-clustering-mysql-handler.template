@@ -85,7 +85,7 @@
 	        this.connectionPool.setUrl("jdbc:mysql://" + dbHost + ":" + dbPort + "/" + dbName + "?useSSL=false");
 	    }
 
-	    public void addResult(String algorithm, String parameters, String testcase, int iteration, int testsize, int deviationsCounts, int deviationsScores, double pvalClassification, double pvalScores, boolean passedExactScore, boolean passedExactClass, boolean passedStatClass, boolean passedStatScore) {
+	    public void addResult(String algorithm, String parameters, String testcase, int iteration, int testsize, int deviationsCounts, int deviationsScores, double pvalClassification, double pvalScores, boolean passedExactScore, boolean passedExactClass, boolean passedStatClass, boolean passedStatScore, boolean passed, String message, String exception, String stacktrace) {
 	        StringBuilder preparedSql = new StringBuilder();
 	        preparedSql.append("INSERT INTO " + this.morphResultsTableName + " (");
 	        preparedSql.append("`algorithm`,");
@@ -100,8 +100,12 @@
 	        preparedSql.append("`passed_exact_score`,");
 	        preparedSql.append("`passed_exact_class`,");
 	        preparedSql.append("`passed_stat_class`,");
-	        preparedSql.append("`passed_stat_score`) VALUES ");
-	        preparedSql.append("(?,?,?,?,?,?,?,?,?,?,?,?,?)");
+	        preparedSql.append("`passed_stat_score`,");
+	        preparedSql.append("`passed`,");
+	        preparedSql.append("`exception`,");
+	        preparedSql.append("`message`,");
+	        preparedSql.append("`stacktrace`) VALUES ");
+	        preparedSql.append("(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)");
 
 	        try(Connection con = this.connectionPool.getConnection();
 		        PreparedStatement stmt = con.prepareStatement(preparedSql.toString());) {
@@ -118,6 +122,10 @@
 	            stmt.setInt(11, passedExactClass?1:0);
 	            stmt.setInt(12, passedStatClass?1:0);
 	            stmt.setInt(13, passedStatScore?1:0);
+	            stmt.setInt(14, passed?1:0);
+	            stmt.setString(15, exception);
+	            stmt.setString(16, message);
+	            stmt.setString(17, stacktrace);
 
 	            int qryResult = stmt.executeUpdate();
 	            if (qryResult < 1) {
@@ -179,35 +187,47 @@
 		storage = new MySQLResultStorage("");
 	}
 
-	private void evalMorphTestSQL(String testcaseName, int iteration, int testsize, int deviationsCounts, double[] deviationVector, int deviationsScores, HashMap<Integer, ArrayList<Double>> expectedScoresMap, HashMap<Integer, ArrayList<Double>> morphedScoresMap) {
-    	boolean passedExactClust = deviationsCounts==0;
-        double pValueCounts;
-        if( deviationsCounts>0 ) {
-            pValueCounts = tTest(0.0, deviationVector);
-        } else {
-            pValueCounts = 1.0;
-        }
-        boolean passedStatClust = pValueCounts>0.05;
-        double[] pValuesKS = new double[expectedScoresMap.size()];
-		double pValueKS = 0.0; //TODO: store array of pValues in DB (currently placeholder 0 stored)
-        int deviationsPValues = 0;
-        if (deviationsScores > 0) {
-            for (Integer cluster: expectedScoresMap.keySet()) {
-                if (morphedScoresMap.containsKey(cluster) && !morphedScoresMap.get(cluster).isEmpty()) {
-                    pValuesKS[cluster] = TestUtils.kolmogorovSmirnovTest(Doubles.toArray(expectedScoresMap.get(cluster)), Doubles.toArray(morphedScoresMap.get(cluster)));
-                } else {
-                    pValuesKS[cluster] = 1.0;
-                }
-                if (pValuesKS[cluster] < (0.05 / (double) expectedScoresMap.size())) {
-                    deviationsPValues++;
-                }
+    private void evalMorphTestSQL(String testcaseName, int iteration, int testsize, int deviationsCounts, double[] deviationVector, int deviationsScores, HashMap<Integer, ArrayList<Double>> expectedScoresMap, HashMap<Integer, ArrayList<Double>> morphedScoresMap, boolean passed, String message, String exception, String stacktrace) {
+    	double pValueKS = 0.0; //TODO: stores 0.0 as placeholder pValue in DB
+    	double pValueCounts;
+    	boolean passedExactClust;
+    	boolean passedStatClust;
+    	boolean passedExactScore;
+    	boolean passedStatScore;
+    	if (passed) {
+            passedExactClust = deviationsCounts==0;
+            if( deviationsCounts>0 ) {
+                pValueCounts = tTest(0.0, deviationVector);
+            } else {
+                pValueCounts = 1.0;
             }
-        } //no score-matching for hard clustering
-        else if (expectedScoresMap.isEmpty()) {
-            deviationsScores = -1;
-            deviationsPValues = -1;
+            passedStatClust = pValueCounts>0.05;
+            double[] pValuesKS = new double[expectedScoresMap.size()];
+            int deviationsPValues = 0;
+            if (deviationsScores > 0) {
+                for (Integer cluster: expectedScoresMap.keySet()) {
+                    if (morphedScoresMap.containsKey(cluster) && morphedScoresMap.get(cluster).size() > 1 && expectedScoresMap.get(cluster).size() > 1) {
+                        pValuesKS[cluster] = KSTest.test(Doubles.toArray(expectedScoresMap.get(cluster)), Doubles.toArray(morphedScoresMap.get(cluster))).pvalue;
+                    } else {
+                        pValuesKS[cluster] = 1.0;
+                    }
+                    if (pValuesKS[cluster] < (0.05 / (double) expectedScoresMap.size())) {
+                        deviationsPValues++;
+                    }
+                }
+            } //no score-matching for hard clustering
+            else if (expectedScoresMap.isEmpty()) {
+                deviationsScores = -1;
+                deviationsPValues = -1;
+            }
+            passedExactScore = deviationsScores<=0;
+            passedStatScore = deviationsPValues<=0;
+        } else {
+            pValueCounts = 1;
+            passedExactScore = true;
+            passedExactClust = true;
+            passedStatClust = true;
+            passedStatScore = true;
         }
-        boolean passedExactScore = deviationsScores<=0;
-        boolean passedStatScore = deviationsPValues<=0;
-        storage.addResult(this.getClass().getSimpleName(), parameterName, testcaseName, iteration, testsize, deviationsCounts, deviationsScores, pValueCounts, pValueKS, passedExactScore, passedExactClust, passedStatClust, passedStatScore);
+        storage.addResult(this.getClass().getSimpleName(), parameterName, testcaseName, iteration, testsize, deviationsCounts, deviationsScores, pValueCounts, pValueKS, passedExactScore, passedExactClust, passedStatClust, passedStatScore, passed, message, exception, stacktrace);
     }

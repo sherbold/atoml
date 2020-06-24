@@ -2,6 +2,13 @@
     @timeout(21600)
     def test_<<<NAME>>>_<<<DATASET>>>(self, name, kwargs):
         for iter in range(1,<<<ITERATIONS>>>+1):
+            no_exception = True
+            exception_type = None
+            exception_message = None
+            exception_stacktrace = None
+            testcase_name = inspect.stack()[0][3]
+            pval_kstest = 0  # TODO: placeholder for pvalues of KS tests to store in DB
+
             data_original, meta_original = loadarff('morphdata/<<<DATASET>>>_%i.arff' % iter)
             data_morphed, meta_morphed = loadarff('morphdata/<<<DATASET>>>_%i_<<<NAME>>>.arff' % iter)
 
@@ -11,68 +18,78 @@
             data_morph_df = pd.DataFrame(data_morphed)
             data_morph_df = pd.get_dummies(data_morph_df)
 
-            clusterer_original = <<<CLASSIFIER>>>
-            np.random.seed(42)
-            prediction_original = clusterer_original.fit_predict(data_original_df.values)
-            clusterer_morph = <<<CLASSIFIER>>>
-            np.random.seed(42)
-            prediction_morph = clusterer_morph.fit_predict(data_morph_df.values)
+            try:
+                clusterer_original = <<<CLASSIFIER>>>
+                np.random.seed(42)
+                prediction_original = clusterer_original.fit_predict(data_original_df.values)
+                clusterer_morph = <<<CLASSIFIER>>>
+                np.random.seed(42)
+                prediction_morph = clusterer_morph.fit_predict(data_morph_df.values)
 
-            prediction_expected = prediction_original # expectedMorphedClassTemplate
+                prediction_expected = prediction_original # expectedMorphedClassTemplate
 
-            expected_clusters = self.create_cluster_map(prediction_expected)
-            morph_clusters = self.create_cluster_map(prediction_morph)
-            morph_clusters = self.flip_same_clusters(morph_clusters, expected_clusters)
+                expected_clusters = self.create_cluster_map(prediction_expected)
+                morph_clusters = self.create_cluster_map(prediction_morph)
+                morph_clusters = self.flip_same_clusters(morph_clusters, expected_clusters)
 
-            deviations_clust = 0
-            deviation_vector = []
-            for i in range(len(data_original)):
-                for cluster in expected_clusters:
-                    if i in expected_clusters[cluster]:
-                        if (cluster in morph_clusters) and (i in morph_clusters[cluster]):
-                            deviation_vector.append(0)
-                            break
+                deviations_clust = 0
+                deviation_vector = []
+                for i in range(len(data_original)):
+                    for cluster in expected_clusters:
+                        if i in expected_clusters[cluster]:
+                            if (cluster in morph_clusters) and (i in morph_clusters[cluster]):
+                                deviation_vector.append(0)
+                                break
+                            else:
+                                deviations_clust += 1
+                                deviation_vector.append(1)
+                                break
+
+                with warnings.catch_warnings():
+                    warnings.simplefilter("ignore")
+                    pval_ttest = ttest_1samp(deviation_vector, 0.0)[1]
+
+                # handles situation if all data is in one class
+                if math.isnan(pval_ttest) and deviations_clust==0:
+                    pval_ttest = 1.0
+
+                if hasattr(clusterer_original, 'score_samples') and hasattr(clusterer_morph, 'score_samples'):
+                    deviations_score = 0
+                    deviations_pvals = 0
+                    np.random.seed(42)
+                    scores_original = clusterer_original.score_samples(data_original_df.values)
+                    np.random.seed(42)
+                    scores_morphed = clusterer_morph.score_samples(data_morph_df.values)
+                    expected_scores_map = self.create_scores_map(expected_clusters, scores_original)
+                    morphed_scores_map = self.create_scores_map(morph_clusters, scores_morphed)
+                    pvals_kstest = []
+                    for cluster in expected_scores_map:
+                        if cluster in morphed_scores_map:
+                            for instance in expected_scores_map[cluster]:
+                                if instance not in morphed_scores_map[cluster]:
+                                    deviations_score += 1
+                            pvals_kstest.append(ks_2samp(expected_scores_map[cluster], morphed_scores_map[cluster]).pvalue)
                         else:
-                            deviations_clust += 1
-                            deviation_vector.append(1)
-                            break
+                            deviations_score += len(expected_scores_map[cluster])
+                            pvals_kstest.append(1.0)
 
-            with warnings.catch_warnings():
-                warnings.simplefilter("ignore")
-                pval_ttest = ttest_1samp(deviation_vector, 0.0)[1]
+                    for pval in pvals_kstest:
+                        if pval < (0.05 / len(expected_scores_map)):
+                            deviations_pvals += 1
+                else:
+                    deviations_score = -1
+                    deviations_pvals = -1
 
-            # handles situation if all data is in one class
-            if math.isnan(pval_ttest) and deviations_clust==0:
-                pval_ttest = 1.0
-            testcase_name = inspect.stack()[0][3]
-
-            deviations_score = 0
-            deviations_pvals = 0
-            pval_kstest = 0 # TODO: placeholder for pvalues of KS tests to store in DB
-            if hasattr(clusterer_original, 'score_samples') and hasattr(clusterer_morph, 'score_samples'):
-                np.random.seed(42)
-                scores_original = clusterer_original.score_samples(data_original_df.values)
-                np.random.seed(42)
-                scores_morphed = clusterer_morph.score_samples(data_morph_df.values)
-                expected_scores_map = self.create_scores_map(expected_clusters, scores_original)
-                morphed_scores_map = self.create_scores_map(morph_clusters, scores_morphed)
-                pvals_kstest = []
-                for cluster in expected_scores_map:
-                    if cluster in morphed_scores_map:
-                        for instance in expected_scores_map[cluster]:
-                            if instance not in morphed_scores_map[cluster]:
-                                deviations_score += 1
-                        pvals_kstest.append(ks_2samp(expected_scores_map[cluster], morphed_scores_map[cluster]).pvalue)
-                    else:
-                        deviations_score += len(expected_scores_map[cluster])
-                        pvals_kstest.append(1.0)
-
-                for pval in pvals_kstest:
-                    if pval < (0.05 / len(expected_scores_map)):
-                        deviations_pvals += 1
-            else:
+            except Exception as e:
+                no_exception = False
+                exception_type = type(e).__name__
+                exception_message = str(e)
+                exception_stacktrace = traceback.format_exc()
                 deviations_score = -1
                 deviations_pvals = -1
+                deviations_clust = -1
+                pval_ttest = 1
+                pval_kstest = 1
 
-            <<<MYSQLEVALMORPH>>>self.assert_morphtest(<<<EVALUATIONTYPE>>>, testcase_name, iter, deviations_clust, pval_ttest, deviations_pvals)
+            <<<MYSQLEVALMORPH>>>self.assert_morphtest(<<<EVALUATIONTYPE>>>, testcase_name, iter, deviations_clust, pval_ttest, deviations_pvals, no_exception, exception_type, exception_message, exception_stacktrace)
 
