@@ -16,43 +16,40 @@ targetCompatibility  = 1.11
 
 dependencies {
 	// dependencies for atoml core logic
-	compile group: 'org.apache.commons', name: 'commons-math3', version: '3.6.1'
-	compile group: 'com.github.haifengl', name: 'smile-core', version: '2.4.0'
-	compile group: 'commons-cli', name: 'commons-cli', version: '1.4'
-	compile group: 'org.apache.ant', name: 'ant', version: '1.10.3'
-	
-	compile group: 'com.esotericsoftware.yamlbeans', name: 'yamlbeans', version: '1.13'
-	compile group: 'mysql', name: 'mysql-connector-java', version: '5.1.47'
-	
-	
-	// we are working against the latest dev version of Weka as available in maven central on 2018-08-10
-	compile group: 'nz.ac.waikato.cms.weka', name: 'weka-dev', version: '3.9.4'
-	compile group: 'nz.ac.waikato.cms.weka', name: 'DTNB', version: '1.0.3'
-	compile group: 'nz.ac.waikato.cms.weka', name: 'multiLayerPerceptrons', version: '1.0.10'
-	compile group: 'nz.ac.waikato.cms.weka', name: 'alternatingModelTrees', version: '1.0.0'
-	compile group: 'nz.ac.waikato.cms.weka', name: 'RBFNetwork', version: '1.0.8'
-	compile group: 'nz.ac.waikato.cms.weka', name: 'alternatingDecisionTrees', version: '1.0.5'
-	compile group: 'nz.ac.waikato.cms.weka', name: 'simpleCART', version: '1.0.2'
-	
-    compile group: 'nz.ac.waikato.cms.weka', name: 'SPegasos', version: '1.0.2'
-    compile group: 'nz.ac.waikato.cms.weka', name: 'discriminantAnalysis', version: '1.0.2'
-    compile group: 'nz.ac.waikato.cms.weka', name: 'conjunctiveRule', version: '1.0.4'
-    compile group: 'nz.ac.waikato.cms.weka', name: 'ridor', version: '1.0.2'
-    compile group: 'nz.ac.waikato.cms.weka', name: 'naiveBayesTree', version: '1.0.2'
-    compile group: 'nz.ac.waikato.cms.weka', name: 'extraTrees', version: '1.0.2'
-    compile group: 'nz.ac.waikato.cms.weka', name: 'kernelLogisticRegression', version: '1.0.0'
-    compile group: 'nz.ac.waikato.cms.weka', name: 'complementNaiveBayes', version: '1.0.3'
-    compile group: 'nz.ac.waikato.cms.weka', name: 'bestFirstTree', version: '1.0.4'
-    compile group: 'nz.ac.waikato.cms.weka', name: 'votingFeatureIntervals', version: '1.0.2'
-    compile group: 'nz.ac.waikato.cms.weka', name: 'hyperPipes', version: '1.0.2'
-    
-    
-    
-	// we are working against the latest released version of Spark
-	compile group: 'org.apache.spark', name: 'spark-mllib_2.12', version: '3.0.0-preview2'
-	
-	
+    implementation group: 'org.apache.commons', name: 'commons-lang3', version: '3.10'
+	implementation group: 'org.apache.commons', name: 'commons-math3', version: '3.6.1'
+	implementation group: 'commons-cli', name: 'commons-cli', version: '1.4'
+	implementation group: 'org.apache.ant', name: 'ant', version: '1.10.3'
+	implementation group: 'nz.ac.waikato.cms.weka', name: 'weka-dev', version: '3.9.4'
+	implementation group: 'com.esotericsoftware.yamlbeans', name: 'yamlbeans', version: '1.13'
+		
     // Use JUnit test framework
-    testImplementation 'junit:junit:4.12'
+    testImplementation group: 'junit', name: 'junit', version: '4.12'
+    
+    // other test dependencies for weka and spark
+	testImplementation group: 'com.github.haifengl', name: 'smile-core', version: '2.4.0'
+	testImplementation group: 'mysql', name: 'mysql-connector-java', version: '5.1.47'
+	
+	// additional dependencies for weka tests
+	testImplementation group: 'nz.ac.waikato.cms.weka', name: 'DTNB', version: '1.0.3'
+	testImplementation group: 'nz.ac.waikato.cms.weka', name: 'multiLayerPerceptrons', version: '1.0.10'
+	testImplementation group: 'nz.ac.waikato.cms.weka', name: 'alternatingModelTrees', version: '1.0.0'
+	testImplementation group: 'nz.ac.waikato.cms.weka', name: 'RBFNetwork', version: '1.0.8'
+	testImplementation group: 'nz.ac.waikato.cms.weka', name: 'alternatingDecisionTrees', version: '1.0.5'
+	testImplementation group: 'nz.ac.waikato.cms.weka', name: 'simpleCART', version: '1.0.2'
+    testImplementation group: 'nz.ac.waikato.cms.weka', name: 'SPegasos', version: '1.0.2'
+    testImplementation group: 'nz.ac.waikato.cms.weka', name: 'discriminantAnalysis', version: '1.0.2'
+    testImplementation group: 'nz.ac.waikato.cms.weka', name: 'conjunctiveRule', version: '1.0.4'
+    testImplementation group: 'nz.ac.waikato.cms.weka', name: 'ridor', version: '1.0.2'
+    testImplementation group: 'nz.ac.waikato.cms.weka', name: 'naiveBayesTree', version: '1.0.2'
+    testImplementation group: 'nz.ac.waikato.cms.weka', name: 'extraTrees', version: '1.0.2'
+    testImplementation group: 'nz.ac.waikato.cms.weka', name: 'kernelLogisticRegression', version: '1.0.0'
+    testImplementation group: 'nz.ac.waikato.cms.weka', name: 'complementNaiveBayes', version: '1.0.3'
+    testImplementation group: 'nz.ac.waikato.cms.weka', name: 'bestFirstTree', version: '1.0.4'
+    testImplementation group: 'nz.ac.waikato.cms.weka', name: 'votingFeatureIntervals', version: '1.0.2'
+    testImplementation group: 'nz.ac.waikato.cms.weka', name: 'hyperPipes', version: '1.0.2'
+	
+	// additional dependencies for spark tests
+	testImplementation group: 'org.apache.spark', name: 'spark-mllib_2.12', version: '3.0.0-preview2'
 }
 
