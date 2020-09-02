@@ -77,19 +77,19 @@ parameters:
     type: double
     min: 0.5
     max: 0.9
-    stepsize: 0.2
+    stepsize: 0.4
     default: 0.5
   max_iter: # maximum number of iterations
     type: integer
     min: 50
     max: 350
-    stepsize: 100
+    stepsize: 150
     default: 200
   convergence_iter: # number of iterations with no change in number of estimated clusters that stops the convergence
     type: integer
     min: 1
-    max: 30
-    stepsize: 5
+    max: 29
+    stepsize: 14
     default: 15
   copy: # make copy of input data
     type: values
@@ -147,11 +147,10 @@ properties:
 parameters:
   n_clusters: # number of clusters to find
     type: values
-    values: [None, None]
     default: None
   distance_threshold: # linkage distance threshold above which clusters will not be merged
     type: values
-    values: [0.3, 1.0, 2.0, 5.0]
+    values: [0.1, 2.0, 5.0]
     default: 2.0
 ---
 
@@ -239,8 +238,8 @@ parameters:
   branching_factor: # maximum number of CF subclusters in each node
     type: integer
     min: 10
-    max: 110
-    stepsize: 50
+    max: 90
+    stepsize: 40
     default: 50
   n_clusters: # number of clusters at the final clustering step
     type: integer
@@ -269,15 +268,15 @@ properties:
 parameters:
   eps: # maximum distance between two samples for one to be considered as in the neighborhood of the other
     type: double
-    min: 0.2
-    max: 0.8
-    stepsize: 0.1
+    min: 0.1
+    max: 0.9
+    stepsize: 0.4
     default: 0.5
   min_samples: # number of samples in a neighborhood for a point to be considered a core point
     type: integer
-    min: 3
-    max: 10
-    stepsize: 1
+    min: 1
+    max: 9
+    stepsize: 4
     default: 5
   metric: # metric to use when calculating distance between instances in a feature array
     type: values
@@ -290,8 +289,8 @@ parameters:
   leaf_size: # leaf size passed to BallTree or cKDTree
     type: integer
     min: 10
-    max: 100
-    stepsize: 30
+    max: 90
+    stepsize: 40
     default: 50
   p: # power of the Minkowski metric used for distance calculation between points
     type: values
@@ -328,15 +327,15 @@ parameters:
     default: k-means++
   n_init: # number of times k-means algorithm will be run with different centroid seeds
     type: integer
-    min: 5
-    max: 10
-    stepsize: 5
+    min: 1
+    max: 19
+    stepsize: 9
     default: 10
   max_iter: # maximum number of iterations for single run of k-means
     type: integer
     min: 100
     max: 500
-    stepsize: 100
+    stepsize: 200
     default: 300
   tol: # relative tolerance with regards to inertia to declare convergence
     type: values
@@ -350,10 +349,10 @@ parameters:
     type: values
     values: [0, 1]
     default: 0
-  random_state: # determines random number generation for centroid initialization
-    type: values
-    values: [0, 21, 42, None]
-    default: None
+#  random_state: # determines random number generation for centroid initialization
+#    type: values
+#    values: [0, 21, 42, None]
+#    default: None
   copy_x: # if True, original data is not modified ensuring X is C-contiguous
     type: values
     values: [True, False]
@@ -383,10 +382,10 @@ properties:
 parameters:
   n_clusters: # number of clusters to find
     type: integer
-    min: 5
-    max: 10
+    min: 2
+    max: 4
     stepsize: 1
-    default: 8
+    default: 2
   init: # initialization method
     type: values
     values: [k-means++, random]
@@ -394,23 +393,23 @@ parameters:
   max_iter: # maximum number of iterations for single run of k-means
     type: integer
     min: 100
-    max: 300
+    max: 200
     stepsize: 100
     default: 100
   batch_size: # size of mini batches
     type: integer
     min: 50
-    max: 250
+    max: 150
     stepsize: 50
     default: 100
   verbose: # be verbose or not
     type: values
     values: [0, 1]
     default: 0
-  random_state: # determines random number generation for centroid initialization
-    type: values
-    values: [0, 21, 42, None]
-    default: None
+#  random_state: # determines random number generation for centroid initialization
+#    type: values
+#    values: [0, 21, 42, None]
+#    default: None
   tol: # controls early stopping based on relative center changes
     type: values
     values: [0.0, 0.00001, 0.0001, 0.001]
@@ -418,22 +417,22 @@ parameters:
   max_no_improvement: # controls early stopping based on consecutive number of mini batches not yielding improvements on smoothed inertia
     type: integer
     min: 5
-    max: 20
+    max: 15
     stepsize: 5
     default: 10
   init_size: # number of samples to randomly sample for speeding up the initialization, None equals 3 * batch_size
     type: values
-    values: [100, 300, 500, None]
+    values: [10, 30, 50, None]
     default: None
   n_init: # number random initializations that are tried
     type: integer
     min: 1
-    max: 7
-    stepsize: 2
+    max: 3
+    stepsize: 1
     default: 3
   reassignment_ratio: # controls fraction of maximum number of counts for a center to be reassigned
     type: values
-    values: [0.001, 0.005, 0.01, 0.05, 0.1, 0.2, 0.3]
+    values: [0.001, 0.01, 0.1]
     default: 0.01
 ---
 
@@ -484,12 +483,14 @@ properties:
   opposite: clust_exact
 parameters:
   min_samples: # number of samples in a neighborhood for a point to be considered as core point
-    type: values
-    values: [3, 5, 10, 20]
+    type: integer
+    min: 2
+    max: 8
+    stepsize: 3
     default: 5
   max_eps: # maximum distance between two samples for one to be considered as in the neighborhood of the other, optional
     type: values
-    values: [0.5, 1.0, 2.0, 10.0]
+    values: [0.1, 1.0, 10.0]
     default: 1.0
   metric: # metric used for distance computation, only sklearn's metrices used
     type: values
@@ -507,11 +508,11 @@ parameters:
     default: xi
   eps: # maximum distance between two samples for one to be considered as in the neighborhood of the other
     type: values
-    values: [None, 0.5, 2.0, 5.0]
+    values: [None, 0.1, 1.0, 10.0]
     default: None
   xi: # determines minimum steepness on the reachability plot that constitues a cluster boundary
     type: values
-    values: [0.01, 0.03, 0.05, 0.1, 0.5]
+    values: [0.01, 0.05, 0.1]
     default: 0.05
   predecessor_correction: # correct clusters according to the predecessors calculated by OPTICS
     type: values
@@ -519,7 +520,7 @@ parameters:
     default: True
   min_cluster_size: # minimum number of samples in an OPTICS cluster
     type: values
-    values: [2, 5, 10, None]
+    values: [2, 10, None]
     default: None
   algorithm: # algorithm used to compute nearest neighbors
     type: values
@@ -528,8 +529,8 @@ parameters:
   leaf_size: # leaf size passed to BallTree or KDTree
     type: integer
     min: 10
-    max: 70
-    stepsize: 30
+    max: 90
+    stepsize: 40
     default: 50
   n_jobs: # number of parallel jobs to run for neighbors search, None equals 1, -1 equals all processors
     type: values
@@ -559,16 +560,20 @@ parameters:
     values: [arpack, lobpcg, None] # amg option currently not supported
     default: lobpcg
   n_components: # number of eigen vectors to use for spectral embedding
-    type: values
-    values: [2, 3, 4, 5]
+    type: integer
+    min: 2
+    max: 4
+    stepsize: 1
     default: 2
-  random_state: # pseudo random number generator for initializing of lobpcg eigen vector decomposition
-    type: values
-    values: [0, 42, None]
-    default: 42
+#  random_state: # pseudo random number generator for initializing of lobpcg eigen vector decomposition
+#    type: values
+#    values: [0, 42, None]
+#    default: 42
   n_init: # number of times the k-means algorithm will be run with different centroid seeds
-    type: values
-    values: [5, 10, 15]
+    type: integer
+    min: 1
+    max: 19
+    stepsize: 9
     default: 10
   gamma: # kernel coefficient for rbf, poly sigmoid, laplacian and chi2 kernels
     type: double
@@ -582,13 +587,15 @@ parameters:
     default: rbf
   n_neighbors: # number of neighbors to use when constructing affinity matrix with nearest neighbors
     type: integer
-    min: 5
-    max: 10
-    stepsize: 1
+    min: 1
+    max: 13
+    stepsize: 6
     default: 7
   eigen_tol: # stopping criterion for eigendecomposition of laplacian matrix
-    type: values
-    values: [0.0, 0.5, 1.0]
+    type: double
+    min: 0.0
+    max: 1.0
+    stepsize: 0.5
     default: 0.0
   assign_labels: # strategy to assign labels in the embedding space
     type: values
@@ -603,7 +610,7 @@ parameters:
   coef0: # zero coefficient for polynomial and sigmoid kernels
     type: double
     min: 0.5
-    max: 2.0
+    max: 1.5
     stepsize: 0.5
     default: 1.0
   n_jobs: # number of parallel jobs to run for neighbors search, None equals 1, -1 equals all processors
@@ -629,13 +636,15 @@ parameters:
     type: values
     values: [arpack, lobpcg, None] # amg option currently not supported
     default: lobpcg
-  random_state: # pseudo random number generator for initializing of lobpcg eigen vector decomposition
-    type: values
-    values: [0, 42, None]
-    default: 42
+#  random_state: # pseudo random number generator for initializing of lobpcg eigen vector decomposition
+#    type: values
+#    values: [0, 42, None]
+#    default: 42
   n_init: # number of times the k-means algorithm will be run with different centroid seeds
-    type: values
-    values: [5, 10, 15]
+    type: integer
+    min: 1
+    max: 19
+    stepsize: 9
     default: 10
   gamma: # kernel coefficient for rbf, poly sigmoid, laplacian and chi2 kernels
     type: double
@@ -649,13 +658,15 @@ parameters:
     default: rbf
   n_neighbors: # number of neighbors to use when constructing affinity matrix with nearest neighbors
     type: integer
-    min: 5
-    max: 10
-    stepsize: 1
+    min: 1
+    max: 13
+    stepsize: 6
     default: 7
   eigen_tol: # stopping criterion for eigendecomposition of laplacian matrix
-    type: values
-    values: [0.0, 0.5, 1.0]
+    type: double
+    min: 0.0
+    max: 1.0
+    stepsize: 0.5
     default: 0.0
   assign_labels: # strategy to assign labels in the embedding space
     type: values
@@ -670,7 +681,7 @@ parameters:
   coef0: # zero coefficient for polynomial and sigmoid kernels
     type: double
     min: 0.5
-    max: 2.0
+    max: 1.5
     stepsize: 0.5
     default: 1.0
   n_jobs: # number of parallel jobs to run for neighbors search, None equals 1, -1 equals all processors
@@ -706,7 +717,7 @@ parameters:
     type: double
     min: 0.001
     max: 0.01
-    stepsize: 0.003
+    stepsize: 0.045
     default: 0.001
   reg_covar: # regularization added to diagonal of covariance to assure they are all positive
     type: double
@@ -717,14 +728,14 @@ parameters:
   max_iter: # maximum number of EM iterations to perform
     type: integer
     min: 50
-    max: 200
+    max: 150
     stepsize: 50
     default: 100
   n_init: # number of initializations to perform
     type: integer
     min: 1
-    max: 10
-    stepsize: 3
+    max: 3
+    stepsize: 1
     default: 1
   init_params: # initialization method to use
     type: values

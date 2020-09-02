@@ -80,7 +80,7 @@ parameters:
     type: integer
     min: 1
     max: 10
-    stepsize: 1
+    stepsize: 9
     default: 2
   O: # collapse tree if training error is not reduced
     type: flag
@@ -114,13 +114,13 @@ parameters:
     type: double
     min: 0.05
     max: 0.95
-    stepsize: 0.05
+    stepsize: 0.45
     default: 0.25
   M: # min number of objects
     type: integer
     min: 1
     max: 10
-    stepsize: 1
+    stepsize: 9
     default: 2
   O: # collapse tree if training error is not reduced
     type: flag
@@ -159,14 +159,14 @@ parameters:
   N: # number of folds for REP
     type: integer
     min: 2
-    max: 10
+    max: 4
     stepsize: 1
     default: 3
   M: # min number of objects
     type: integer
     min: 1
     max: 10
-    stepsize: 1
+    stepsize: 9
     default: 2
   O: # collapse tree if training error is not reduced
     type: flag
@@ -213,8 +213,9 @@ parameters:
   G: # grace period, i.e., weight of instances of inputs observed before splitting (default weight of an instance is 1.0)
     type: double
     min: 50
-    max: 250
-    stepsize: 50
+    max: 350
+    stepsize: 150
+    default: 200
   H: # hoeffding tie threshold
     type: values # actually double, but we get better test cases with values
     values: [0.001, 0.05, 0.1]
@@ -226,13 +227,13 @@ parameters:
   M: # minimum fraction of information gain required for a split
     type: double
     min: 0.005
-    max: 0.02
+    max: 0.015
     stepsize: 0.005
     default: 0.01
   N: # naive bayes prediction threshold
     type: double
     min: 0.005
-    max: 0.02
+    max: 0.015
     stepsize: 0.005
     default: 0.01
   E: # allowable error in split confidence
@@ -275,7 +276,7 @@ parameters:
   I: # fixed number of logit-boost iteration, cross validation is used to determine this in case of -1
     type: integer
     min: -1
-    max: 9
+    max: 3
     stepsize: 2
     default: -1
   R: # split on residuals of logistic regression
@@ -288,7 +289,7 @@ parameters:
     type: double
     min: 0.0
     max: 1.0
-    stepsize: 0.2
+    stepsize: 0.5
     default: 0.0
 ---
 
@@ -317,7 +318,7 @@ parameters:
   depth: # depth of the trees
     type: integer
     min: 0
-    max: 4
+    max: 2
     stepsize: 1
     default: 0
   num-slots: # number of threads used
@@ -329,15 +330,15 @@ parameters:
   I: # number of random trees
     type: integer
     min: 10
-    max: 540
+    max: 100
     stepsize: 90
     default: 100 
   M: # minimal sum of weight of all instances in a leaf (default weight per instance is 1.0)
     # this parameters is not visible in the Weka GUI - Possible BUG
     type: double
     min: 1.0
-    max: 9.0
-    stepsize: 2.0
+    max: 5.0
+    stepsize: 4.0
     default: 1.0
   V: # minimal variance that must be covered for a split
     # this parameters is not visible in the Weka GUI - Possible BUG
@@ -349,9 +350,9 @@ parameters:
   N: # number of folds that are used for backfitting (0 means no backfitting)
     # this parameters is not visible in the Weka GUI - Possible BUG
     type: integer
-    min: 2
-    max: 4
-    stepsize: 1
+    min: 0
+    max: 2
+    stepsize: 4
     default: 0 
 # check numFeatures, this is kinda difficult here
 ---
@@ -375,14 +376,14 @@ parameters:
   depth: # depth of the trees
     type: integer
     min: 0
-    max: 4
+    max: 2
     stepsize: 1
     default: 0
   M: # minimal sum of weight of all instances in a leaf (default weight per instance is 1.0)
     type: double
     min: 1.0
-    max: 9.0
-    stepsize: 2.0
+    max: 5.0
+    stepsize: 4.0
     default: 1.0
   V: # minimal variance that must be covered for a split
     type: double
@@ -392,8 +393,8 @@ parameters:
     default: 0.001
   N: # number of folds that are used for backfitting (0 means no backfitting
     type: integer
-    min: 2
-    max: 6
+    min: 0
+    max: 4
     stepsize: 2
     default: 0 
 # check KValue (number of randomly selected instances), kinda difficult
@@ -421,14 +422,14 @@ parameters:
   L: # maximum depth of the tree (-1 = no restriction)
     type: integer
     min: -1
-    max: 11
-    stepsize: 3
+    max: 3
+    stepsize: 2
     default: -1
   M: # minimal number of instances in a leaf
     type: integer
     min: 1
-    max: 11
-    stepsize: 5
+    max: 3
+    stepsize: 1
     default: 2
   V: # minimal variance that must be covered for a split
     type: double
@@ -442,8 +443,8 @@ parameters:
   N: # number of cross valdiations used for pruning
     type: integer
     min: 2
-    max: 6
-    stepsize: 2
+    max: 4
+    stepsize: 1
     default: 3
   R: # spread initial counts across all values
     type: flag
@@ -468,12 +469,13 @@ parameters:
   X: # number of cross validation folds (1=leave one out)
     type: integer
     min: 1
-    max: 5
-    stepsize: 2
+    max: 3
+    stepsize: 1
     default: 1
   E: # evaluation measure used to evaluate performance of attributes
     type: values
     values: [acc, rmse, mae, auc]
+    # no default, because without specification is actually an automated selection, i.e., a fifth option
   I: # use IBk instead of majority for class
     type: flag
     default: disabled
@@ -502,20 +504,20 @@ parameters:
   F: # folds used for pruning
     type: integer
     min: 1
-    max: 5
-    stepsize: 2
+    max: 3
+    stepsize: 1
     default: 3
   N: # minimal weight instances in a rule must have (default weight of an instance is 1.0)
     type: double
     min: 1.0
-    max: 10.0
-    stepsize: 3
+    max: 3.0
+    stepsize: 1.0
     default: 2.0
   O: # number of optimization runs
     type: integer
     min: 1
-    max: 5
-    stepsize: 2
+    max: 3
+    stepsize: 1
     default: 2
   P: # pruning disabled (i.e., pruning is disblaed if this flag is enabled)
     type: flag
@@ -561,17 +563,17 @@ parameters:
     default: disabled
   doNotMakeSplitPointActualValue:
     type: flag
-    default: disabled^
+    default: disabled
   M: # minimal number of instances
     type: integer
     min: 1
-    max: 21
-    stepsize: 10
+    max: 3
+    stepsize: 1
     default: 2
   N: # number of CV folds
     min: 2
-    max: 6
-    stepize: 2
+    max: 4
+    stepize: 1
     default: 3
   U: # unpruned
     type: fixedflag
@@ -603,12 +605,12 @@ parameters:
     default: disabled
   doNotMakeSplitPointActualValue:
     type: flag
-    default: disabled^
+    default: disabled
   M: # minimal number of instances
     type: integer
     min: 1
-    max: 21
-    stepsize: 10
+    max: 3
+    stepsize: 1
     default: 2
   U: # unpruned
     type: fixedflag
@@ -641,17 +643,17 @@ parameters:
   C: # confidence factor
     type: double
     min: 0.01
-    max: 0.04
-    stepsize: 0.01
+    max: 0.25
+    stepsize: 0.12
     default: 0.25
   doNotMakeSplitPointActualValue:
     type: flag
-    default: disabled^
+    default: disabled
   M: # minimal number of instances
     type: integer
     min: 1
-    max: 21
-    stepsize: 10
+    max: 3
+    stepsize: 1
     default: 2
   U: # unpruned
     type: fixedflag
@@ -697,8 +699,8 @@ parameters:
   K: # number of neighbors
     type: integer
     min: 1
-    max: 10
-    stepsize: 3
+    max: 3
+    stepsize: 1
     default: 1
   X: # use cross-validation to determine best K
     type: flag
@@ -829,9 +831,9 @@ properties:
   opposite: score_exact
 parameters:
   R: # ridge value of the log likelihood
-    type: double
-    min: 1.0E-9
-    max: 1.0E-7
+    # actually a double, but values give better tests
+    type: values
+    values: [1.0E-7, 1.0E-8, 1.0E-9]
     stepsize: 0.9E-8
     default: 1.0E-8
   C: # use conjugate gradiant descent
@@ -862,16 +864,14 @@ parameters:
     values: [a, i, o, t, 1, 2, 3]
     default: a
   L: # learning rate of the gradiant descent
-    type: double
-    min: 0.001
-    max: 0.5
-    stepsize: 0.099
+    # actually a double, but values give better tests
+    type: values
+    values: [0.001, 0.01, 0.1, 0.3]
     default: 0.3
   M: # momentum applied to weight updates
-    type: double
-    min: 0.001
-    max: 0.5
-    stepsize: 0.099
+    # actually a double, but values give better tests
+    type: values
+    values: [0.001, 0.01, 0.1, 0.2]
     default: 0.2
   B: # no nominal to binary filter
     type: flag
@@ -895,7 +895,7 @@ parameters:
     type: integer
     min: 0
     max: 90
-    stepsize: 30
+    stepsize: 45
     default: 0
   E: # validation threshold
     type: integer
@@ -928,22 +928,19 @@ parameters:
     stepsize: 400
     default: 500
   C: # epsilon for loss function
-    type: double
-    min: 0.0001
-    max: 0.02
-    stepsize: 0.05
+    # actually double, but values gives better tests
+    type: values
+    values: [0.0001, 0.001, 0.01]
     default: 0.001
   R: # regularization constant
-    type: double
-    min: 0.00001
-    max: 0.001
-    stepsize: 0.0005
+    # actually double, but values gives better tests
+    type: values
+    values: [0.00001, 0.0001, 0.001]
     default: 0.0001
   L: # learning rate
-    type: double
-    min: 0.001
-    max: 0.5
-    stepsize: 0.099
+    # actually double, but values gives better tests
+    type: values
+    values: [0.001, 0.01, 0.1, 0.3]
     default: 0.3
   F: #
     type: values
@@ -995,7 +992,7 @@ parameters:
     type: double
     min: 0.0
     max: 0.9
-    stepsize: 0.3
+    stepsize: 0.45
     default: 0.0
 ---
     
@@ -1022,7 +1019,7 @@ parameters:
   C: # complexity parameter
     type: double
     min: 0.5
-    max: 2.0
+    max: 1.5
     stepsize: 0.5
     default: 1.0
   P: # epsilon for round-off error (should not be changed from default, according to documentation
@@ -1058,7 +1055,7 @@ parameters:
   C: # complexity parameter
     type: double
     min: 0.5
-    max: 2.0
+    max: 1.5
     stepsize: 0.5
     default: 1.0
   P: # epsilon for round-off error (should not be changed from default, according to documentation
@@ -1109,8 +1106,8 @@ parameters:
   M: # maximum number of alterations of the perceptron
     type: integer
     min: 1
-    max: 20001
-    stepsize: 5000
+    max: 19999
+    stepsize: 9999
     default: 10000
 ---
 
@@ -1142,20 +1139,20 @@ parameters:
   min_samples_split:
     type: integer
     min: 2
-    max: 10
-    stepsize: 2
+    max: 4
+    stepsize: 1
     default: 2
   max_depth:
     type: integer
     min: 1
-    max: 5
+    max: 3
     stepsize: 1
     default: 2 
   min_samples_leaf:
     type: integer
     min: 1
-    max: 13
-    stepsize: 4
+    max: 3
+    stepsize: 1
     default: 1
   min_weight_fraction_leaf:
     type: double
@@ -1215,20 +1212,20 @@ parameters:
   min_samples_split:
     type: integer
     min: 2
-    max: 10
-    stepsize: 2
+    max: 4
+    stepsize: 1
     default: 2
   max_depth:
     type: integer
     min: 1
-    max: 5
+    max: 3
     stepsize: 1
     default: 2 
   min_samples_leaf:
     type: integer
     min: 1
-    max: 13
-    stepsize: 4
+    max: 3
+    stepsize: 1
     default: 1
   min_weight_fraction_leaf:
     type: double
@@ -1281,7 +1278,7 @@ parameters:
     type: integer
     min: 1
     max: 100
-    stepsize: 100
+    stepsize: 99
     default: 100
   criterion:
     type: values
@@ -1290,20 +1287,20 @@ parameters:
   min_samples_split:
     type: integer
     min: 2
-    max: 10
-    stepsize: 2
+    max: 4
+    stepsize: 1
     default: 2
   max_depth:
     type: integer
     min: 1
-    max: 5
+    max: 3
     stepsize: 1
     default: 2 
   min_samples_leaf:
     type: integer
     min: 1
-    max: 13
-    stepsize: 4
+    max: 3
+    stepsize: 1
     default: 1
   min_weight_fraction_leaf:
     type: double
@@ -1544,7 +1541,7 @@ parameters:
     type: double
     min: 0.0
     max: 1.0
-    stepsize: 0.5
+    stepsize: 1.0
     default: 0.15
   max_iter:
     type: integer
@@ -1761,7 +1758,7 @@ parameters:
     default: uniform
   algorithm:
     type: values
-    values: [ball_tree, kd_tree, brute, auto] # execution shows that brute is incompatible with most metrics, even though this is not documented.
+    values: [ball_tree, kd_tree, auto] # (brute) execution shows that brute is incompatible with most metrics, even though this is not documented.
     default: auto
   leaf_size:
     type: integer
@@ -1807,7 +1804,7 @@ parameters:
     default: uniform
   algorithm:
     type: values
-    values: [ball_tree, kd_tree, brute, auto]
+    values: [ball_tree, kd_tree, auto] # (brute) execution shows that brute is incompatible with most metrics, even though this is not documented.
     default: auto
   leaf_size:
     type: integer
@@ -1823,7 +1820,7 @@ parameters:
     default: 2
   metric:
     type: values
-    values: [euclidean, manhatten, chebyshev, minkowski, wminkowski, seuclidean, mahalabonis]
+    values: [euclidean, manhatten, chebyshev, minkowski] # wminkowski, seuclidean, mahalanobis maybe need additional classifiers, because they take arguments
     default: minkowski
   outlier_label:
     type: values
@@ -2108,8 +2105,8 @@ parameters:
     default: 0.5
   kernel:
     type: values
-    values: [linear, rbf]
-    default: rbf
+    values: [sigmoid]
+    default: sigmoid
   gamma:
     type: values
     values: [scale, auto, 0.1]
@@ -2178,7 +2175,7 @@ parameters:
   class_weight:
     type: values
     values: [balanced, None]
-    default: None
+    default: None+10
 # max_iter ignored
 # decision_function_shape, break_ties ignored because we only have binary problems so far    
 ---
@@ -2259,8 +2256,8 @@ parameters:
     default: 1.0
   kernel:
     type: values
-    values: [linear, rbf]
-    default: rbf
+    values: [sigmoid]
+    default: sigmoid
   gamma:
     type: values
     values: [scale, auto, 0.1]
@@ -2396,28 +2393,568 @@ parameters:
     default: 0.0001
 ---
 
+name: SKLEARN_GradiantBoostingClassifier
+framework: sklearn
+package: sklearn.ensemble
+type: classification
+class: GradientBoostingClassifier
+features: float
+properties:
+  same: score_exact
+  scramble: score_exact
+  reorder: score_exact
+  const: score_exact
+  opposite: score_exact
+parameters:
+  loss:
+    type: values
+    values: [deviance, exponential]
+    default: deviance
+  learning_rate:
+    type: double
+    min: 0.1
+    max: 0.9
+    stepsize: 0.45
+    default: 0.1
+  n_estimators:
+    type: integer
+    min: 1
+    max: 100
+    stepsize: 99
+    default: 100
+  criterion:
+    type: values
+    values: [friedman_mse, mse, mae]
+    default: friedman_mse
+  min_samples_split:
+    type: integer
+    min: 2
+    max: 4
+    stepsize: 1
+    default: 2
+  max_depth:
+    type: integer
+    min: 1
+    max: 3
+    stepsize: 1
+    default: 2 
+  min_samples_leaf:
+    type: integer
+    min: 1
+    max: 3
+    stepsize: 1
+    default: 1
+  min_weight_fraction_leaf:
+    type: double
+    min: 0.0
+    max: 0.5
+    stepsize: 0.25
+    default: 0.0
+  max_features:
+    type: values
+    values: [auto, sqrt, log2, 0.1, 0.5, 0.8, None]
+    default: None
+  max_leaf_nodes:
+    type: integer
+    min: 10
+    max: 20
+    stepsize: 5
+    default: None
+  min_impurity_decrease:
+    type: double
+    min: 0.0
+    max: 0.4
+    stepsize: 0.2
+    default: 0.0
+  ccp_alpha:
+    type: double
+    min: 0.0
+    max: 0.4
+    stepsize: 0.2
+    default: 0.0
+  validation_fraction:
+    type: double
+    min: 0.1
+    max: 0.9
+    stepsize: 0.45
+    default: 0.1
+  n_iter_no_change:
+    type: values
+    values: [None, 1, 10]
+    default: None
+  tol:
+    type: values
+    values: [0.00001, 0.0001, 0.001]
+    default: 0.0001
+---
 
-# Example for Spark. Due to rewrite currently not yet fully supported again. 
+name: SKLEARN_Perceptron
+framework: sklearn
+type: classification
+package:  sklearn.linear_model
+class: Perceptron
+features: double
+properties:
+  same: score_exact
+  scramble: score_exact
+  reorder: score_exact
+  const: score_exact
+  opposite: score_exact
+parameters:
+  penalty:
+    type: values
+    values: [l2, l1, elasticnet]
+    default: None
+  alpha:
+    type: values
+    values: [0.00001, 0.0001, 0.001]
+    default: 0.0001
+  fit_intercept:
+    type: values
+    values: [True, False]
+    default: True
+  max_iter:
+    type: integer
+    min: 1
+    max: 1999
+    stepsize: 999
+    default: 1000
+  tol:
+    type: values
+    values: [0.001]
+    default: 0.001
+  shuffle:
+    type: values
+    values: [True, False]
+    default: True
+  eta0:
+    type: double
+    min: 0.01
+    max: 0.1
+    stepsize: 0.045
+    default: 1.0
+  early_stopping:
+    type: values
+    values: [True, False]
+    default: False
+  n_jobs:
+    type: values
+    values: [-1, 2, None]
+    default: None
+  validation_fraction:
+    type: double
+    min: 0.1
+    max: 0.9
+    stepsize: 0.4
+    default: 0.1
+  n_iter_no_change:
+    type: integer
+    min: 1
+    max: 9
+    stepsize: 4
+    default: 5
+  class_weight:
+    type: values
+    values: [balanced, None]
+    default: None
+  warm_start:
+    type: values
+    values: [True, False]
+    default: False
+---
 
-#---
-#name: SPARK_DT
-#framework: spark
-#type: classification
-#package:  org.apache.spark.ml.classification
-#class: DecisionTreeClassifier
-#features: float
-#parameters:
-#  setMaxDepth:
-#    type: integer
-#    min: 1
-#    max: 10
-#    default: 5
-#  setMinInfoGain:
-#    type: double
-#    min: 0.0
-#    max: 1.0
-#    default: 0.1
-#properties:
-#  same: score_exact
-#  scramble: score_exact
+name: SKLEARN_NearestCentroid
+framework: sklearn
+type: classification
+package:  sklearn.neighbors
+class: NearestCentroid
+features: float
+properties:
+  same: score_exact
+  scramble: score_exact
+  reorder: score_exact
+  const: score_exact
+  opposite: score_exact
+parameters:
+  shrink_threshold:
+    type: values
+    values: [0.1, None]
+    default: None
+---
+
+################## SPARK ###########################
+
+name: SPARK_DecisionTreeClassifier
+framework: spark
+type: classification
+package:  org.apache.spark.ml.classification
+class: DecisionTreeClassifier
+features: [double,categorical]
+properties:
+  same: score_exact
+  scramble: score_stat
+  reorder: class_exact
+  const: class_stat
+  opposite: score_stat
+parameters:
+  setMaxDepth:
+    type: integer
+    min: 1
+    max: 9
+    stepsize: 4
+    default: 5
+  setMinInfoGain:
+    type: double
+    min: 0.0
+    max: 0.98
+    stepsize: 0.49 
+    default: 0.0
+  setMaxBins:
+    type: integer
+    min: 2
+    max: 62
+    stepsize: 30
+    default: 32
+  setMinInstancesPerNode:
+    type: integer
+    min: 1
+    max: 9
+    stepsize: 4 
+    default: 1
+  setImpurity:
+    type: values
+    values: [gini, entropy]
+    default: gini
+---
+
+name: SPARK_RandomForestClassifier
+framework: spark
+type: classification
+package:  org.apache.spark.ml.classification
+class: RandomForestClassifier
+features: [double,categorical]
+properties:
+  same: score_exact
+  scramble: score_stat
+  reorder: class_exact
+  const: class_stat
+  opposite: score_stat
+parameters:
+  setMaxDepth:
+    type: integer
+    min: 1
+    max: 9
+    stepsize: 4
+    default: 5
+  setMinInfoGain:
+    type: double
+    min: 0.0
+    max: 0.98
+    stepsize: 0.49 
+    default: 0.0
+  setMaxBins:
+    type: integer
+    min: 2
+    max: 62
+    stepsize: 30
+    default: 32
+  setMinInstancesPerNode:
+    type: integer
+    min: 1
+    max: 9
+    stepsize: 4 
+    default: 1
+  setImpurity:
+    type: values
+    values: [gini, entropy]
+    default: gini
+  setNumTrees:
+    type: integer
+    min: 1
+    max: 199
+    stepsize: 99
+    default: 20
+  setSubsamplingRate:
+    type: double
+    min: 0.01
+    max: 0.99
+    stepsize: 0.49
+    default: 1.0
+  setFeatureSubsetStrategy:
+    type: values
+    values: [auto, all, sqrt, onethird, log2, 0.5, 2]
+    default: auto
+---
+
+name: SPARK_GBTClassifier
+framework: spark
+type: classification
+package:  org.apache.spark.ml.classification
+class: GBTClassifier
+features: [double,categorical]
+properties:
+  same: score_exact
+  scramble: score_stat
+  reorder: class_exact
+  const: class_stat
+  opposite: score_stat
+parameters:
+  setMaxDepth:
+    type: integer
+    min: 1
+    max: 9
+    stepsize: 4
+    default: 5
+  setMinInfoGain:
+    type: double
+    min: 0.0
+    max: 0.98
+    stepsize: 0.49 
+    default: 0.0
+  setMaxBins:
+    type: integer
+    min: 2
+    max: 62
+    stepsize: 30
+    default: 32
+  setMinInstancesPerNode:
+    type: integer
+    min: 1
+    max: 9
+    stepsize: 4 
+    default: 1
+  setImpurity:
+    type: values
+    values: [gini, entropy]
+    default: gini
+  setLossType:
+    type: values
+    values: [logistic]
+    default: logistic
+  setStepSize: 
+    type: double
+    min: 0.01
+    max: 0.19
+    stepsize: 0.9
+    default: 0.1
+  setFeatureSubsetStrategy:
+    type: values
+    values: [auto, all, sqrt, onethird, log2, 0.5, 2]
+    default: auto
+---
+    
+name: SPARK_LogisticRegression
+framework: spark
+type: classification
+package:  org.apache.spark.ml.classification
+class: LogisticRegression
+features: [double,categorical]
+properties:
+  same: score_exact
+  scramble: score_stat
+  reorder: class_exact
+  const: class_stat
+  opposite: score_stat
+parameters:
+  setRegParam:
+    type: double
+    min: 0.0
+    max: 1.0
+    stepsize: 0.5
+    default: 0.0
+  setElasticNetParam:
+    type: double
+    min: 0.0
+    max: 1.0
+    stepsize: 0.5
+    default: 0.0
+  setMaxIter:
+    type: integer
+    min: 1
+    max: 999
+    stepsize: 499
+    default: 100
+  setTol:
+    type: values
+    values: [0.000001, 0.00001, 0.0000001]
+    default: 0.000001
+  setFitIntercept:
+    type: values
+    values: [true, false]
+    default: true
+  setFamily:
+    type: values
+    values: [auto, binomial, multinomial]
+    default: auto
+  setStandardization:
+    type: values
+    values: [true, false]
+    default: true
+  setThreshold:
+    type: double
+    min: 0.0
+    max: 1.0
+    stepsize: 0.5
+    default: 0.5
+---
+
+name: SPARK_MultilayerPerceptronClassifier
+framework: spark
+type: classification
+package:  org.apache.spark.ml.classification
+class: MultilayerPerceptronClassifier
+features: [double,categorical]
+properties:
+  same: score_exact
+  scramble: score_stat
+  reorder: class_exact
+  const: class_stat
+  opposite: score_stat
+parameters:
+  setSolver:
+    type: values
+    values: [gd, l-bfgs]
+    default: l-bfgs
+  setStepSize:
+    type: double
+    min: 0.1
+    max: 0.5
+    stepsize: 0.2
+    default: 0.3
+  setMaxIter:
+    type: integer
+    min: 1
+    max: 999
+    stepsize: 499
+    default: 100
+  setTol:
+    type: values
+    values: [0.000001, 0.00001, 0.0000001]
+    default: 0.000001
+# setLayers is not supported because the number of neurons on the first layer cannot be set in a fixed way as this depends on the number of features
+#  setLayers:
+#    type: values
+#    values: ["2, 3, 4", "2,3"]
+#    default: '2, 3, 4'
+---
+
+name: SPARK_LinearSVC
+framework: spark
+type: classification
+package:  org.apache.spark.ml.classification
+class: LinearSVC
+features: [double,categorical]
+properties:
+  same: score_exact
+  scramble: score_stat
+  reorder: class_exact
+  const: class_stat
+  opposite: score_stat
+parameters:
+  setRegParam:
+    type: double
+    min: 0.0
+    max: 1.0
+    stepsize: 0.5
+    default: 0.0
+  setMaxIter:
+    type: integer
+    min: 1
+    max: 999
+    stepsize: 499
+    default: 100
+  setFitIntercept:
+    type: values
+    values: [true, false]
+    default: true
+  setTol:
+    type: values
+    values: [0.000001, 0.00001, 0.0000001]
+    default: 0.000001
+  setStandardization:
+    type: values
+    values: [true, false]
+    default: true
+  setThreshold:
+    type: double
+    min: 0.0
+    max: 1.0
+    stepsize: 0.5
+    default: 0.5
+---
+
+name: SPARK_NaiveBayes
+framework: spark
+type: classification
+package:  org.apache.spark.ml.classification
+class: NaiveBayes
+features: [positivedouble,categorical]
+properties:
+  same: score_exact
+  scramble: score_stat
+  reorder: class_exact
+  const: class_stat
+  opposite: score_stat
+parameters:
+  setModelType:
+    type: values
+    values: [multinomial, complement]
+    default: multinomial
+  setSmoothing:
+    type: double
+    min: 0.0
+    max: 1.0
+    stepsize: 0.5
+    default: 1.0
+---
+
+name: SPARK_NaiveBayes_Gaussian
+framework: spark
+type: classification
+package:  org.apache.spark.ml.classification
+class: NaiveBayes
+features: [double,categorical]
+properties:
+  same: score_exact
+  scramble: score_stat
+  reorder: class_exact
+  const: class_stat
+  opposite: score_stat
+parameters:
+  setModelType:
+    type: values
+    values: [gaussian]
+    default: gaussian
+  setSmoothing:
+    type: double
+    min: 0.0
+    max: 1.0
+    stepsize: 0.5
+    default: 1.0
+---
+
+name: SPARK_NaiveBayes_Bernoulli
+framework: spark
+type: classification
+package:  org.apache.spark.ml.classification
+class: NaiveBayes
+features: categorical
+properties:
+  same: score_exact
+  scramble: score_stat
+  reorder: class_exact
+  const: class_stat
+  opposite: score_stat
+parameters:
+  setModelType:
+    type: values
+    values: [bernoulli]
+    default: bernoulli
+  setSmoothing:
+    type: double
+    min: 0.0
+    max: 1.0
+    stepsize: 0.5
+    default: 1.0
+---
 #  opposite: score_exact

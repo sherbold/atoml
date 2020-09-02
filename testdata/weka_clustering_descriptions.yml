@@ -90,42 +90,36 @@ parameters:
   periodic-pruning: # how often to prune low density canopies during training
     type: integer
     min: 200
-    max: 500
+    max: 400
     stepsize: 100
     default: 300
   min-density: # minimum T2-based density below which canopy is pruned during periodic pruning
     type: double
     min: 2.0
-    max: 6.0
+    max: 4.0
     stepsize: 1.0
     default: 2.0
   t2: # T2 distance
     type: double
-    min: 1.0
+    min: -1.0
     max: 3.0
-    stepsize: 1.0
+    stepsize: 2.0
     default: -1.0
   t1: # T1 distance
     type: double
     min: 0.5
-    max: 2.5
+    max: 1.5
     stepsize: 1.0
     default: -1.25
   M: # do not replace missing values with means
     type: flag
     default: disabled
-  S: # random number seed to be used
-    type: integer
-    min: 0
-    max: 42
-    stepsize: 21
-    default: 42
-  output-debug-info: # true: clusterer outputs additional information to console
-    type: flag
-    default: disabled
-  do-not-check-capabilities: # true: clusterer capabilities are not checked before building clusterer (to reduce runtime)
-    type: flag
-    default: disabled
+#  output-debug-info: # true: clusterer outputs additional information to console
+#    type: flag
+#    default: disabled
+#  do-not-check-capabilities: # true: clusterer capabilities are not checked before building clusterer (to reduce runtime)
+#    type: flag
+#    default: disabled
 ---
 
 name: WEKA_COBWEB
@@ -144,7 +138,7 @@ parameters:
   A: # minimum standard deviation for numeric attributes
     type: double
     min: 0.5
-    max: 2.0
+    max: 1.5
     stepsize: 0.5
     default: 1.0
   C: # category utility threshold by which to prune nodes
@@ -156,18 +150,12 @@ parameters:
   save-data: # save instances information for visualization purpose
     type: flag
     default: disabled
-  S: # random number seed to be used
-    type: integer
-    min: 0
-    max: 42
-    stepsize: 21
-    default: 42
-  output-debug-info: # true: clusterer outputs additional information to console
-    type: flag
-    default: disabled
-  do-not-check-capabilities: # true: clusterer capabilities are not checked before building clusterer (to reduce runtime)
-    type: flag
-    default: disabled
+#  output-debug-info: # true: clusterer outputs additional information to console
+#    type: flag
+#    default: disabled
+#  do-not-check-capabilities: # true: clusterer capabilities are not checked before building clusterer (to reduce runtime)
+#    type: flag
+#    default: disabled
 ---
 
 name: WEKA_EM
@@ -197,39 +185,39 @@ parameters:
     default: 2
   X: # number of folds to use when cross-validating to find best number of clusters
     type: integer
-    min: 8
-    max: 12
-    stepsize: 1
+    min: 2
+    max: 10
+    stepsize: 4
     default: 10
   max: # maximum number of clusters to consider during cross-validating
     type: integer
     min: 2
-    max: 5
+    max: 4
     stepsize: 1
     default: 2
   ll-cv: # minimum improvement in cross-validated log likelihood required to consider increasing number of clusters during cross-validation
     type: double
     min: 1.0E-6
     max: 1.0E-5
-    stepsize: 3.0E-6
+    stepsize: 4.5E-6
     default: 1.0E-6
   ll-iter: # minimum improvement in log likelihood required to perform another iteration of E and M steps
     type: double
     min: 1.0E-6
     max: 1.0E-5
-    stepsize: 3.0E-6
+    stepsize: 4.5E-6
     default: 1.0E-6
   M: # minimum allowable standard deviation
     type: double
     min: 1.0E-6
     max: 1.0E-5
-    stepsize: 3.0E-6
+    stepsize: 4.5E-6
     default: 1.0E-6
   K: # number of kMeans runs to perform
     type: integer
-    min: 5
-    max: 15
-    stepsize: 10
+    min: 2
+    max: 10
+    stepsize: 4
     default: 10
   O: # model output in old format
     type: flag
@@ -237,21 +225,21 @@ parameters:
   num-slots: # number of execution slots (threads) to use
     type: integer
     min: 1
-    max: 4
+    max: 2
     stepsize: 1
     default: 1
-  S: # random number seed to be used
-    type: integer
-    min: 0
-    max: 42
-    stepsize: 21
-    default: 42
-  output-debug-info: # true: clusterer outputs additional information to console
-    type: flag
-    default: disabled
-  do-not-check-capabilities: # true: clusterer capabilities are not checked before building clusterer (to reduce runtime)
-    type: flag
-    default: disabled
+#  S: # random number seed to be used
+#    type: integer
+#    min: 0
+#    max: 42
+#    stepsize: 21
+#    default: 42
+#  output-debug-info: # true: clusterer outputs additional information to console
+#    type: flag
+#    default: disabled
+#  do-not-check-capabilities: # true: clusterer capabilities are not checked before building clusterer (to reduce runtime)
+#    type: flag
+#    default: disabled
 ---
 
 name: WEKA_FARTHESTFIRST
@@ -270,21 +258,21 @@ parameters:
   N: # number of clusters
     type: integer
     min: 2
-    max: 3
+    max: 4
     stepsize: 1
     default: 2
-  S: # random number seed to be used
-    type: integer
-    min: 0
-    max: 50
-    stepsize: 10
-    default: 1
-  output-debug-info: # true: clusterer outputs additional information to console
-    type: flag
-    default: disabled
-  do-not-check-capabilities: # true: clusterer capabilities are not checked before building clusterer (to reduce runtime)
-    type: flag
-    default: disabled
+#  S: # random number seed to be used
+#    type: integer
+#    min: 0
+#    max: 50
+#    stepsize: 10
+#    default: 1
+#  output-debug-info: # true: clusterer outputs additional information to console
+#    type: flag
+#    default: disabled
+#  do-not-check-capabilities: # true: clusterer capabilities are not checked before building clusterer (to reduce runtime)
+#    type: flag
+#    default: disabled
 ---
 
 name: WEKA_HIERARCHICALCLUSTERER
@@ -303,7 +291,7 @@ parameters:
   N: # number of clusters
     type: integer
     min: 2
-    max: 3
+    max: 4
     stepsize: 1
     default: 2
   L: # method used to measure distance between two clusters
@@ -322,12 +310,12 @@ parameters:
              "weka.core.FilteredDistance -R first-last -F \\\\\"weka.filters.unsupervised.attribute.RandomProjection -N 10 -R 42 -D Sparse1\\\\\" -D \\\\\"weka.core.EuclideanDistance -R first-last\\\\\"",
              "weka.core.ManhattanDistance -R first-last", "weka.core.MinkowskiDistance -P 2.0 -R first-last"]
     default: "weka.core.EuclideanDistance -R first-last"
-  output-debug-info: # true: clusterer outputs additional information to console
-    type: flag
-    default: disabled
-  do-not-check-capabilities: # true: clusterer capabilities are not checked before building clusterer (to reduce runtime)
-    type: flag
-    default: disabled
+#  output-debug-info: # true: clusterer outputs additional information to console
+#    type: flag
+#    default: disabled
+#  do-not-check-capabilities: # true: clusterer capabilities are not checked before building clusterer (to reduce runtime)
+#    type: flag
+#    default: disabled
 ---
 
 name: WEKA_SIMPLEKMEANS
@@ -355,32 +343,32 @@ parameters:
   max-candidates: # if canopy clustering: maximum number of candidates to remain in memory during training of canopy clusterer
     type: integer
     min: 100
-    max: 300
+    max: 200
     stepsize: 100
     default: 100
   periodic-pruning: # if canopy clustering: how often to prune low density canopies during training
     type: integer
     min: 100
     max: 1000
-    stepsize: 500
+    stepsize: 450
     default: 1000
   min-density: # if canopy clustering: minimum T2-based density below which canopy is pruned during periodic pruning
     type: double
     min: 0.0
-    max: 8.0
+    max: 4.0
     stepsize: 2.0
     default: 2.0
   t1: # if canopy clustering: T1 distance
     type: double
     min: -1.25
-    max: 2.25
-    #    stepsize: 1.0
+    max: 1.25
+    stepsize: 2.5
     default: -1.25
   t2: # if canopy clustering: T2 distance
     type: double
     min: -1.0
-    max: 2.0
-    #    stepsize: 1.0
+    max: 1.0
+    stepsize: 2.0
     default: -1.0
   V: # display standard deviations
     type: flag
@@ -400,9 +388,9 @@ parameters:
     default: "weka.core.EuclideanDistance -R first-last"
   I: # maximum number of iterations
     type: integer
-    min: 300
-    max: 700
-    stepsize: 100
+    min: 100
+    max: 900
+    stepsize: 400
     default: 500
   O: # preserve order of instances
     type: flag
@@ -416,16 +404,16 @@ parameters:
     max: 2
     stepsize: 1
     default: 1
-  S: # random number seed to be used
-    type: integer
-    min: 0
-    max: 42
-    stepsize: 21
-    default: 42
-  output-debug-info: # true: clusterer outputs additional information to console
-    type: flag
-    default: disabled
-  do-not-check-capabilities: # true: clusterer capabilities are not checked before building clusterer (to reduce runtime)
-    type: flag
-    default: disabled
+#  S: # random number seed to be used
+#    type: integer
+#    min: 0
+#    max: 42
+#    stepsize: 21
+#    default: 42
+#  output-debug-info: # true: clusterer outputs additional information to console
+#    type: flag
+#    default: disabled
+#  do-not-check-capabilities: # true: clusterer capabilities are not checked before building clusterer (to reduce runtime)
+#    type: flag
+#    default: disabled
 ---
