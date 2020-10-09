@@ -7,8 +7,8 @@ repositories {
     mavenCentral()
 }
 
-sourceCompatibility  = 1.11
-targetCompatibility  = 1.11
+sourceCompatibility  = 1.13
+targetCompatibility  = 1.13
 
 dependencies {
 	// dependencies for atoml core logic
@@ -50,8 +50,8 @@ dependencies {
 }
 
 jar {
-    baseName = 'atoml'
-    version = '0.1.0'
+    archiveBaseName = 'atoml'
+    archiveVersion = '0.1.0'
     manifest {
         attributes('Main-Class': 'atoml.Runner', 'Class-Path': configurations.runtimeClasspath.files.collect{ project.uri(it) }.join(' '))
     }
