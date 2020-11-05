@@ -1,0 +1,24 @@
+name: Build atoml with Gradle
+
+on:
+  push:
+    branches: [ master ]
+
+jobs:
+  build:
+    name: Build with JDK ${{ matrix.jdk }} on ${{ matrix.os }}
+    strategy:
+      matrix: 
+        os: [ubuntu-18.04, windows-latest]
+        jdk: ['1.11', '1.13']
+    runs-on: ${{ matrix.os }}
+    steps:
+    - uses: actions/checkout@master
+    - name: Set up JDK ${{ matrix.jdk }}
+      uses: actions/setup-java@v1
+      with:
+        java-version: ${{ matrix.jdk }}
+    - name: Grant execute permission for gradlew
+      run: chmod +x gradlew
+    - name: Build with Gradle
+      run: ./gradlew assemble

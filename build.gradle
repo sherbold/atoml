@@ -2,10 +2,6 @@ apply plugin: 'java'
 apply plugin: 'application'
 
 mainClassName = 'atoml.Runner'
-jar {
-    baseName = 'atoml.jar'
-    version = '0.1.0'
-}
 
 repositories {
     mavenCentral()
@@ -51,5 +47,13 @@ dependencies {
 	
 	// additional dependencies for spark tests
 	testImplementation group: 'org.apache.spark', name: 'spark-mllib_2.12', version: '3.0.0-preview2'
+}
+
+jar {
+    archiveBaseName = 'atoml'
+    archiveVersion = '0.1.0'
+    manifest {
+        attributes('Main-Class': 'atoml.Runner', 'Class-Path': configurations.runtimeClasspath.files.collect{ project.uri(it) }.join(' '))
+    }
 }
 
