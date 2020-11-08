@@ -99,10 +99,6 @@ parameters:
     type: values
     values: [1.0, None]
     default: None
-  affinity: # which affinity to use
-    type: values
-    values: [euclidean, precomputed]
-    default: euclidean
   verbose: # be verbose or not
     type: values
     values: [True, False]
