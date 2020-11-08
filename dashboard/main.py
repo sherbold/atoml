@@ -66,6 +66,7 @@ for framework in frameworks:
 
     query = """
     SELECT count(*) as total,
+           count(*)-sum(passed) as errors,
            count(*)-sum(passed_exact_score) as failed_exact_score,
            count(*)-sum(passed_exact_class) as failed_exact_class,
            count(*)-sum(passed_stat_class) as failed_stat_class,
@@ -107,10 +108,11 @@ for framework in frameworks:
             figure={
                 'data': [
                     {'x': ['Executed'], 'y': [df_metamorphic_overview.at[0,'total']], 'type': 'bar', 'name': 'Executed'},
+                    {'x': ['Errors'], 'y': [df_metamorphic_overview.at[0,'errors']], 'type': 'bar', 'name': 'Errors'},
                     {'x': ['Not exact scores'], 'y': [df_metamorphic_overview.at[0,'failed_exact_score']], 'type': 'bar', 'name': 'Not exact scores'},
                     {'x': ['Not exact classification'], 'y': [df_metamorphic_overview.at[0,'failed_exact_class']], 'type': 'bar', 'name': 'Not exact classification'},
-                    {'x': ['Statistically significantly different classification'], 'y': [df_metamorphic_overview.at[0,'failed_stat_class']], 'type': 'bar', 'name': 'Statistically significantly different classification'},
-                    {'x': ['Statistically significantly different scores'], 'y': [df_metamorphic_overview.at[0,'failed_stat_score']], 'type': 'bar', 'name': 'Statistically significantly different scores'},
+                    {'x': ['Significantly different classification'], 'y': [df_metamorphic_overview.at[0,'failed_stat_class']], 'type': 'bar', 'name': 'Statistically significantly different classification'},
+                    {'x': ['Significantly different scores'], 'y': [df_metamorphic_overview.at[0,'failed_stat_score']], 'type': 'bar', 'name': 'Statistically significantly different scores'},
                 ],
                 'layout': {
                     'title': 'Total results for morph tests of of all classifiers'
@@ -136,9 +138,11 @@ for framework in frameworks:
             },
             style_cell_conditional=[
                 {'if': {'column_id': 'testcase'},
-                 'width': '130px'},
+                 'width': '8%'},
                 {'if': {'column_id': 'algorithm'},
-                 'width': '200px'},
+                 'width': '15%'},
+                {'if': {'column_id': 'parameters'},
+                 'width': '28%'}
             ],
             sort_action="native",
             sort_mode="multi",
@@ -175,7 +179,8 @@ for framework in frameworks:
                count(*)-sum(passed_exact_score) as ex_sc,
                count(*)-sum(passed_exact_class) as ex_cl,
                count(*)-sum(passed_stat_class) as st_cl,
-               count(*)-sum(passed_stat_score) as st_sc
+               count(*)-sum(passed_stat_score) as st_sc,
+               count(*)-sum(passed) as errors
         FROM morphtest_view
         WHERE framework='%s' AND algorithm='%s'
         GROUP BY testcase
@@ -221,6 +226,13 @@ for framework in frameworks:
                     },
                     'backgroundColor': '#f51b00',
                     'color': 'white',
+                },{
+                    'if': {
+                        'column_id': 'errors',
+                        'filter_query': '{errors} > 0'
+                    },
+                    'backgroundColor': '#f51b00',
+                    'color': 'white',
                 }
             ],
             column_selectable="multi",
@@ -228,7 +240,8 @@ for framework in frameworks:
                      {'name': 'Not exact scores', 'id': 'ex_sc'},
                      {'name': 'Not exact classes', 'id': 'ex_cl'},
                      {'name': 'Statistically significantly different classification', 'id': 'st_cl'},
-                     {'name': 'Statistically significantly different scores', 'id': 'st_sc'}, ],
+                     {'name': 'Statistically significantly different scores', 'id': 'st_sc'},
+                     {'name': 'Errors', 'id': 'errors'}, ],
             data=test_result.to_dict('records')
         )
         cur_children.append(title)
@@ -251,7 +264,7 @@ for framework in frameworks:
         cur_children = []
         for testcase in testcases:
             query = """
-            SELECT parameters, dataset,
+            SELECT parameters, dataset, stacktrace,
                    count(*),
                    count(*)-sum(passed_exact_score) as ex_sc,
                    count(*)-sum(passed_exact_class) as ex_cl,
@@ -263,6 +276,7 @@ for framework in frameworks:
             ORDER BY parameters, dataset
             """ % (framework.lower(), alg, testcase)
             test_result = pd.read_sql(query, con=db_connection)
+            test_result = test_result.fillna("--")
 
             title = html.H2(children='Results for %s' % testcase)
             tbl = dash_table.DataTable(
@@ -301,21 +315,40 @@ for framework in frameworks:
                         },
                         'backgroundColor': '#f51b00',
                         'color': 'white',
-                    }
+                    },{
+                        'if': {
+                            'column_id': 'stacktrace',
+                        },
+                        'width': '30%',
+                    },
+
+                    
                 ],
                 sort_action="native",
                 sort_mode="multi",
                 column_selectable="multi",
-                columns=[{"name": 'Parameters', "id": 'parameters'},
-                         {"name": 'Dataset', "id": 'dataset'},
+                columns=[{"name": 'Dataset', "id": 'dataset'},
+                         {"name": 'Parameters', 'id': 'parameters', 'selectable': True},
                          {'name': 'Not exact scores', 'id': 'ex_sc'},
                          {'name': 'Not exact classes', 'id': 'ex_cl'},
-                         {'name': 'Statistically significantly different classification', 'id': 'st_cl'},
-                         {'name': 'Statistically significantly different scores', 'id': 'st_sc'}, ],
+                         {'name': 'Stat. sign. different classes', 'id': 'st_cl'},
+                         {'name': 'Stat. sign. different scores', 'id': 'st_sc'},
+                         {'name': 'Stacktrace', 'id': 'stacktrace', 'selectable': True},],
                 data=test_result.to_dict('records')
             )
             cur_children.append(title)
             cur_children.append(tbl)
+
+            @app.callback(Output('morph-results-table-%s-%s' % (alg, testcase), 'style_data_conditional'),
+                          [Input('morph-results-table-%s-%s' % (alg, testcase), 'selected_columns')])
+            def update_styles(selected_columns):
+                if selected_columns is not None:
+                    return [{
+                        'if': {'column_id': i},
+                        'whiteSpace': 'normal',
+                        'height': 'auto',
+                        'width': '42%',
+                    } for i in selected_columns]
 
         pages['%s/morphtests/%s' % (framework.lower(), alg.lower())] = html.Div([
             html.H1(children='Results of Metamorphic Tests for %s' % alg),
@@ -326,6 +359,7 @@ for framework in frameworks:
             html.Br(),
             dcc.Link('Go back to home', href='/')
         ])
+        
 
 
 # Update the index
