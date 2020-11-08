@@ -5,7 +5,8 @@
 # Description: type of the algorithm
 # Supported values:
 #  - classification
-#  - clustering+regression planned
+#  - clustering
+#  - (regression planned)
 
 # Field:       framework
 # Description: Machine learning framework that where the current algorithm is defined
@@ -39,10 +40,12 @@
 #  - const     re-train with +1 added to all numeric features --> expect classes/scores to be the same
 #  - opposite  re-train with all class labels flipped --> expect classes to be the same, scores inverted (1-priorScore)
 # supported evaluations:
-#  - score_exac  scores must be exactly the same after re-training
-#  - class_exac  classifications must be exactly the same after re-training
+#  - score_exact scores must be exactly the same after re-training
+#  - class_exact classifications must be exactly the same after re-training
 #  - class_stat  classifications must not be significantly different from expectation after re-training (chi-squared test)
 #  - score_stat  scores of distributionForInstance must not be significantly different from expectation after re-training (KS test)
+#  - clust_exact clusters must be exactly the same after re-training
+#  - clust_stat  clusters must not be significantly different from expectation after re-training (kolmogorov-smirnoff test)
 
 # Field:       parameters
 # Description: List of relevant hyper parameters of the algorithm.
@@ -3041,10 +3044,10 @@ parameters:
     type: values
     values: [1.0, None]
     default: None
-  affinity: # which affinity to use
-    type: values
-    values: [euclidean, precomputed]
-    default: euclidean
+#  affinity: # which affinity to use
+#    type: values
+#    values: [euclidean, precomputed]
+#    default: euclidean
   verbose: # be verbose or not
     type: values
     values: [True, False]
