@@ -39,6 +39,9 @@
 #  - reorder   re-train with randomly reordered features --> expect classes/scores to be the same
 #  - const     re-train with +1 added to all numeric features --> expect classes/scores to be the same
 #  - opposite  re-train with all class labels flipped --> expect classes to be the same, scores inverted (1-priorScore)
+#  - rotate    re-train with 90 degrees rotated data --> expect classes/scores to be same for distance-based classification
+#  - rescale   re-train with all numeric values multiplied by 2 --> expect classes to be the same if initially linearly seperable
+#  - clone     re-train with each instance duplicated --> expect classes/scores to be the same
 # supported evaluations:
 #  - score_exact scores must be exactly the same after re-training
 #  - class_exact classifications must be exactly the same after re-training
@@ -155,6 +158,9 @@ properties:
   reorder: score_exact
   const: score_exact
   opposite: score_exact
+  rotate: class_exact
+  rescale: class_exact
+  clone: class_exact
 parameters:
   R: # unpruned
     type: fixedflag
@@ -212,6 +218,9 @@ properties:
   reorder: score_exact
   const: score_exact
   opposite: score_exact
+  rotate: class_exact
+  rescale: class_exact
+  clone: class_exact
 parameters:
   G: # grace period, i.e., weight of instances of inputs observed before splitting (default weight of an instance is 1.0)
     type: double
@@ -257,6 +266,9 @@ properties:
   reorder: score_exact
   const: score_exact
   opposite: score_exact
+  rotate: class_exact
+  rescale: class_exact
+  clone: class_exact
 parameters:
   B: # convert nominal to binary attributes
     type: flag
@@ -308,6 +320,9 @@ properties:
   reorder: score_exact
   const: score_exact
   opposite: score_exact
+  rotate: class_exact
+  rescale: class_exact
+  clone: class_exact
 parameters:
   B: # break ties randomly
     type: flag
@@ -372,6 +387,9 @@ properties:
   reorder: score_exact
   const: score_exact
   opposite: score_exact
+  rotate: class_exact
+  rescale: class_exact
+  clone: class_exact
 parameters:
   B: # break ties randomly
     type: flag
@@ -415,6 +433,9 @@ properties:
   reorder: score_exact
   const: score_exact
   opposite: score_exact
+  rotate: class_exact
+  rescale: class_exact
+  clone: class_exact
 parameters:
   I: # initial count of class values
     type: double
@@ -468,6 +489,9 @@ properties:
   reorder: score_exact
   const: score_exact
   opposite: score_exact
+  rotate: class_exact
+  rescale: class_exact
+  clone: class_exact
 parameters:
   X: # number of cross validation folds (1=leave one out)
     type: integer
@@ -500,6 +524,9 @@ properties:
   reorder: score_exact
   const: score_exact
   opposite: score_exact
+  rotate: class_exact
+  rescale: class_exact
+  clone: class_exact
 parameters:
   E: # whether a check for the error rate is ignored
     type: flag
@@ -539,6 +566,9 @@ properties:
   reorder: score_exact
   const: score_exact
   opposite: score_exact
+  rotate: class_exact
+  rescale: class_exact
+  clone: class_exact
 parameters:
   B: # bucket size for bins
     type: integer
@@ -560,6 +590,9 @@ properties:
   reorder: score_exact
   const: score_exact
   opposite: score_exact
+  rotate: class_exact
+  rescale: class_exact
+  clone: class_exact
 parameters:
   B: # binary splits
     type: flag
@@ -602,6 +635,9 @@ properties:
   reorder: score_exact
   const: score_exact
   opposite: score_exact
+  rotate: class_exact
+  rescale: class_exact
+  clone: class_exact
 parameters:
   B: # binary splits
     type: flag
@@ -639,6 +675,9 @@ properties:
   reorder: score_exact
   const: score_exact
   opposite: score_exact
+  rotate: class_exact
+  rescale: class_exact
+  clone: class_exact
 parameters:
   B: # binary splits
     type: flag
@@ -682,6 +721,9 @@ properties:
   reorder: score_exact
   const: score_exact
   opposite: score_exact
+  rotate: class_exact
+  rescale: class_exact
+  clone: class_exact
 ---
 
 # Lazy classifiers from the package weka.classifiers.lazy
@@ -698,6 +740,9 @@ properties:
   reorder: score_exact
   const: score_exact
   opposite: score_exact
+  rotate: class_exact
+  rescale: class_exact
+  clone: class_exact
 parameters:
   K: # number of neighbors
     type: integer
@@ -735,6 +780,9 @@ properties:
   reorder: score_exact
   const: score_exact
   opposite: score_exact
+  rotate: class_exact
+  rescale: class_exact
+  clone: class_exact
 parameters:
   E: # weather entropy blending is used
     type: flag
@@ -765,6 +813,9 @@ properties:
   reorder: score_exact
   const: score_exact
   opposite: score_exact
+  rotate: class_exact
+  rescale: class_exact
+  clone: class_exact
 parameters:
   E: # estimator
     # There is also the weka.classifiers.bayes.net.estimate.MultiNomialBMAEstimator, but this one does not support a lot of data, which is why it is currently left out
@@ -795,6 +846,9 @@ properties:
   reorder: score_exact
   const: score_exact
   opposite: score_exact
+  rotate: class_exact
+  rescale: class_exact
+  clone: class_exact
 parameters:
   K: # use gaussian kernel estimator
     type: flag
@@ -816,6 +870,9 @@ properties:
   reorder: score_exact
   const: score_exact
   opposite: score_exact
+  rotate: class_exact
+  rescale: class_exact
+  clone: class_exact
 ---
 
 # Functions as classifiers from the package weka.classifiers.functions
@@ -832,6 +889,9 @@ properties:
   reorder: score_exact
   const: score_exact
   opposite: score_exact
+  rotate: class_exact
+  rescale: class_exact
+  clone: class_exact
 parameters:
   R: # ridge value of the log likelihood
     # actually a double, but values give better tests
@@ -858,6 +918,9 @@ properties:
   reorder: score_exact
   const: score_exact
   opposite: score_exact
+  rotate: class_exact
+  rescale: class_exact
+  clone: class_exact
 parameters:
   D: # decay, i.e., decreasing learning rate
     type: flag
@@ -920,6 +983,9 @@ properties:
   reorder: score_exact
   const: score_exact
   opposite: score_exact
+  rotate: class_exact
+  rescale: class_exact
+  clone: class_exact
 parameters:
   N: # do not normalize
     type: flag
@@ -963,6 +1029,9 @@ properties:
   reorder: score_exact
   const: score_exact
   opposite: score_exact
+  rotate: class_exact
+  rescale: class_exact
+  clone: class_exact
 parameters:
   P: # error on probabilities
     type: flag
@@ -1011,6 +1080,9 @@ properties:
   reorder: score_exact
   const: score_exact
   opposite: score_exact
+  rotate: class_exact
+  rescale: class_exact
+  clone: class_exact
 parameters:
   M: # build calibration models
     type: fixedflag
@@ -1047,6 +1119,9 @@ properties:
   reorder: score_exact
   const: score_exact
   opposite: score_exact
+  rotate: class_exact
+  rescale: class_exact
+  clone: class_exact
 parameters:
   M: # build calibration models
     type: fixedflag
@@ -1093,6 +1168,9 @@ properties:
   reorder: score_exact
   const: score_exact
   opposite: score_exact
+  rotate: class_exact
+  rescale: class_exact
+  clone: class_exact
 parameters:
   E: # exponent of the polynomial kernel
     type: double
@@ -1190,6 +1268,9 @@ properties:
   reorder: clust_stat
   const: clust_stat
   opposite: clust_exact
+  rotate: clust_exact
+  rescale: clust_exact
+  clone: clust_exact
 parameters:
   N: # number of clusters
     type: integer
@@ -1250,6 +1331,9 @@ properties:
   reorder: clust_stat
   const: clust_stat
   opposite: clust_exact
+  rotate: clust_exact
+  rescale: clust_exact
+  clone: clust_exact
 parameters:
   A: # minimum standard deviation for numeric attributes
     type: double
@@ -1286,6 +1370,9 @@ properties:
   reorder: score_stat
   const: score_stat
   opposite: clust_exact
+  rotate: clust_exact
+  rescale: clust_exact
+  clone: clust_exact
 parameters:
   I: # max number of iterations
     type: integer
@@ -1370,6 +1457,9 @@ properties:
   reorder: clust_stat
   const: clust_stat
   opposite: clust_exact
+  rotate: clust_exact
+  rescale: clust_exact
+  clone: clust_exact
 parameters:
   N: # number of clusters
     type: integer
@@ -1403,6 +1493,9 @@ properties:
   reorder: clust_stat
   const: clust_stat
   opposite: clust_exact
+  rotate: clust_exact
+  rescale: clust_exact
+  clone: clust_exact
 parameters:
   N: # number of clusters
     type: integer
@@ -1446,6 +1539,9 @@ properties:
   reorder: clust_stat
   const: clust_stat
   opposite: clust_exact
+  rotate: clust_exact
+  rescale: clust_exact
+  clone: clust_exact
 parameters:
   init: # initialization method to use
     type: integer
@@ -1550,6 +1646,9 @@ properties:
   reorder: score_exact
   const: score_exact
   opposite: score_exact
+  rotate: class_exact
+  rescale: class_exact
+  clone: class_exact
 parameters:
   criterion:
     type: values
@@ -1623,6 +1722,9 @@ properties:
   reorder: score_exact
   const: score_exact
   opposite: score_exact
+  rotate: class_exact
+  rescale: class_exact
+  clone: class_exact
 parameters:
   criterion:
     type: values
@@ -1696,6 +1798,9 @@ properties:
   reorder: score_exact
   const: score_exact
   opposite: score_exact
+  rotate: class_exact
+  rescale: class_exact
+  clone: class_exact
 parameters:
   n_estimators:
     type: integer
@@ -1775,6 +1880,9 @@ properties:
   reorder: score_exact
   const: score_exact
   opposite: score_exact
+  rotate: class_exact
+  rescale: class_exact
+  clone: class_exact
 parameters:
   strategy:
     type: values
@@ -1800,6 +1908,9 @@ properties:
   reorder: score_exact
   const: score_exact
   opposite: score_exact
+  rotate: class_exact
+  rescale: class_exact
+  clone: class_exact
 parameters:
   optimizer:
     type: values
@@ -1837,6 +1948,9 @@ properties:
   reorder: score_exact
   const: score_exact
   opposite: score_exact
+  rotate: class_exact
+  rescale: class_exact
+  clone: class_exact
 parameters:
   C: # regularization parameter
     type: double
@@ -1898,6 +2012,9 @@ properties:
   reorder: score_exact
   const: score_exact
   opposite: score_exact
+  rotate: class_exact
+  rescale: class_exact
+  clone: class_exact
 parameters:
   alpha:
     type: double
@@ -1947,6 +2064,9 @@ properties:
   reorder: score_exact
   const: score_exact
   opposite: score_exact
+  rotate: class_exact
+  rescale: class_exact
+  clone: class_exact
 parameters:
   loss:
     type: values
@@ -2034,6 +2154,9 @@ properties:
   reorder: score_exact
   const: score_exact
   opposite: score_exact
+  rotate: class_exact
+  rescale: class_exact
+  clone: class_exact
 parameters:
   alpha:
     type: double
@@ -2066,6 +2189,9 @@ properties:
   reorder: score_exact
   const: score_exact
   opposite: score_exact
+  rotate: class_exact
+  rescale: class_exact
+  clone: class_exact
 parameters:
   alpha:
     type: double
@@ -2092,6 +2218,9 @@ properties:
   reorder: score_exact
   const: score_exact
   opposite: score_exact
+  rotate: class_exact
+  rescale: class_exact
+  clone: class_exact
 parameters:
   alpha:
     type: double
@@ -2122,6 +2251,9 @@ properties:
   reorder: score_exact
   const: score_exact
   opposite: score_exact
+  rotate: class_exact
+  rescale: class_exact
+  clone: class_exact
 parameters:
   var_smoothing:
     type: values
@@ -2142,6 +2274,9 @@ properties:
   reorder: score_exact
   const: score_exact
   opposite: score_exact
+  rotate: class_exact
+  rescale: class_exact
+  clone: class_exact
 parameters:
   alpha:
     type: double
@@ -2168,6 +2303,9 @@ properties:
   reorder: score_exact
   const: score_exact
   opposite: score_exact
+  rotate: class_exact
+  rescale: class_exact
+  clone: class_exact
 parameters:
   n_neighbors:
     type: integer
@@ -2214,6 +2352,9 @@ properties:
   reorder: score_exact
   const: score_exact
   opposite: score_exact
+  rotate: class_exact
+  rescale: class_exact
+  clone: class_exact
 parameters:
   radius:
     type: double
@@ -2264,6 +2405,9 @@ properties:
   reorder: score_exact
   const: score_exact
   opposite: score_exact
+  rotate: class_exact
+  rescale: class_exact
+  clone: class_exact
 parameters:
   hidden_layer_sizes:
     type: values
@@ -2367,6 +2511,9 @@ properties:
   reorder: score_exact
   const: score_exact
   opposite: score_exact
+  rotate: class_exact
+  rescale: class_exact
+  clone: class_exact
 parameters:
   penalty:
     type: values
@@ -2425,6 +2572,9 @@ properties:
   reorder: score_exact
   const: score_exact
   opposite: score_exact
+  rotate: class_exact
+  rescale: class_exact
+  clone: class_exact
 parameters:
   nu:
     type: double
@@ -2468,6 +2618,9 @@ properties:
   reorder: score_exact
   const: score_exact
   opposite: score_exact
+  rotate: class_exact
+  rescale: class_exact
+  clone: class_exact
 parameters:
   nu:
     type: double
@@ -2519,6 +2672,9 @@ properties:
   reorder: score_exact
   const: score_exact
   opposite: score_exact
+  rotate: class_exact
+  rescale: class_exact
+  clone: class_exact
 parameters:
   nu:
     type: double
@@ -2568,6 +2724,9 @@ properties:
   reorder: score_exact
   const: score_exact
   opposite: score_exact
+  rotate: class_exact
+  rescale: class_exact
+  clone: class_exact
 parameters:
   C: # regularization parameter
     type: double
@@ -2615,6 +2774,9 @@ properties:
   reorder: score_exact
   const: score_exact
   opposite: score_exact
+  rotate: class_exact
+  rescale: class_exact
+  clone: class_exact
 parameters:
   C: # regularization parameter
     type: double
@@ -2670,6 +2832,9 @@ properties:
   reorder: score_exact
   const: score_exact
   opposite: score_exact
+  rotate: class_exact
+  rescale: class_exact
+  clone: class_exact
 parameters:
   C: # regularization parameter
     type: double
@@ -2723,6 +2888,9 @@ properties:
   reorder: score_exact
   const: score_exact
   opposite: score_exact
+  rotate: class_exact
+  rescale: class_exact
+  clone: class_exact
 parameters:
   solver:
     type: values
@@ -2761,6 +2929,9 @@ properties:
   reorder: score_exact
   const: score_exact
   opposite: score_exact
+  rotate: class_exact
+  rescale: class_exact
+  clone: class_exact
 parameters:
   solver:
     type: values
@@ -2799,6 +2970,9 @@ properties:
   reorder: score_exact
   const: score_exact
   opposite: score_exact
+  rotate: class_exact
+  rescale: class_exact
+  clone: class_exact
 parameters:
   reg_param:
     type: double
@@ -2828,6 +3002,9 @@ properties:
   reorder: score_exact
   const: score_exact
   opposite: score_exact
+  rotate: class_exact
+  rescale: class_exact
+  clone: class_exact
 parameters:
   loss:
     type: values
@@ -2923,6 +3100,9 @@ properties:
   reorder: score_exact
   const: score_exact
   opposite: score_exact
+  rotate: class_exact
+  rescale: class_exact
+  clone: class_exact
 parameters:
   penalty:
     type: values
@@ -2998,6 +3178,9 @@ properties:
   reorder: score_exact
   const: score_exact
   opposite: score_exact
+  rotate: class_exact
+  rescale: class_exact
+  clone: class_exact
 parameters:
   shrink_threshold:
     type: values
@@ -3017,6 +3200,9 @@ properties:
   reorder: clust_stat
   const: clust_stat
   opposite: clust_exact
+  rotate: clust_exact
+  rescale: clust_exact
+  clone: clust_exact
 parameters:
   damping: # extent to which current value is maintained relative to incoming values (weighted 1 - damping)
     type: double
@@ -3066,6 +3252,9 @@ properties:
   reorder: clust_stat
   const: clust_stat
   opposite: clust_exact
+  rotate: clust_exact
+  rescale: clust_exact
+  clone: clust_exact
 parameters:
   n_clusters: # number of clusters to find
     type: values
@@ -3089,6 +3278,9 @@ properties:
   reorder: clust_stat
   const: clust_stat
   opposite: clust_exact
+  rotate: clust_exact
+  rescale: clust_exact
+  clone: clust_exact
 parameters:
   n_clusters: # number of clusters to find
     type: values
@@ -3111,6 +3303,9 @@ properties:
   reorder: clust_stat
   const: clust_stat
   opposite: clust_exact
+  rotate: clust_exact
+  rescale: clust_exact
+  clone: clust_exact
 parameters:
   n_clusters: # number of clusters to find
     type: values
@@ -3142,6 +3337,9 @@ properties:
   reorder: clust_stat
   const: clust_stat
   opposite: clust_exact
+  rotate: clust_exact
+  rescale: clust_exact
+  clone: clust_exact
 parameters:
   n_clusters: # number of clusters to find
     type: values
@@ -3173,6 +3371,9 @@ properties:
   reorder: clust_stat
   const: clust_stat
   opposite: clust_exact
+  rotate: clust_exact
+  rescale: clust_exact
+  clone: clust_exact
 parameters:
   threshold: # radius of subcluster obtained by merging a new sample and the closest subcluster should be lesser than the threshold
     type: double
@@ -3210,6 +3411,9 @@ properties:
   reorder: clust_stat
   const: clust_stat
   opposite: clust_exact
+  rotate: clust_exact
+  rescale: clust_exact
+  clone: clust_exact
 parameters:
   eps: # maximum distance between two samples for one to be considered as in the neighborhood of the other
     type: double
@@ -3259,6 +3463,9 @@ properties:
   reorder: clust_stat
   const: clust_stat
   opposite: clust_exact
+  rotate: clust_exact
+  rescale: clust_exact
+  clone: clust_exact
 parameters:
   n_clusters: # number of clusters to find
     type: integer
@@ -3324,6 +3531,9 @@ properties:
   reorder: clust_stat
   const: clust_stat
   opposite: clust_exact
+  rotate: clust_exact
+  rescale: clust_exact
+  clone: clust_exact
 parameters:
   n_clusters: # number of clusters to find
     type: integer
@@ -3393,6 +3603,9 @@ properties:
   reorder: clust_stat
   const: clust_stat
   opposite: clust_exact
+  rotate: clust_exact
+  rescale: clust_exact
+  clone: clust_exact
 parameters:
   bin_seeding: # if True initial kernel locations are not locations of all points but location of discretized version of points
     type: values
@@ -3426,6 +3639,9 @@ properties:
   reorder: clust_stat
   const: clust_stat
   opposite: clust_exact
+  rotate: clust_exact
+  rescale: clust_exact
+  clone: clust_exact
 parameters:
   min_samples: # number of samples in a neighborhood for a point to be considered as core point
     type: integer
@@ -3495,6 +3711,9 @@ properties:
   reorder: clust_stat
   const: clust_stat
   opposite: clust_exact
+  rotate: clust_exact
+  rescale: clust_exact
+  clone: clust_exact
 parameters:
   n_clusters: # dimension of project subspace, optional
     type: values
@@ -3576,6 +3795,9 @@ properties:
   reorder: clust_stat
   const: clust_stat
   opposite: clust_exact
+  rotate: clust_exact
+  rescale: clust_exact
+  clone: clust_exact
 parameters:
   eigen_solver: # eigenvalue decomposition strategy to use
     type: values
@@ -3647,6 +3869,9 @@ properties:
   reorder: score_stat
   const: score_stat
   opposite: clust_exact
+  rotate: clust_exact
+  rescale: clust_exact
+  clone: clust_exact
 parameters:
   n_components: # number of mixture components in the model
     type: integer
@@ -3712,6 +3937,9 @@ properties:
   reorder: class_exact
   const: class_stat
   opposite: score_stat
+  rotate: class_exact
+  rescale: class_exact
+  clone: class_exact
 parameters:
   setMaxDepth:
     type: integer
@@ -3755,6 +3983,9 @@ properties:
   reorder: class_exact
   const: class_stat
   opposite: score_stat
+  rotate: class_exact
+  rescale: class_exact
+  clone: class_exact
 parameters:
   setMaxDepth:
     type: integer
@@ -3814,6 +4045,9 @@ properties:
   reorder: class_exact
   const: class_stat
   opposite: score_stat
+  rotate: class_exact
+  rescale: class_exact
+  clone: class_exact
 parameters:
   setMaxDepth:
     type: integer
@@ -3871,6 +4105,9 @@ properties:
   reorder: class_exact
   const: class_stat
   opposite: score_stat
+  rotate: class_exact
+  rescale: class_exact
+  clone: class_exact
 parameters:
   setRegParam:
     type: double
@@ -3926,6 +4163,9 @@ properties:
   reorder: class_exact
   const: class_stat
   opposite: score_stat
+  rotate: class_exact
+  rescale: class_exact
+  clone: class_exact
 parameters:
   setSolver:
     type: values
@@ -3966,6 +4206,9 @@ properties:
   reorder: class_exact
   const: class_stat
   opposite: score_stat
+  rotate: class_exact
+  rescale: class_exact
+  clone: class_exact
 parameters:
   setRegParam:
     type: double
@@ -4011,6 +4254,9 @@ properties:
   reorder: class_exact
   const: class_stat
   opposite: score_stat
+  rotate: class_exact
+  rescale: class_exact
+  clone: class_exact
 parameters:
   setModelType:
     type: values
@@ -4036,6 +4282,9 @@ properties:
   reorder: class_exact
   const: class_stat
   opposite: score_stat
+  rotate: class_exact
+  rescale: class_exact
+  clone: class_exact
 parameters:
   setModelType:
     type: values
@@ -4061,6 +4310,9 @@ properties:
   reorder: class_exact
   const: class_stat
   opposite: score_stat
+  rotate: class_exact
+  rescale: class_exact
+  clone: class_exact
 parameters:
   setModelType:
     type: values
@@ -4085,6 +4337,9 @@ properties:
   scramble: clust_stat
   reorder: clust_stat
   const: clust_stat
+  rotate: clust_exact
+  rescale: clust_exact
+  clone: clust_exact
 parameters:
   k: # number of desired clusters
     type: integer
@@ -4131,6 +4386,9 @@ properties:
   scramble: score_stat
   reorder: clust_stat
   const: score_stat
+  rotate: clust_exact
+  rescale: clust_exact
+  clone: clust_exact
 parameters:
   k: # number of desired clusters
     type: integer
@@ -4188,6 +4446,9 @@ properties:
   scramble: clust_stat
   reorder: clust_stat
   const: clust_stat
+  rotate: clust_exact
+  rescale: clust_exact
+  clone: clust_exact
 parameters:
   k: # number of desired clusters
     type: integer
