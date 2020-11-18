@@ -28,7 +28,7 @@ atoml is a command line tool that can be used with the following options.
 A call to atoml may look like this:
 
 ```
-java -jar atoml.jar -f testdata/description.yml
+java -jar atoml.jar -f testdata/descriptions.yml
 ```
 
 # Supported Machine Learning Frameworks
