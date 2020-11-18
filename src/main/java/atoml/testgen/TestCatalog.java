@@ -2,11 +2,14 @@ package atoml.testgen;
 
 import java.util.List;
 
+import atoml.metamorphic.Clone;
 import atoml.metamorphic.Const;
 import atoml.metamorphic.MetamorphicTest;
 import atoml.metamorphic.Opposite;
 import atoml.metamorphic.Rename;
 import atoml.metamorphic.Reorder;
+import atoml.metamorphic.Rescale;
+import atoml.metamorphic.Rotate;
 import atoml.metamorphic.Same;
 import atoml.metamorphic.Scramble;
 import atoml.smoke.Bias;
@@ -71,5 +74,8 @@ public class TestCatalog {
 			new Scramble(),
 			new Reorder(),
 			new Same(),
-			new Rename());
+			new Rename(),
+			new Rotate(),
+			new Rescale(),
+			new Clone());
 }

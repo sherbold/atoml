@@ -14,6 +14,7 @@ dependencies {
 	// dependencies for atoml core logic
     implementation group: 'org.apache.commons', name: 'commons-lang3', version: '3.10'
 	implementation group: 'org.apache.commons', name: 'commons-math3', version: '3.6.1'
+    implementation group: 'org.nd4j', name: 'nd4j-native-platform', version: '1.0.0-beta7'
 	implementation group: 'commons-cli', name: 'commons-cli', version: '1.4'
 	implementation group: 'org.apache.ant', name: 'ant', version: '1.10.3'
 	implementation group: 'nz.ac.waikato.cms.weka', name: 'weka-dev', version: '3.9.4'

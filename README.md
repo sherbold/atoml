@@ -1,6 +1,6 @@
 [![Build Status](https://travis-ci.org/sherbold/atoml.svg?branch=master)](https://travis-ci.org/sherbold/atoml)
 
-# Automated Testing Of Machine Learing (atoml)
+# Automated Testing Of Machine Learning (atoml)
 
 atoml is a software for generating smoke and metamorphic tests for machine learning software that is currently under development. The aim of atoml is to make machine learning software more robust, i.e., ensure correct working, even if the data is extreme. 
 
@@ -28,16 +28,16 @@ atoml is a command line tool that can be used with the following options.
 A call to atoml may look like this:
 
 ```
-java -jar atoml.jar -f testdata/description.yml
+java -jar atoml.jar -f testdata/descriptions.yml
 ```
 
 # Supported Machine Learning Frameworks
 
-Atoml can generate tests for Weka, Scikit-Learn, and Apache Spark MLlib. Other frameworks may follow. Atoml currently only works all classification algorithms defined by those frameworks. However, support for clustering is already under development. 
+Atoml can generate tests for Weka, Scikit-Learn, and Apache Spark MLlib. Other frameworks may follow. Atoml currently works with all classification and clustering algorithms defined by those frameworks.
 
 # Definition of Tests
 
-Atoml automatically generates tests from a description of the algorithm. Algorithms are described by the machine learning framework, the package and class in which they are implemented, the features they support (e.g., double, float, categorical), a set of properties that they should fulfill, and the definition of their hyperparameters. The supported features and the properties are used to decided which test cases are generated for the algorithm, i.e., which input data is suitable, which smoke tests can be executed, and which metamorphic relations should be fulfilled. The hyperparameters are used to derive tests for different combinations of hyperparameters. A grid search of the hyperparameters is due to the exponential nature of the number of allowed combinations not possible. Currently, atoml uses the default value for all except one parameter. For the remaining parameter, different values are tested. 
+Atoml automatically generates tests from a description of the algorithm. Algorithms are described by the machine learning framework, the package and class in which they are implemented, the features they support (e.g., double, float, categorical), a set of properties that they should fulfill, and the definition of their hyperparameters. The supported features and the properties are used to decided which test cases are generated for the algorithm, i.e., which input data is suitable, which smoke tests can be executed, and which metamorphic relations should be fulfilled. The hyperparameters are used to derive tests for different combinations of hyperparameters. A grid search of the hyperparameters is due to the exponential nature of the number of allowed combinations not possible. Currently, atoml uses the default value for all except one parameter. For the remaining parameters, different values are tested. 
 
 All the above information is defined in a YAML file. The [descriptions.yml](testdata/description.yml) file contains examples for classifier definitions as well as a description of the YAML dialect. Here is an example for the definition of tests for the DecisionTreeClassifier from scikit-learn. 
 
@@ -118,7 +118,7 @@ parameters:
 
 # Running tests generated with atoml
 
-Atoml generates the tests such that they can be executed with the test runner that is already available for the programming languange with which the  tests are defined, i.e., JUnit for Weka and Spark MLlib, and the built-in Python unittest for sklearn. 
+Atoml generates the tests such that they can be executed with the test runner that is already available for the programming languange in which the tests are defined, i.e., JUnit for Weka and Spark MLlib, and the built-in Python unittest for sklearn. 
 
 # Using the MySQL/Maria Database and the Dashboard
 
