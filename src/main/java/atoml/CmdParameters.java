@@ -80,13 +80,13 @@ public class CmdParameters {
 				"number of instances generated for each test set (default: 100)");
 		numInstances.setRequired(false);
 		options.addOption(numInstances);
-		defaults.put("ninst", "100");
+		defaults.put("instances", "100");
 
 		Option numFeatures = new Option("m", "features", true,
 				"number of features for each generated test set (default: 10)");
 		numFeatures.setRequired(false);
 		options.addOption(numFeatures);
-		defaults.put("nfeat", "10");
+		defaults.put("features", "10");
 		
 		Option mysql = new Option("mysql", false,
 				"the results are stored in a local MySQL database if this flag is used");
