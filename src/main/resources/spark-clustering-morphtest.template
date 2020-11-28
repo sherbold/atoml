@@ -1,19 +1,23 @@
-    @Test
+    @Test(timeout=600000)
     public void test_<<<NAME>>>_<<<DATASET>>>() throws Exception {
         for(int iter=1; iter<=<<<ITERATIONS>>>; iter++) {
             boolean passed = true;
             String message = null;
             String exception = null;
             String stacktrace = null;
-            int deviationsCounts;
-            double[] deviationVector = new double[1];
-            int deviationsScores;
+            int deviationsCounts = 0;
+            int deviationsScores = 0;
             HashMap<Integer, ArrayList<Double>> expectedScoresMap = new HashMap<Integer, ArrayList<Double>>();
             HashMap<Integer, ArrayList<Double>> morphedScoresMap = new HashMap<Integer, ArrayList<Double>>();            
+            
+            Dataset<Row> data = arffToDataset("/morphdata/<<<DATASET>>>_" + iter + ".arff");
+            Dataset<Row> morphedData = arffToDataset("/morphdata/<<<DATASET>>>_" + iter + "_<<<NAME>>>.arff");
+            
+            double[] deviationVector = new double[(int)data.count()];
+            double[] expectedMorphDistributions = new double[(int)data.count()];
+            double[] morphedDistributions = new double[(int)data.count()];
+
             try {
-                Dataset<Row> data = arffToDataset("/morphdata/<<<DATASET>>>_" + iter + ".arff");
-                Dataset<Row> morpheddata = arffToDataset("/morphdata/<<<DATASET>>>_" + iter + "_<<<NAME>>>.arff");
-    
                 <<<CLASSIFIER>>> clusterer = new <<<CLASSIFIER>>>();
                 try {
                     Method setSeedMethod = clusterer.getClass().getMethod("setSeed", long.class);
@@ -32,15 +36,11 @@
                 setParameters(morphedClusterer, parameters);
             
                 <<<CLASSIFIER>>>Model model = clusterer.fit(data);
-                <<<CLASSIFIER>>>Model morphedModel = morphedClusterer.fit(morpheddata);
+                <<<CLASSIFIER>>>Model morphedModel = morphedClusterer.fit(morphedData);
 
                 List<Row> predictionOriginal = model.transform(data).select("prediction").collectAsList();
-                List<Row> predictionMorphed = morphedModel.transform(data).select("prediction").collectAsList();
+                List<Row> predictionMorphed = morphedModel.transform(morphedData).select("prediction").collectAsList();
 
-                deviationsCounts = 0;
-                deviationVector = new double[predictionOriginal.size()];
-                double[] expectedMorphDistributions = new double[predictionOriginal.size()];
-                double[] morphedDistributions = new double[predictionOriginal.size()];
                 HashMap<Integer, HashSet<Integer>> expectedClustersMap = createClusterMap(model.getK());
                 HashMap<Integer, HashSet<Integer>> morphedClustersMap = createClusterMap(morphedModel.getK());
                 for (int i = 0; i < predictionOriginal.size(); i++) {
@@ -50,6 +50,7 @@
                     double morphedCluster = predictionMorphed.get(i).getInt(0);
                     morphedClustersMap.get((int) morphedCluster).add(i);
                 }
+                
                 morphedClustersMap = flipSameClusters(expectedClustersMap, morphedClustersMap);
                 for (int i = 0; i < predictionOriginal.size(); i++) {
                     for (Integer cluster: expectedClustersMap.keySet()) {
@@ -67,7 +68,6 @@
                 }
 
                 //score-matching for soft clustering
-                deviationsScores = 0;
                 if (model.transform(data).schema().toString().contains("probability")) {
                     List<Row> scoresOriginal = model.transform(data).select("probability").collectAsList();
                     List<Row> scoresMorphed = morphedModel.transform(data).select("probability").collectAsList();
@@ -99,14 +99,13 @@
                 e.printStackTrace(pw);
                 stacktrace = sw.toString();
                 deviationsCounts = -1;
-                deviationVector = new double[1];
                 deviationsScores = -1;
                 expectedScoresMap = new HashMap<Integer, ArrayList<Double>>();
                 morphedScoresMap = new HashMap<Integer, ArrayList<Double>>();
             }
 
             String nameWithoutParams = testname.getMethodName().split("\\\\[")[0];
-            <<<MYSQLEVALMORPH>>>assertMorphTest(<<<EVALUATIONTYPE>>>, nameWithoutParams, iter, deviationVector.length, deviationsCounts, deviationVector, deviationsScores, expectedScoresMap, morphedScoresMap, passed, message, exception, stacktrace);
+            <<<MYSQLEVALMORPH>>>assertMorphTest(<<<EVALUATIONTYPE>>>, nameWithoutParams, iter, (int) data.count(), deviationsCounts, deviationVector, deviationsScores, expectedScoresMap, morphedScoresMap, passed, message, exception, stacktrace);
         }
     }
 

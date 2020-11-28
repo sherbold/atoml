@@ -7,7 +7,6 @@
             exception_message = None
             exception_stacktrace = None
             testcase_name = inspect.stack()[0][3]
-            pval_kstest = 0  # TODO: placeholder for pvalues of KS tests to store in DB
 
             data_original, meta_original = loadarff('morphdata/<<<DATASET>>>_%i.arff' % iter)
             data_morphed, meta_morphed = loadarff('morphdata/<<<DATASET>>>_%i_<<<NAME>>>.arff' % iter)

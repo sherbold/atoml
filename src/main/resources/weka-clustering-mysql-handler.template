@@ -188,12 +188,12 @@
 	}
 
     private void evalMorphTestSQL(String testcaseName, int iteration, int testsize, int deviationsCounts, double[] deviationVector, int deviationsScores, HashMap<Integer, ArrayList<Double>> expectedScoresMap, HashMap<Integer, ArrayList<Double>> morphedScoresMap, boolean passed, String message, String exception, String stacktrace) {
-    	double pValueKS = 0.0; //TODO: stores 0.0 as placeholder pValue in DB
-    	double pValueCounts;
-    	boolean passedExactClust;
-    	boolean passedStatClust;
-    	boolean passedExactScore;
-    	boolean passedStatScore;
+    	double pValueKS = 1.0; //TODO: placeholder values stored in db for failing tests due to errors
+    	double pValueCounts = 1.0;
+    	boolean passedExactClust = true;
+    	boolean passedStatClust = true;
+    	boolean passedExactScore = true;
+    	boolean passedStatScore = true;
     	if (passed) {
             passedExactClust = deviationsCounts==0;
             if( deviationsCounts>0 ) {
@@ -222,12 +222,6 @@
             }
             passedExactScore = deviationsScores<=0;
             passedStatScore = deviationsPValues<=0;
-        } else {
-            pValueCounts = 1;
-            passedExactScore = true;
-            passedExactClust = true;
-            passedStatClust = true;
-            passedStatScore = true;
         }
         storage.addResult(this.getClass().getSimpleName(), parameterName, testcaseName, iteration, testsize, deviationsCounts, deviationsScores, pValueCounts, pValueKS, passedExactScore, passedExactClust, passedStatClust, passedStatScore, passed, message, exception, stacktrace);
     }
