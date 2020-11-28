@@ -1,62 +1,82 @@
-    @Test
+    @Test(timeout=600000)
     public void test_<<<NAME>>>_<<<DATASET>>>() throws Exception {
         for(int iter=1; iter<=<<<ITERATIONS>>>; iter++) {
-            Dataset<Row> dataframe = arffToDataset("/morphdata/<<<DATASET>>>_" + iter + ".arff");
-            Dataset<Row> morpheddata = arffToDataset("/morphdata/<<<DATASET>>>_" + iter + "_<<<NAME>>>.arff");
-            
-            <<<CLASSIFIER>>> classifier = new <<<CLASSIFIER>>>();
-            classifier.setLabelCol("classAtt");
-            try {
-            	Method setSeedMethod = classifier.getClass().getMethod("setSeed", long.class);
-            	setSeedMethod.invoke(classifier, 42);
-            } catch (NoSuchMethodException | SecurityException e) {
-            	// not randomized
-            }
-            setParameters(classifier, parameters);
-            <<<CLASSIFIER>>> morphedClassifier = new <<<CLASSIFIER>>>();
-            morphedClassifier.setLabelCol("classAtt");
-            try {
-            	Method setSeedMethod = morphedClassifier.getClass().getMethod("setSeed", long.class);
-            	setSeedMethod.invoke(morphedClassifier, 42);
-            } catch (NoSuchMethodException | SecurityException e) {
-            	// not randomized
-            }
-            setParameters(morphedClassifier, parameters);
-            
-            ClassificationModel<?, ?> model = classifier.fit(dataframe);
-            ClassificationModel<?, ?> morphedModel = morphedClassifier.fit(morpheddata);
-            
-            List<Row> predictionOriginal = model.transform(dataframe).select("prediction").collectAsList();
-            List<Row> scoresOriginal = model.transform(dataframe).select("probability").collectAsList();
-            List<Row> predictionMorphed = morphedModel.transform(morpheddata).select("prediction").collectAsList();
-            List<Row> scoresMorphed = morphedModel.transform(dataframe).select("probability").collectAsList();
-
+            boolean passed = true;
+            String message = null;
+            String exception = null;
+            String stacktrace = null;
             int deviationsCounts = 0;
             int deviationsScores = 0;
-            long[] expectedMorphCounts = new long[2];
-            double[] expectedMorphDistributions = new double[predictionOriginal.size()];
-            long[] morphedCounts = new long[2] ;
-            double[] morphedDistributions = new double[predictionOriginal.size()];
-            for (int i = 0; i < predictionOriginal.size(); i++) {
-                double originalClass = predictionOriginal.get(i).getDouble(0);
-                double expectedMorphedClass;
-			    <<<EXPECTEDMORPHEDCLASS>>>
-                expectedMorphCounts[(int) expectedMorphedClass]++;
-                expectedMorphDistributions[i] = ((DenseVector) scoresOriginal.get(i).get(0)).values()[(int) originalClass];
-                double morphedClass = predictionMorphed.get(i).getDouble(0);
-                morphedCounts[(int) morphedClass]++;
-                morphedDistributions[i] = ((DenseVector) scoresMorphed.get(i).get(0)).values()[(int) morphedClass];
-            	
-                if (!(Double.compare(expectedMorphedClass, morphedClass) == 0)) {
-                    deviationsCounts++;
+            int[] expectedMorphCounts = new int[2];
+            int[] morphedCounts = new int[2];
+            
+            Dataset<Row> data = arffToDataset("/morphdata/<<<DATASET>>>_" + iter + ".arff");
+            Dataset<Row> morphedData = arffToDataset("/morphdata/<<<DATASET>>>_" + iter + "_<<<NAME>>>.arff");
+            
+            double[] deviationVector = new double[(int)data.count()];
+            double[] expectedMorphDistributions = new double[(int)data.count()];
+            double[] morphedDistributions = new double[(int)data.count()];
+            
+            try {
+                <<<CLASSIFIER>>> classifier = new <<<CLASSIFIER>>>();
+                classifier.setLabelCol("classAtt");
+                try {
+                    Method setSeedMethod = classifier.getClass().getMethod("setSeed", long.class);
+                    setSeedMethod.invoke(classifier, 42);
+                } catch (NoSuchMethodException | SecurityException e) {
+                    // not randomized
                 }
-                if (!(Double.compare(expectedMorphDistributions[i], morphedDistributions[i]) == 0)) {
-                    deviationsScores++;
+                setParameters(classifier, parameters);
+                <<<CLASSIFIER>>> morphedClassifier = new <<<CLASSIFIER>>>();
+                morphedClassifier.setLabelCol("classAtt");
+                try {
+                    Method setSeedMethod = morphedClassifier.getClass().getMethod("setSeed", long.class);
+                    setSeedMethod.invoke(morphedClassifier, 42);
+                } catch (NoSuchMethodException | SecurityException e) {
+                    // not randomized
                 }
+                setParameters(morphedClassifier, parameters);
+
+                ClassificationModel<?, ?> model = classifier.fit(data);
+                ClassificationModel<?, ?> morphedModel = morphedClassifier.fit(morphedData);
+
+                List<Row> predictionOriginal = model.transform(data).select("prediction").collectAsList();
+                List<Row> scoresOriginal = model.transform(data).select("probability").collectAsList();
+                List<Row> predictionMorphed = morphedModel.transform(morphedData).select("prediction").collectAsList();
+                List<Row> scoresMorphed = morphedModel.transform(morphedData).select("probability").collectAsList();
+
+                for (int i = 0; i < predictionOriginal.size(); i++) {
+                    double originalClass = predictionOriginal.get(i).getDouble(0);
+                    double expectedMorphedClass;
+                    <<<EXPECTEDMORPHEDCLASS>>>
+                    expectedMorphCounts[(int) expectedMorphedClass]++;
+                    expectedMorphDistributions[i] = ((DenseVector) scoresOriginal.get(i).get(0)).values()[(int) originalClass];
+                    double morphedClass = predictionMorphed.get(i).getDouble(0);
+                    morphedCounts[(int) morphedClass]++;
+                    morphedDistributions[i] = ((DenseVector) scoresMorphed.get(i).get(0)).values()[(int) morphedClass];
+                    
+                    if (!(Double.compare(expectedMorphedClass, morphedClass) == 0)) {
+                        deviationsCounts++;
+                    }
+                    if (!(Double.compare(expectedMorphDistributions[i], morphedDistributions[i]) == 0)) {
+                        deviationsScores++;
+                    }
+                }
+
+            } catch(Throwable e) {
+                passed = false;
+                message = e.getMessage();
+                exception = e.getClass().getName();
+                StringWriter sw = new StringWriter();
+                PrintWriter pw = new PrintWriter(sw);
+                e.printStackTrace(pw);
+                stacktrace = sw.toString();
+                deviationsCounts = -1;
+                deviationsScores = -1;
             }
             
             String nameWithoutParams = testname.getMethodName().split("\\\\[")[0]; 
-            <<<MYSQLEVALMORPH>>>assertMorphTest(<<<EVALUATIONTYPE>>>, nameWithoutParams, iter, deviationsCounts, deviationsScores, predictionOriginal.size(), expectedMorphCounts, morphedCounts, expectedMorphDistributions, morphedDistributions);
+            <<<MYSQLEVALMORPH>>>assertMorphTest(<<<EVALUATIONTYPE>>>, nameWithoutParams, iter, deviationsCounts, deviationsScores, (int) data.count(), expectedMorphCounts, morphedCounts, expectedMorphDistributions, morphedDistributions, passed, message, exception, stacktrace);
         }
     }
 

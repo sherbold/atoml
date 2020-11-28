@@ -1,4 +1,4 @@
-    @Test
+    @Test(timeout=600000)
     public void test_<<<NAME>>>() throws Exception {
         for(int iter=1; iter<=<<<ITERATIONS>>>; iter++) {
         	<<<MYSQLEVALSMOKE_START>>>Dataset<Row> dataframe = arffToDataset("/smokedata/<<<NAME>>>_" + iter + "_training.arff");
