@@ -29,8 +29,8 @@ public class Runner {
 	    final String yamlFileStr = cmdParameters.getStringValue("file");
 	    
 		final int iterations = cmdParameters.getIntegerValue("iterations");
-	    final int numInstances = cmdParameters.getIntegerValue("ninst");
-	    final int numFeatures = cmdParameters.getIntegerValue("nfeat");
+	    final int numInstances = cmdParameters.getIntegerValue("instances");
+	    final int numFeatures = cmdParameters.getIntegerValue("features");
 	    final boolean useMysql = cmdParameters.hasOption("mysql");
 	    final boolean generateSmokeTests = !cmdParameters.hasOption("nosmoke");
 	    final boolean generateMorphTests = !cmdParameters.hasOption("nomorph");
