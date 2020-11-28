@@ -12,6 +12,10 @@ results_dict = {
                 'passed_exact_class': int(deviations_class==0),
                 'passed_stat_class': int(pval_chisquare<0.05),
                 'passed_stat_score': int(pval_kstest<0.05),
+                'passed': int(no_exception),
+                'exception': exception_type,
+                'message': exception_message,
+                'stacktrace': exception_stacktrace
             }
             write_morph_to_db(results_dict)
             # 

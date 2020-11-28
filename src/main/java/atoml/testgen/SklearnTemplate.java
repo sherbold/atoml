@@ -90,12 +90,12 @@ public class SklearnTemplate implements TemplateEngine {
 		String morphRelation;
 		switch(metamorphicTest.getPredictionRelation()) {
 		case EQUAL:
-			morphRelation = "prediction_expected = prediction_original;\n";
-			morphRelation += "            scores_expected = scores_original[:,0]";
+			morphRelation = "prediction_expected = prediction_original\n";
+			morphRelation += "                scores_expected = scores_original[:,0]";
 			break;
 		case INVERTED:
 			morphRelation = "prediction_expected = abs(1-prediction_original)\n";
-			morphRelation += "            scores_expected = scores_original[:,1]";
+			morphRelation += "                scores_expected = scores_original[:,1]";
 			break;
 		default:
 			throw new RuntimeException("could not generate tests, unknown morph prediction relation type");

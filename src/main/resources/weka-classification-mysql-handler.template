@@ -85,7 +85,7 @@
 	        this.connectionPool.setUrl("jdbc:mysql://" + dbHost + ":" + dbPort + "/" + dbName + "?useSSL=false");
 	    }
 
-	    public void addResult(String algorithm, String parameters, String testcase, int iteration, int testsize, int deviationsCounts, int deviationsScores, double pvalClassification, double pvalScores, boolean passedExactScore, boolean passedExactClass, boolean passedStatClass, boolean passedStatScore) {
+	    public void addResult(String algorithm, String parameters, String testcase, int iteration, int testsize, int deviationsCounts, int deviationsScores, double pvalClassification, double pvalScores, boolean passedExactScore, boolean passedExactClass, boolean passedStatClass, boolean passedStatScore, boolean passed, String message, String exception, String stacktrace) {
 	        StringBuilder preparedSql = new StringBuilder();
 	        preparedSql.append("INSERT INTO " + this.morphResultsTableName + " (");
 	        preparedSql.append("`algorithm`,");
@@ -100,8 +100,12 @@
 	        preparedSql.append("`passed_exact_score`,");
 	        preparedSql.append("`passed_exact_class`,");
 	        preparedSql.append("`passed_stat_class`,");
-	        preparedSql.append("`passed_stat_score`) VALUES ");
-	        preparedSql.append("(?,?,?,?,?,?,?,?,?,?,?,?,?)");
+	        preparedSql.append("`passed_stat_score`,");
+	        preparedSql.append("`passed`,");
+	        preparedSql.append("`exception`,");
+	        preparedSql.append("`message`,");
+	        preparedSql.append("`stacktrace`) VALUES ");
+	        preparedSql.append("(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)");
 	        
 	        try(Connection con = this.connectionPool.getConnection();
 		        PreparedStatement stmt = con.prepareStatement(preparedSql.toString());) {
@@ -118,6 +122,10 @@
 	            stmt.setInt(11, passedExactClass?1:0);
 	            stmt.setInt(12, passedStatClass?1:0);
 	            stmt.setInt(13, passedStatScore?1:0);
+	            stmt.setInt(14, passed?1:0);
+	            stmt.setString(15, exception);
+	            stmt.setString(16, message);
+	            stmt.setString(17, stacktrace);
 	            
 	            int qryResult = stmt.executeUpdate();
 	            if (qryResult < 1) {
@@ -179,22 +187,24 @@
 		storage = new MySQLResultStorage("");
 	}
 	
-	private void evalMorphTestSQL(String testcaseName, int iteration, int deviationsCounts, int deviationsScores, int testsize, long[] expectedMorphCounts, long[] morphedCounts, double[] expectedMorphedDistributions, double[] morphedDistributions) {
-	    boolean passedExactScore = deviationsScores==0;
-    	boolean passedExactClass = deviationsCounts==0;
-        double pValueCounts;
-        if( deviationsCounts>0 ) {
-            pValueCounts = TestUtils.chiSquareTestDataSetsComparison(expectedMorphCounts, morphedCounts);
-        } else {
-            pValueCounts = 1.0;
+	private void evalMorphTestSQL(String testcaseName, int iteration, int deviationsCounts, int deviationsScores, int testsize, int[] expectedMorphCounts, int[] morphedCounts, double[] expectedMorphedDistributions, double[] morphedDistributions, boolean passed, String message, String exception, String stacktrace) {
+    	double pValueKS = 1.0; //TODO: placeholder values for failing tests due to errors
+    	double pValueCounts = 1.0;
+    	boolean passedExactClass = true;
+    	boolean passedStatClass = true;
+    	boolean passedExactScore = true;
+    	boolean passedStatScore = true;
+	    if (passed) {
+	        passedExactClass = deviationsCounts==0;
+            passedExactScore = deviationsScores==0;
+            if( deviationsCounts>0 ) {
+                pValueCounts = ChiSqTest.test(expectedMorphCounts, morphedCounts).pvalue;
+            }
+            passedStatClass = pValueCounts>0.05;
+            if( deviationsScores>0 ) {
+                pValueKS = KSTest.test(expectedMorphedDistributions, morphedDistributions).pvalue;
+            }
+            passedStatScore = pValueKS>0.05;	        
         }
-        boolean passedStatClass = pValueCounts>0.05;
-        double pValueKS;
-        if( deviationsScores>0 ) {
-            pValueKS = TestUtils.kolmogorovSmirnovTest(expectedMorphedDistributions, morphedDistributions);
-        } else {
-            pValueKS = 1.0;
-        }
-        boolean passedStatScore = pValueKS>0.05;
-        storage.addResult(this.getClass().getSimpleName(), parameterName, testcaseName, iteration, testsize, deviationsCounts, deviationsScores, pValueCounts, pValueKS, passedExactScore, passedExactClass, passedStatClass, passedStatScore);
+        storage.addResult(this.getClass().getSimpleName(), parameterName, testcaseName, iteration, testsize, deviationsCounts, deviationsScores, pValueCounts, pValueKS, passedExactScore, passedExactClass, passedStatClass, passedStatScore, passed, message, exception, stacktrace);
     }

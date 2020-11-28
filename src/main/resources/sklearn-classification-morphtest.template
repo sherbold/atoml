@@ -2,6 +2,12 @@
     @timeout(21600)
     def test_<<<NAME>>>_<<<DATASET>>>(self, name, kwargs):
         for iter in range(1,<<<ITERATIONS>>>+1):
+            no_exception = True
+            exception_type = None
+            exception_message = None
+            exception_stacktrace = None
+            testcase_name = inspect.stack()[0][3]
+            
             data_original, meta_original = loadarff('morphdata/<<<DATASET>>>_%i.arff' % iter)
             data_morphed, meta_morphed = loadarff('morphdata/<<<DATASET>>>_%i_<<<NAME>>>.arff' % iter)
             lb_make = LabelEncoder()
@@ -23,39 +29,48 @@
                 if 'classAtt' in s:
                     class_index_morph = i
             
-            classifier_original = <<<CLASSIFIER>>>
-            np.random.seed(42)
-            classifier_original.fit(np.delete(data_original_df.values, class_index_original, axis=1),data_original_df.values[:,class_index_original])
-            classifier_morph = <<<CLASSIFIER>>>
-            np.random.seed(42)
-            classifier_morph.fit(np.delete(data_morph_df.values, class_index_morph, axis=1),data_morph_df.values[:,class_index_morph])
-            prediction_original = classifier_original.predict(np.delete(data_original_df.values, class_index_original, axis=1))
-            prediction_morph = classifier_morph.predict(np.delete(<<<MORPHTESTDATA>>>.values, <<<MORPHCLASSINDEX>>>, axis=1))
+            try:
+                classifier_original = <<<CLASSIFIER>>>
+                np.random.seed(42)
+                classifier_original.fit(np.delete(data_original_df.values, class_index_original, axis=1),data_original_df.values[:,class_index_original])
+                classifier_morph = <<<CLASSIFIER>>>
+                np.random.seed(42)
+                classifier_morph.fit(np.delete(data_morph_df.values, class_index_morph, axis=1),data_morph_df.values[:,class_index_morph])
+                prediction_original = classifier_original.predict(np.delete(data_original_df.values, class_index_original, axis=1))
+                prediction_morph = classifier_morph.predict(np.delete(<<<MORPHTESTDATA>>>.values, <<<MORPHCLASSINDEX>>>, axis=1))
+                
+                if hasattr(classifier_original, 'predict_proba'):
+                    scores_original = classifier_original.predict_proba(np.delete(data_original_df.values, class_index_original, axis=1))
+                    scores_morph = classifier_morph.predict_proba(np.delete(<<<MORPHTESTDATA>>>.values, <<<MORPHCLASSINDEX>>>, axis=1))
+                else:
+                    scores_original = np.array([prediction_original, abs(1-prediction_original)])
+                    scores_morph = np.array([prediction_morph, abs(1-prediction_morph)])
+                
+                <<<EXPECTEDMORPHEDCLASS>>>
+                
+                deviations_class = sum(prediction_morph!=prediction_expected)
+                deviations_score = sum(scores_morph[:,0]!=scores_expected)
+                count_expected_1 = prediction_expected.sum()
+                count_expected_0 = len(prediction_expected)-count_expected_1
+                count_morph_1 = prediction_morph.sum()
+                count_morph_0 = len(prediction_morph)-count_morph_1
+                with warnings.catch_warnings():
+                    warnings.simplefilter("ignore")
+                    pval_chisquare = chisquare([count_morph_0,count_morph_1], [count_expected_0, count_expected_1]).pvalue
+                    pval_kstest = ks_2samp(scores_morph[:,0], scores_expected).pvalue
+                
+                # handles situation if all data is in one class
+                if math.isnan(pval_chisquare) and deviations_class==0:
+                    pval_chisquare = 1.0
+            except Exception as e:
+                no_exception = False
+                exception_type = type(e).__name__
+                exception_message = str(e)
+                exception_stacktrace = traceback.format_exc()
+                deviations_score = -1 #TODO: placeholder values to store in db if test crashes
+                deviations_class = -1
+                pval_chisquare = 1
+                pval_kstest = 1
             
-            if hasattr(classifier_original, 'predict_proba'):
-	            scores_original = classifier_original.predict_proba(np.delete(data_original_df.values, class_index_original, axis=1))
-	            scores_morph = classifier_morph.predict_proba(np.delete(<<<MORPHTESTDATA>>>.values, <<<MORPHCLASSINDEX>>>, axis=1))
-            else:
-	            scores_original = np.array([prediction_original, abs(1-prediction_original)])
-	            scores_morph = np.array([prediction_morph, abs(1-prediction_morph)])
-            
-            <<<EXPECTEDMORPHEDCLASS>>>
-            
-            deviations_class = sum(prediction_morph!=prediction_expected)
-            deviations_score = sum(scores_morph[:,0]!=scores_expected)
-            count_expected_1 = prediction_expected.sum()
-            count_expected_0 = len(prediction_expected)-count_expected_1
-            count_morph_1 = prediction_morph.sum()
-            count_morph_0 = len(prediction_morph)-count_morph_1
-            with warnings.catch_warnings():
-                warnings.simplefilter("ignore")
-                pval_chisquare = chisquare([count_morph_0,count_morph_1], [count_expected_0, count_expected_1]).pvalue
-                pval_kstest = ks_2samp(scores_morph[:,0], scores_expected).pvalue
-            
-            # handles situation if all data is in one class
-            if math.isnan(pval_chisquare) and deviations_class==0:
-                pval_chisquare = 1.0
-            testcase_name = inspect.stack()[0][3]
-            
-            <<<MYSQLEVALMORPH>>>self.assert_morphtest(<<<EVALUATIONTYPE>>>, testcase_name, iter, deviations_class, deviations_score, pval_chisquare, deviations_class)
+            <<<MYSQLEVALMORPH>>>self.assert_morphtest(<<<EVALUATIONTYPE>>>, testcase_name, iter, deviations_class, deviations_score, pval_chisquare, deviations_class, no_exception, exception_type, exception_message, exception_stacktrace)
 

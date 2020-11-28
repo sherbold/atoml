@@ -1,39 +1,58 @@
-    @Test(timeout=21600000)
+    @Test(timeout=600000)
     public void test_<<<NAME>>>_<<<DATASET>>>() throws Exception {
         for(int iter=1; iter<=<<<ITERATIONS>>>; iter++) {
+            boolean passed = true;
+            String message = null;
+            String exception = null;
+            String stacktrace = null;
+            int deviationsCounts = 0;
+            int deviationsScores = 0;
+            int[] expectedMorphCounts = new int[2];
+            int[] morphedCounts = new int[2];
+            
             Instances data = loadData("/morphdata/<<<DATASET>>>_" + iter + ".arff");
             Instances morphedData = loadData("/morphdata/<<<DATASET>>>_" + iter + "_<<<NAME>>>.arff");
 
-            Classifier classifier = AbstractClassifier.forName("<<<PACKAGENAME>>>.<<<CLASSIFIER>>>", Arrays.copyOf(parameters, parameters.length));
-		    classifier.buildClassifier(data);
-            Classifier morphedClassifier = AbstractClassifier.forName("<<<PACKAGENAME>>>.<<<CLASSIFIER>>>", Arrays.copyOf(parameters, parameters.length));
-            morphedClassifier.buildClassifier(morphedData);
-            
-            int deviationsCounts = 0;
-            int deviationsScores = 0;
-            long[] expectedMorphCounts = new long[2];
             double[] expectedMorphDistributions = new double[data.size()];
-            long[] morphedCounts = new long[2] ;
             double[] morphedDistributions = new double[data.size()];
-            for (int i = 0; i < data.size(); i++) {
-                double originalClass = classifier.classifyInstance(data.instance(i));
-                double expectedMorphedClass;
-			    <<<EXPECTEDMORPHEDCLASS>>>
-                expectedMorphCounts[(int) expectedMorphedClass]++;
-                expectedMorphDistributions[i] = classifier.distributionForInstance(data.instance(i))[(int) originalClass]; 
-                double morphedClass = morphedClassifier.classifyInstance(<<<TESTDATA>>>.instance(i));
-			    morphedCounts[(int) morphedClass]++;
-			    morphedDistributions[i] = morphedClassifier.distributionForInstance(<<<TESTDATA>>>.instance(i))[(int) morphedClass]; 
-			    
-                if (!(Double.compare(expectedMorphedClass, morphedClass) == 0)) {
-                    deviationsCounts++;
+
+            try {
+                Classifier classifier = AbstractClassifier.forName("<<<PACKAGENAME>>>.<<<CLASSIFIER>>>", Arrays.copyOf(parameters, parameters.length));
+                classifier.buildClassifier(data);
+                Classifier morphedClassifier = AbstractClassifier.forName("<<<PACKAGENAME>>>.<<<CLASSIFIER>>>", Arrays.copyOf(parameters, parameters.length));
+                morphedClassifier.buildClassifier(morphedData);
+
+                for (int i = 0; i < data.size(); i++) {
+                    double originalClass = classifier.classifyInstance(data.instance(i));
+                    double expectedMorphedClass;
+                    <<<EXPECTEDMORPHEDCLASS>>>
+                    expectedMorphCounts[(int) expectedMorphedClass]++;
+                    expectedMorphDistributions[i] = classifier.distributionForInstance(data.instance(i))[(int) originalClass]; 
+                    double morphedClass = morphedClassifier.classifyInstance(<<<TESTDATA>>>.instance(i));
+                    morphedCounts[(int) morphedClass]++;
+                    morphedDistributions[i] = morphedClassifier.distributionForInstance(<<<TESTDATA>>>.instance(i))[(int) morphedClass]; 
+
+                    if (!(Double.compare(expectedMorphedClass, morphedClass) == 0)) {
+                        deviationsCounts++;
+                    }
+                    if (!(Double.compare(expectedMorphDistributions[i], morphedDistributions[i]) == 0)) {
+                        deviationsScores++;
+                    }
                 }
-                if (!(Double.compare(expectedMorphDistributions[i], morphedDistributions[i]) == 0)) {
-                    deviationsScores++;
-                }
+            } catch(Throwable e) {
+                passed = false;
+                message = e.getMessage();
+                exception = e.getClass().getName();
+                StringWriter sw = new StringWriter();
+                PrintWriter pw = new PrintWriter(sw);
+                e.printStackTrace(pw);
+                stacktrace = sw.toString();
+                deviationsCounts = -1;
+                deviationsScores = -1;
             }
+
             String nameWithoutParams = testname.getMethodName().split("\\\\[")[0]; 
-            <<<MYSQLEVALMORPH>>>assertMorphTest(<<<EVALUATIONTYPE>>>, nameWithoutParams, iter, deviationsCounts, deviationsScores, data.size(), expectedMorphCounts, morphedCounts, expectedMorphDistributions, morphedDistributions);
+            <<<MYSQLEVALMORPH>>>assertMorphTest(<<<EVALUATIONTYPE>>>, nameWithoutParams, iter, deviationsCounts, deviationsScores, data.size(), expectedMorphCounts, morphedCounts, expectedMorphDistributions, morphedDistributions, passed, message, exception, stacktrace);
         }
     }
 

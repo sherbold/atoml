@@ -1,23 +1,24 @@
 package <<<PACKAGENAME>>>;
 
 import static org.junit.Assert.*;
-import org.junit.Test;
-import org.junit.rules.TestName;
-import org.junit.After;
-import org.junit.Before;
+import org.junit.AfterClass;
+import org.junit.BeforeClass;
 import org.junit.FixMethodOrder;
 import org.junit.Rule;
+import org.junit.Test;
+import org.junit.rules.TestName;
 import org.junit.runner.RunWith;
 import org.junit.runners.MethodSorters;
 import org.junit.runners.Parameterized;
 import org.junit.runners.Parameterized.Parameter;
 import org.junit.runners.Parameterized.Parameters;
 
-
-
 import javax.annotation.Generated;
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
+import java.io.IOException;
+import java.io.PrintWriter;
+import java.io.StringWriter;
 import java.lang.reflect.Method;
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
@@ -25,10 +26,11 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
-import java.io.IOException;
+
 import weka.core.Attribute;
 import weka.core.Instances;
-import org.apache.commons.math3.stat.inference.TestUtils;
+import smile.stat.hypothesis.KSTest;
+import smile.stat.hypothesis.ChiSqTest;
 import org.apache.spark.sql.Dataset;
 import org.apache.spark.sql.Row;
 import org.apache.spark.sql.RowFactory;
@@ -69,50 +71,55 @@ public class <<<CLASSNAME>>> {
     @Parameter(1)
     public String parameterName;
 
-    private void assertMorphTest(String evaluationType, String testcaseName, int iteration, int deviationsCounts, int deviationsScores, int testsize, long[] expectedMorphCounts, long[] morphedCounts, double[] expectedMorphedDistributions, double[] morphedDistributions) {
-        if( "score_exact".equalsIgnoreCase(evaluationType) ) {
-            String message = String.format("results different (deviations of scores: %d out of %d)", deviationsScores, testsize);
-            assertTrue(message, deviationsScores==0);
-        }
-        else if( "class_exact".equalsIgnoreCase(evaluationType) ) {
-            String message = String.format("results different (deviations of classes: %d out of %d)", deviationsCounts, testsize);
-            assertTrue(message, deviationsCounts==0);
-        }
-        else if( "class_stat".equalsIgnoreCase(evaluationType) ) {
-            double pValueCounts;
-            if( deviationsCounts>0 ) {
-                pValueCounts = TestUtils.chiSquareTestDataSetsComparison(expectedMorphCounts, morphedCounts);
-            } else {
-                pValueCounts = 1.0;
+    private void assertMorphTest(String evaluationType, String testcaseName, int iteration, int deviationsCounts, int deviationsScores, int testsize, int[] expectedMorphCounts, int[] morphedCounts, double[] expectedMorphedDistributions, double[] morphedDistributions, boolean passed, String errorMessage, String exception, String stacktrace) {
+        if (passed) {
+            if( "score_exact".equalsIgnoreCase(evaluationType) ) {
+                String message = String.format("results different (deviations of scores: %d out of %d)", deviationsScores, testsize);
+                assertTrue(message, deviationsScores==0);
             }
-            String message = String.format("results significantly different, p-value = %f (deviations of classes: %d out of %d)", pValueCounts, deviationsCounts, testsize);
-            assertTrue(message, pValueCounts>0.05);
-        } 
-        else if( "score_stat".equalsIgnoreCase(evaluationType) ) {
-            double pValueKS;
-            if( deviationsScores>0 ) {
-                pValueKS = TestUtils.kolmogorovSmirnovTest(expectedMorphedDistributions, morphedDistributions);
-            } else {
-                pValueKS = 1.0;
+            else if( "class_exact".equalsIgnoreCase(evaluationType) ) {
+                String message = String.format("results different (deviations of classes: %d out of %d)", deviationsCounts, testsize);
+                assertTrue(message, deviationsCounts==0);
             }
-            String message = String.format("score distributions significantly different, p-value = %f (deviations of scores: %d out of %d)", pValueKS, deviationsScores, testsize);
-            assertTrue(message, pValueKS>0.05);
+            else if( "class_stat".equalsIgnoreCase(evaluationType) ) {
+                double pValueCounts;
+                if( deviationsCounts>0 ) {
+                    pValueCounts = ChiSqTest.test(expectedMorphCounts, morphedCounts).pvalue;
+                } else {
+                    pValueCounts = 1.0;
+                }
+                String message = String.format("results significantly different, p-value = %f (deviations of classes: %d out of %d)", pValueCounts, deviationsCounts, testsize);
+                assertTrue(message, pValueCounts>0.05);
+            } 
+            else if( "score_stat".equalsIgnoreCase(evaluationType) ) {
+                double pValueKS;
+                if( deviationsScores>0 ) {
+                    pValueKS = KSTest.test(expectedMorphedDistributions, morphedDistributions).pvalue;
+                } else {
+                    pValueKS = 1.0;
+                }
+                String message = String.format("score distributions significantly different, p-value = %f (deviations of scores: %d out of %d)", pValueKS, deviationsScores, testsize);
+                assertTrue(message, pValueKS>0.05);
+            } else {
+                throw new RuntimeException("invalid evaluation type for morph test: " + evaluationType + " (allowed: exact, classification, score)");
+            }
         } else {
-            throw new RuntimeException("invalid evaluation type for morph test: " + evaluationType + " (allowed: exact, classification, score)");
+            String message = errorMessage + '\n' + exception + '\n' + stacktrace;
+            assertTrue(message, passed);
         }
     }
     
 
-    private SparkSession sparkSession;
+    private static SparkSession sparkSession;
     
-    @Before
-    public void setUp() {
+    @BeforeClass
+    public static void setUpClass() {
         sparkSession = SparkSession.builder().appName("Logistic_Default_AtomlTest").master("local[1]").getOrCreate();
         sparkSession.sparkContext().setLogLevel("WARN");
     }
     
-    @After
-    public void tearDown() {
+    @AfterClass
+    public static void tearDownClass() {
         sparkSession.stop();
     }
 

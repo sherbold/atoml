@@ -1581,7 +1581,7 @@ framework: sklearn
 type: classification
 package:  sklearn.tree
 class: DecisionTreeClassifier
-features: double
+features: [double,categorical]
 properties:
   same: score_exact
   scramble: score_exact
@@ -1657,7 +1657,7 @@ framework: sklearn
 type: classification
 package:  sklearn.tree
 class: ExtraTreeClassifier
-features: double
+features: [double,categorical]
 properties:
   same: score_exact
   scramble: score_exact
@@ -1733,7 +1733,7 @@ framework: sklearn
 type: classification
 package:  sklearn.ensemble
 class: RandomForestClassifier
-features: double
+features: [double,categorical]
 properties:
   same: score_exact
   scramble: score_exact
@@ -1815,7 +1815,7 @@ framework: sklearn
 type: classification
 package:  sklearn.dummy
 class: DummyClassifier
-features: double
+features: [double,categorical]
 properties:
   same: score_exact
   scramble: score_exact
@@ -1883,7 +1883,7 @@ framework: sklearn
 type: classification
 package:  sklearn.linear_model
 class: PassiveAggressiveClassifier
-features: double
+features: [double,categorical]
 properties:
   same: score_exact
   scramble: score_exact
@@ -1947,7 +1947,7 @@ framework: sklearn
 type: classification
 package:  sklearn.linear_model
 class: RidgeClassifier
-features: double
+features: [double,categorical]
 properties:
   same: score_exact
   scramble: score_exact
@@ -1999,7 +1999,7 @@ framework: sklearn
 type: classification
 package:  sklearn.linear_model
 class: SGDClassifier
-features: double
+features: [double,categorical]
 properties:
   same: score_exact
   scramble: score_exact
@@ -2089,7 +2089,7 @@ framework: sklearn
 type: classification
 package:  sklearn.naive_bayes
 class: BernoulliNB
-features: double
+features: [double,categorical]
 properties:
   same: score_exact
   scramble: score_exact
@@ -2340,7 +2340,7 @@ framework: sklearn
 type: classification
 package:  sklearn.neural_network
 class: MLPClassifier
-features: double
+features: [double,categorical]
 properties:
   same: score_exact
   scramble: score_exact
@@ -2441,12 +2441,12 @@ parameters:
     default: 15000
 ---
 
-name: SKLEARN_LinearSVC
+name: SKLEARN_LinearSVCNoDual
 framework: sklearn
 type: classification
 package:  sklearn.svm
 class: LinearSVC
-features: double
+features: [double,categorical]
 properties:
   same: score_exact
   scramble: score_exact
@@ -2467,7 +2467,68 @@ parameters:
     default: squared_hinge
   dual:
     type: values
+    values: [False]
+    default: False
+  tol:
+    type: values
+    values: [0.0001]
+    default: 0.0001
+  C: # regularization parameter
+    type: double
+    min: 0.1
+    max: 1.9
+    stepsize: 0.9
+    default: 1.0
+  fit_intercept:
+    type: values
     values: [True, False]
+    default: True
+  intercept_scaling:
+    type: double
+    min: 0.5
+    max: 1.5
+    stepsize: 0.5
+    default: 1.0
+  class_weight:
+    type: values
+    values: [balanced, None]
+    default: None
+  max_iter:
+    type: integer
+    min: 1
+    max: 1999
+    stepsize: 999
+    default: 1000
+# ignored multi_class
+---
+
+name: SKLEARN_LinearSVCDual
+framework: sklearn
+type: classification
+package:  sklearn.svm
+class: LinearSVC
+features: [double,categorical]
+properties:
+  same: score_exact
+  scramble: score_exact
+  reorder: score_exact
+  const: score_exact
+  opposite: score_exact
+  rotate: class_exact
+  rescale: class_exact
+  clone: class_exact
+parameters:
+  penalty:
+    type: values
+    values: [l2]
+    default: l2
+  loss:
+    type: values
+    values: [hinge, squared_hinge]
+    default: squared_hinge
+  dual:
+    type: values
+    values: [True]
     default: True
   tol:
     type: values
@@ -2507,7 +2568,7 @@ framework: sklearn
 type: classification
 package:  sklearn.svm
 class: NuSVC
-features: double
+features: [double,categorical]
 properties:
   same: score_exact
   scramble: score_exact
@@ -2553,7 +2614,7 @@ framework: sklearn
 type: classification
 package:  sklearn.svm
 class: NuSVC
-features: double
+features: [double,categorical]
 properties:
   same: score_exact
   scramble: score_exact
@@ -2607,7 +2668,7 @@ framework: sklearn
 type: classification
 package:  sklearn.svm
 class: NuSVC
-features: double
+features: [double,categorical]
 properties:
   same: score_exact
   scramble: score_exact
@@ -2659,7 +2720,7 @@ framework: sklearn
 type: classification
 package:  sklearn.svm
 class: SVC
-features: double
+features: [double,categorical]
 properties:
   same: score_exact
   scramble: score_exact
@@ -2709,7 +2770,7 @@ framework: sklearn
 type: classification
 package:  sklearn.svm
 class: SVC
-features: double
+features: [double,categorical]
 properties:
   same: score_exact
   scramble: score_exact
@@ -2767,7 +2828,7 @@ framework: sklearn
 type: classification
 package:  sklearn.svm
 class: SVC
-features: double
+features: [double,categorical]
 properties:
   same: score_exact
   scramble: score_exact
@@ -3035,7 +3096,7 @@ framework: sklearn
 type: classification
 package:  sklearn.linear_model
 class: Perceptron
-features: double
+features: [double,categorical]
 properties:
   same: score_exact
   scramble: score_exact
@@ -3451,10 +3512,6 @@ parameters:
     type: values
     values: [True, False]
     default: True
-  n_jobs: # number of jobs to use for computation, None equals 1, -1 equals all processors
-    type: values
-    values: [-1, 2, None]
-    default: None
   algorithm: # which k-means algorithm to use
     type: values
     values: [auto, full, elkan]
