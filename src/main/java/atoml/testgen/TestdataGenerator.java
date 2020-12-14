@@ -13,6 +13,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.stream.IntStream;
 
+import org.apache.commons.math3.distribution.NormalDistribution;
 import org.apache.commons.math3.distribution.UniformRealDistribution;
 
 import atoml.classifiers.FeatureType;
@@ -90,6 +91,7 @@ public class TestdataGenerator {
 		int[] featureTypes = IntStream.generate(() -> 10).limit(numFeatures).toArray();
 		List<DataDescription> morphtestDataDescriptions = new ArrayList<>();
 		morphtestDataDescriptions.add(new DataDescription("RANDNUM", numFeatures, 0, numInstances, new UniformRealDistribution(), 0.5, null, Arrays.asList(FeatureType.UNIT)));
+		morphtestDataDescriptions.add(new DataDescription("SEPARABLE", numFeatures, numFeatures, numInstances, new NormalDistribution(0,0.5), new NormalDistribution(5,0.5), 0, null, Arrays.asList(FeatureType.UNIT)));
 		morphtestDataDescriptions.add(new DataDescription("UNIFORM", numFeatures, numFeatures/2, numInstances, new UniformRealDistribution(), 0.1, null, Arrays.asList(FeatureType.UNIT)));
 		morphtestDataDescriptions.add(new DataDescription("RANDCAT",numFeatures, 0, numInstances, new UniformRealDistribution(), 0.5, featureTypes, Arrays.asList(FeatureType.CATEGORICAL)));
 		morphtestDataDescriptions.add(new DataDescription("CATEGORICAL", numFeatures, numFeatures/2, numInstances, new UniformRealDistribution(), 0.1, featureTypes, Arrays.asList(FeatureType.CATEGORICAL)));
@@ -103,12 +105,12 @@ public class TestdataGenerator {
 			for( SmokeTest smokeTest : smokeTests ) {
 				if( smokeTest.isRandomized() || iteration==1 ) {
 					smokeTest.generateData(numFeatures, numInstances, iteration);
-					try(BufferedWriter writer = new BufferedWriter(new FileWriter(datapath + "smokedata/" + smokeTest.getName() + "_" + iteration + "_training.arff"));) {
+					try(BufferedWriter writer = new BufferedWriter(new FileWriter(datapath + "smokedata/" + smokeTest.getName() + "_" + iteration + "_training.arff"))) {
 						writer.write(smokeTest.getData().toString());
 					} catch(IOException e) {
 						throw new RuntimeException("could not write data for smoke test " + smokeTest.getName(), e);
 					}
-					try(BufferedWriter writer = new BufferedWriter(new FileWriter(datapath + "smokedata/" + smokeTest.getName() + "_" + iteration + "_test.arff"));) {
+					try(BufferedWriter writer = new BufferedWriter(new FileWriter(datapath + "smokedata/" + smokeTest.getName() + "_" + iteration + "_test.arff"))) {
 						writer.write(smokeTest.getTestData().toString());
 					} catch(IOException e) {
 						throw new RuntimeException("could not write data for smoke test " + smokeTest.getName(), e);
@@ -130,7 +132,7 @@ public class TestdataGenerator {
 						throw new RuntimeException("unsupported data description type: " + dataDescription.getType());
 					}
 					
-					try (BufferedWriter writer = new BufferedWriter(new FileWriter(datapath + "morphdata/" + dataDescription + "_" + iteration + ".arff"));) {
+					try (BufferedWriter writer = new BufferedWriter(new FileWriter(datapath + "morphdata/" + dataDescription + "_" + iteration + ".arff"))) {
 						writer.write(originalData.toString());
 					} catch(Exception e) {
 						throw new RuntimeException("could not write data " + dataDescription.getName(), e);
@@ -139,7 +141,7 @@ public class TestdataGenerator {
 						metamorphicTest.setSeed(iteration);
 						if( metamorphicTest.isCompatibleWithData(dataDescription) ) {
 							Instances morphedData = metamorphicTest.morphData(originalData);
-							try (BufferedWriter writer = new BufferedWriter(new FileWriter(datapath + "morphdata/" + dataDescription + "_" + iteration + "_" + metamorphicTest.getName() + ".arff"));) {
+							try (BufferedWriter writer = new BufferedWriter(new FileWriter(datapath + "morphdata/" + dataDescription + "_" + iteration + "_" + metamorphicTest.getName() + ".arff"))) {
 								writer.write(morphedData.toString());
 							} catch(Exception e) {
 								throw new RuntimeException("could not write data for metamorphic test " + metamorphicTest.getName(), e);
@@ -156,7 +158,7 @@ public class TestdataGenerator {
 		Instances data;
         InputStreamReader originalFile = new InputStreamReader(
                  this.getClass().getResourceAsStream(resource));
-        try(BufferedReader reader = new BufferedReader(originalFile);) {
+        try(BufferedReader reader = new BufferedReader(originalFile)) {
             data = new Instances(reader);
         }
         catch (IOException e) {

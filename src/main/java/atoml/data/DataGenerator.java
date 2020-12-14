@@ -29,6 +29,7 @@ public class DataGenerator {
 				dataDescription.getNumInformative(),
 				dataDescription.getNumInstances(),
 				dataDescription.getDistribution(),
+				dataDescription.getDistribution2(),
 				dataDescription.getNoiseRate(),
 				seed,
 				dataDescription.getFeatureTypes());
@@ -92,24 +93,7 @@ public class DataGenerator {
 		}
 		
 		// init empty data set
-		ArrayList<Attribute> attributes = new ArrayList<>();
-		for( int j=0; j<numFeatures; j++ ) {
-			if( featureType[j]>0 ) {
-				List<String> featNames = new ArrayList<>();
-				for( int k=0; k<featureType[j]; k++ ) {
-					featNames.add("feature_" + j + "_name_" + k);
-				}
-				attributes.add(new Attribute("feature_" + j, featNames));
-			} else {
-				attributes.add(new Attribute("feature_" + j));
-			}
-		}
-		List<String> classNames = new ArrayList<>();
-		for( int i=0; i<numClasses; i++ ) {
-			classNames.add("class_" + i);
-		}
-		attributes.add(new Attribute("classAtt", classNames));
-		Instances data = new Instances("zeros", attributes, numInstances);
+		Instances data = initEmptyDataset(numFeatures, numInstances, featureType);
 		
 		data.setRelationName(generateDatasetName(numFeatures, numInformative, numInstances, distribution, noiseRate, seed, featureType));
 		
@@ -162,6 +146,115 @@ public class DataGenerator {
 		}
 				
 		return data;
+	}
+	
+	/**
+	 * Creates new {@link Instances}.
+	 *
+	 * The class is binary and assigned using a hyperplane that intersects the axis of informative features at the mean value of the distribution.
+	 *
+	 * Informative features needs to equal the number of features if created data should be linearly separable.
+	 *
+	 * @param numFeatures number of features (dimension will be +1, because of the class attribute)
+	 * @param numInformative number of informative features, i.e., that is not random with respect to the class
+	 * @param numInstances number of instances
+	 * @param distribution distribution from which the instances are drawn. If this is null, all values are generated as 0 and the classification will be random
+	 * @param distribution2 distribution to draw instances for second class from. If this is null, all values are generated as 0 and the classification will be random   
+	 * @param noiseRate white noise that is applied to the classification
+	 * @param seed seed that is used all random numbers drawn by this generator
+	 * @return generated data
+	 */
+	public static Instances generateData(int numFeatures, int numInformative, int numInstances, AbstractRealDistribution distribution, AbstractRealDistribution distribution2, double noiseRate, long seed) {
+		return generateData(numFeatures, numInformative, numInstances, distribution, distribution2, noiseRate, seed, IntStream.generate(() -> 0).limit(numFeatures).toArray());
+	}
+	
+	/**
+	 * Creates new {@link Instances}.
+	 *
+	 * The class is binary and assigned using two distributions to draw instances from that do not overlap. If one distribution is null using a hyperplane that intersects the axis of informative features at the mean value of the distribution.
+	 *
+	 * Informative features needs to equal the number of features if created data should be linearly separable.
+	 *
+	 * @param numFeatures number of features (dimension will be +1, because of the class attribute)
+	 * @param numInformative number of informative features, i.e., that is not random with respect to the class
+	 * @param numInstances number of instances
+	 * @param distribution distribution from which the instances are drawn. If this is null, all values are generated as 0 and the classification will be random
+	 * @param distribution2 distribution to draw instances for second class from. If this is null, all values are generated as 0 and the classification will be random
+	 * @param noiseRate white noise that is applied to the classification
+	 * @param seed seed that is used all random numbers drawn by this generator
+	 * @param featureType Can be used to define categorical features. The length of the array must be equal to numFeatures, values greater than 0 indicate that the feature should be categorical with n categories. All categorical features are assumed to be ordinal in terms of generated labels. The number of values for each category should be roughly uniformly distributed. 
+	 * @return generated data
+	 */
+	public static Instances generateData(int numFeatures, int numInformative, int numInstances, AbstractRealDistribution distribution, AbstractRealDistribution distribution2, double noiseRate, long seed, int[] featureType) {
+		if (distribution2 == null) {
+			return generateData(numFeatures, numInformative, numInstances, distribution, noiseRate, seed, featureType);
+		}
+		if (numFeatures<1 || numFeatures>100) {
+			throw new RuntimeException("invalid number of features, must be in [1, 100]: "+numFeatures);
+		}
+		if (numInformative<0 || numInformative>numFeatures) {
+			throw new RuntimeException("invalid number of informative features, must be in [0, numFeatures]: numInformative="+numInformative+"; numFeatures="+numFeatures);
+		}
+		if (numInstances<0 || numInstances>1000000) {
+			throw new RuntimeException("invalid number of instances, must be in [1, 1000000]: " + numInstances);
+		}
+		if (noiseRate != 0.0) {
+			throw new RuntimeException("invalid noise rate, must be in 0.0 for separable data: " + noiseRate);
+		}
+		if (featureType.length != numFeatures) {
+			throw new RuntimeException("invalid number of feature types, must be of length numFeatures");
+		}
+		for (int j=0; j<numFeatures; j++) {
+			if ( featureType[j]>10000 ) {
+				throw new RuntimeException("invalid number of categorical classes for feature " + j + " (max. 10000 allowed): " + featureType[j]);
+			}
+		}
+		if (numInformative != numFeatures) {
+			throw new RuntimeException("number of informative features must be equal to number of features for separable data creation: numInformative=" + numInformative + "; numFeatures=" + numFeatures);
+		}
+		if (Math.abs(distribution.getNumericalMean() - distribution2.getNumericalMean()) < (4 * distribution.getNumericalVariance() + 4 * distribution2.getNumericalVariance())) {
+			throw new RuntimeException("distributions are overlapping, adjust variance or mean: mean1="+distribution.getNumericalMean()+"; " + "mean2="+distribution2.getNumericalMean() + "; " + "variance1="+distribution.getNumericalVariance() + "; " + "variance2="+distribution2.getNumericalVariance());
+		}
+
+		// init empty data set
+		Instances data = initEmptyDataset(numFeatures, numInstances, featureType);
+		
+		data.setRelationName(generateDatasetName(numFeatures, numInformative, numInstances, distribution, noiseRate, seed, featureType));
+		
+		distribution.reseedRandomGenerator(seed);
+		distribution2.reseedRandomGenerator(seed);
+		
+		//draw instances from both distributions and label them
+		for (int i= 0; i < numInstances/2; i++) {
+			double[] class0Instance = distribution.sample(numFeatures +1);
+			double[] class1Instance = distribution2.sample(numFeatures +1);
+			class0Instance[numFeatures] = 0;
+			class1Instance[numFeatures] = 1;
+			data.add(new DenseInstance(1.0, class0Instance));
+			data.add(new DenseInstance(1.0, class1Instance));
+		}
+		return data;
+	}
+	
+	private static Instances initEmptyDataset(int numFeatures, int numInstances, int[] featureType){
+		ArrayList<Attribute> attributes = new ArrayList<>();
+		for (int j = 0; j < numFeatures; j++) {
+			if ( featureType[j] > 0 ) {
+				List<String> featNames = new ArrayList<>();
+				for (int k = 0; k < featureType[j]; k++) {
+					featNames.add("feature_" + j + "_name_" + k);
+				}
+				attributes.add(new Attribute("feature_" + j, featNames));
+			} else {
+				attributes.add(new Attribute("feature_" + j));
+			}
+		}
+		List<String> classNames = new ArrayList<>();
+		for (int i = 0; i < numClasses; i++) {
+			classNames.add("class_" + i);
+		}
+		attributes.add(new Attribute("classAtt", classNames));
+		return new Instances("zeros", attributes, numInstances);
 	}
 	
 	private static String generateDatasetName(int numFeatures, int numInformative, int numInstances, AbstractRealDistribution distribution, double noiseRate, long seed, int[] featureTypes) {
