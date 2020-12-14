@@ -2879,7 +2879,7 @@ parameters:
 # decision_function_shape, break_ties ignored because we only have binary problems so far    
 ---
 
-name: SKLEARN_LinearDiscriminantAnalysis_SVD
+name: SKLEARN_LinearDiscriminantAnalysisSVD
 framework: sklearn
 type: classification
 package:  sklearn.discriminant_analysis
@@ -2920,7 +2920,7 @@ parameters:
 # priors ignored
 ---
 
-name: SKLEARN_LinearDiscriminantAnalysis_LsqrEigen
+name: SKLEARN_LinearDiscriminantAnalysisLsqrEigen
 framework: sklearn
 type: classification
 package:  sklearn.discriminant_analysis
@@ -3232,11 +3232,15 @@ parameters:
   preference: # preferences for each point, points with larger preference values are more likely to be chosen as exemplars
     type: values
     values: [1.0, None]
-    default: None
+    default: 1.0
 #  affinity: # which affinity to use
 #    type: values
 #    values: [euclidean, precomputed]
 #    default: euclidean
+  random_state: # seed for starting state None=random
+    type: values
+    values: [0, None]
+    default: 0
   verbose: # be verbose or not
     type: values
     values: [True, False]
@@ -3316,7 +3320,7 @@ parameters:
     default: 2
   affinity: # metric used to compute linkage
     type: values
-    values: [euclidean, l1, l2, manhattan, cosine, precomputed]
+    values: [euclidean, l1, l2, manhattan, cosine]
     default: euclidean
   compute_full_tree: # early stop of construction of tree to decrease computation time
     type: values
@@ -3496,10 +3500,6 @@ parameters:
     type: values
     values: [0.000001, 0.00001, 0.0001, 0.001, 0.01]
     default: 0.0001
-  precompute_distances: # precompute distances for speedup, but takes more memory
-    type: values
-    values: [auto, True, False]
-    default: auto
   verbose: # be verbose or not
     type: values
     values: [0, 1]
@@ -3650,9 +3650,9 @@ parameters:
     default: 5
   max_eps: # maximum distance between two samples for one to be considered as in the neighborhood of the other, optional
     type: values
-    values: [0.1, 1.0, 10.0]
-    default: 1.0
-  metric: # metric used for distance computation, only sklearn's metrices used
+    values: [1.0, 5.0, 10.0]
+    default: 5.0
+  metric: # metric used for distance computation, only sklearn metrics used
     type: values
     values: [cityblock, cosine, euclidean, l1, l2, manhattan, minkowski]
     default: minkowski
@@ -3668,7 +3668,7 @@ parameters:
     default: xi
   eps: # maximum distance between two samples for one to be considered as in the neighborhood of the other
     type: values
-    values: [None, 0.1, 1.0, 10.0]
+    values: [None, 1.0, 5.0, 10.0]
     default: None
   xi: # determines minimum steepness on the reachability plot that constitues a cluster boundary
     type: values
