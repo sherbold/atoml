@@ -153,7 +153,7 @@ public class DataGenerator {
 	 *
 	 * The class is binary and assigned using a hyperplane that intersects the axis of informative features at the mean value of the distribution.
 	 *
-	 * Informative features needs to equal the number of features if created data should be linearly separable.
+	 * Informative features needs to equal the number of features and noise rate should be 0 if created data should be linearly separable.
 	 *
 	 * @param numFeatures number of features (dimension will be +1, because of the class attribute)
 	 * @param numInformative number of informative features, i.e., that is not random with respect to the class
@@ -173,7 +173,7 @@ public class DataGenerator {
 	 *
 	 * The class is binary and assigned using two distributions to draw instances from that do not overlap. If one distribution is null using a hyperplane that intersects the axis of informative features at the mean value of the distribution.
 	 *
-	 * Informative features needs to equal the number of features if created data should be linearly separable.
+	 * Informative features needs to equal the number of features and noise rate should be 0 if created data should be linearly separable.
 	 *
 	 * @param numFeatures number of features (dimension will be +1, because of the class attribute)
 	 * @param numInformative number of informative features, i.e., that is not random with respect to the class
@@ -223,6 +223,8 @@ public class DataGenerator {
 		
 		distribution.reseedRandomGenerator(seed);
 		distribution2.reseedRandomGenerator(seed);
+		RandomDataGenerator noiseGenerator = new RandomDataGenerator();
+		noiseGenerator.reSeed(seed);
 		
 		//draw instances from both distributions and label them
 		for (int i= 0; i < numInstances/2; i++) {
@@ -230,6 +232,14 @@ public class DataGenerator {
 			double[] class1Instance = distribution2.sample(numFeatures +1);
 			class0Instance[numFeatures] = 0;
 			class1Instance[numFeatures] = 1;
+			//flip random labels according to noiseRate
+			if (noiseGenerator.nextUniform(0, 1)<noiseRate) {
+				class0Instance[numFeatures]=1;
+				class1Instance[numFeatures]=0;
+			} else {
+				class1Instance[numFeatures]=0;
+				class0Instance[numFeatures]=1;
+			}
 			data.add(new DenseInstance(1.0, class0Instance));
 			data.add(new DenseInstance(1.0, class1Instance));
 		}
