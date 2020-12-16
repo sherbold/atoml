@@ -198,8 +198,8 @@ public class DataGenerator {
 		if (numInstances<0 || numInstances>1000000) {
 			throw new RuntimeException("invalid number of instances, must be in [1, 1000000]: " + numInstances);
 		}
-		if (noiseRate != 0.0) {
-			throw new RuntimeException("invalid noise rate, must be in 0.0 for separable data: " + noiseRate);
+		if (noiseRate<0.0 || noiseRate>1.0) {
+			throw new RuntimeException("invalid noise rate, must be in [0.0,1.0]: " + noiseRate);
 		}
 		if (featureType.length != numFeatures) {
 			throw new RuntimeException("invalid number of feature types, must be of length numFeatures");
@@ -230,15 +230,14 @@ public class DataGenerator {
 		for (int i= 0; i < numInstances/2; i++) {
 			double[] class0Instance = distribution.sample(numFeatures +1);
 			double[] class1Instance = distribution2.sample(numFeatures +1);
-			class0Instance[numFeatures] = 0;
-			class1Instance[numFeatures] = 1;
+
 			//flip random labels according to noiseRate
 			if (noiseGenerator.nextUniform(0, 1)<noiseRate) {
 				class0Instance[numFeatures]=1;
 				class1Instance[numFeatures]=0;
 			} else {
-				class1Instance[numFeatures]=0;
-				class0Instance[numFeatures]=1;
+				class1Instance[numFeatures]=1;
+				class0Instance[numFeatures]=0;
 			}
 			data.add(new DenseInstance(1.0, class0Instance));
 			data.add(new DenseInstance(1.0, class1Instance));

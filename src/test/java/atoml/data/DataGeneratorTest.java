@@ -58,6 +58,22 @@ public class DataGeneratorTest {
 	}
 	
 	@Test
+	public void testGenerateData_differentSeedTwoDistributions() {
+		Instances data = DataGenerator.generateData(10, 10, 20, new NormalDistribution(0.0, 1.0), new NormalDistribution(9.0, 1.0), 0.1, 1);
+		Instances data2 = DataGenerator.generateData(10, 10, 20, new NormalDistribution(0.0, 1.0), new NormalDistribution(9.0, 1.0), 0.1, 2);
+		
+		int differences = 0;
+		for( int i=0; i<data.numInstances(); i++) {
+			for( int j=0; j<data.numAttributes(); j++ ) {
+				if(Double.compare(data.instance(i).value(j), data2.instance(i).value(j))!=0) {
+					differences++;
+				}
+			}
+		}
+		assertTrue("no differences, even though seeds are different", differences>0);
+	}
+	
+	@Test
 	public void testGenerateData_noise() {
 		Instances data = DataGenerator.generateData(10, 5, 20, new NormalDistribution(0.0, 1.0), 0.0, 1);
 		Instances data2 = DataGenerator.generateData(10, 5, 20, new NormalDistribution(0.0, 1.0), 0.1, 1);
@@ -73,6 +89,27 @@ public class DataGeneratorTest {
 		assertTrue("no differences, even though there should be noise are different", differences>0);
 	}
 	
+	@Test
+	public void testGenerateData_noiseTwoDistributions() {
+		Instances data = DataGenerator.generateData(10, 10, 10, new NormalDistribution(0.0, 1.0), new NormalDistribution(9.0, 1.0), 0.0, 1);
+		Instances data2 = DataGenerator.generateData(10, 10, 10, new NormalDistribution(0.0, 1.0), new NormalDistribution(9.0, 1.0), 0.1, 1);
+		
+		int differences = 0;
+		for( int i=0; i<data.numInstances(); i++) {
+			for( int j=0; j<data.numAttributes(); j++ ) {
+				if(Double.compare(data.instance(i).value(j), data2.instance(i).value(j))!=0) {
+					differences++;
+				}
+			}
+		}
+		assertTrue("no differences, even though there should be differences due to noise", differences>0);
+	}
+	
+	@Test(expected=RuntimeException.class)
+	public void testGenerateData_overlappingDistributions() {
+		DataGenerator.generateData(10, 10, 20, new NormalDistribution(0.0, 1.0), new NormalDistribution(5.0, 1.0), 0.0, 1);
+	}
+	
 	@Test(expected=RuntimeException.class)
 	public void testGenerateData_tooFewFeatures() {
 		DataGenerator.generateData(-1, -1, 20, new NormalDistribution(0.0, 1.0), 0.0, 1);
@@ -86,6 +123,11 @@ public class DataGeneratorTest {
 	@Test(expected=RuntimeException.class)
 	public void testGenerateData_tooFewInformative() {
 		DataGenerator.generateData(10, -1, 20, new NormalDistribution(0.0, 1.0), 0.0, 1);
+	}
+	
+	@Test(expected=RuntimeException.class)
+	public void testGenerateData_notEnoughInformativeForTwoDistributions() {
+		DataGenerator.generateData(10, 0, 20, new NormalDistribution(0.0, 1.0), new NormalDistribution(9.0, 1.0), 0.0, 1);
 	}
 	
 	@Test(expected=RuntimeException.class)
