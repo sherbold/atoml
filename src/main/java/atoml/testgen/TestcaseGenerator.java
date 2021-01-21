@@ -33,8 +33,6 @@ public class TestcaseGenerator {
 	
 	private final boolean generateMorphTests;
 
-	private final boolean savePredictions;
-	
 	private final TemplateEngine templateEngine;
 	
 	/**
@@ -43,14 +41,13 @@ public class TestcaseGenerator {
 	 * @param morphtestDataDescriptions descriptions of the data sets used by morph tests
 	 * @param iterations number of iterations for the test (must match with generated data)
 	 */
-	public TestcaseGenerator(Algorithm algorithmUnderTest, List<DataDescription> morphtestDataDescriptions, int iterations, boolean useMysql, boolean generateSmokeTests, boolean generateMorphTests, boolean savePredictions) {
+	public TestcaseGenerator(Algorithm algorithmUnderTest, List<DataDescription> morphtestDataDescriptions, int iterations, boolean useMysql, boolean generateSmokeTests, boolean generateMorphTests) {
 		this.algorithmUnderTest = algorithmUnderTest;
 		this.morphtestDataDescriptions = morphtestDataDescriptions;
 		this.iterations = iterations; 
 		this.useMysql = useMysql;
 		this.generateSmokeTests = generateSmokeTests;
 		this.generateMorphTests = generateMorphTests;
-		this.savePredictions = savePredictions;
 		switch(algorithmUnderTest.getFramework()) {
 		case "weka":
 			templateEngine = new WekaTemplate(algorithmUnderTest);
@@ -152,7 +149,7 @@ public class TestcaseGenerator {
 		}
 
 		String smokeResourceEnding = new String();
-		if( this.savePredictions && this.algorithmUnderTest.getAlgorithmType().equals("classification") ) {
+		if( Boolean.getBoolean("atoml.savepredictions") && this.algorithmUnderTest.getAlgorithmType().equals("classification") ) {
 			smokeResourceEnding = "-smoketest-csv.template";
 		} else {
 			smokeResourceEnding = "-smoketest.template";

@@ -45,7 +45,7 @@ public class TestsuiteGenerator {
 		this.numInstances = numInstances;
 	}
 	
-	public void generateTests(List<Algorithm> algorithmsUnderTest, int iterations, boolean useMysql, boolean generateSmokeTests, boolean generateMorphTests, boolean savePredictions) {
+	public void generateTests(List<Algorithm> algorithmsUnderTest, int iterations, boolean useMysql, boolean generateSmokeTests, boolean generateMorphTests) {
 		// get frameworks from algorithms
 		Set<String> frameworks = new LinkedHashSet<>();
 		for(Algorithm algorithm : algorithmsUnderTest) {
@@ -69,7 +69,7 @@ public class TestsuiteGenerator {
 		
 		for(Algorithm algorithmUnderTest : algorithmsUnderTest ) {
 			LOGGER.info("creating tests for " + algorithmUnderTest.getName() + "...");
-			TestcaseGenerator testcaseGenerator = new TestcaseGenerator(algorithmUnderTest, morphtestDataDescriptions, iterations, useMysql, generateSmokeTests, generateMorphTests, savePredictions);
+			TestcaseGenerator testcaseGenerator = new TestcaseGenerator(algorithmUnderTest, morphtestDataDescriptions, iterations, useMysql, generateSmokeTests, generateMorphTests);
 			String testclassCode = testcaseGenerator.generateSource();
 			
 			Path path = Paths.get(testcasePaths.get(algorithmUnderTest.getFramework())).resolve(testcaseGenerator.getFilePath());
