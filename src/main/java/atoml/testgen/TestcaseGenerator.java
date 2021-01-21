@@ -161,6 +161,7 @@ public class TestcaseGenerator {
 
 		Map<String, String> replacementMap = templateEngine.getSmoketestReplacements(smokeTest);
 		replacementMap.put("<<<NAME>>>", smokeTest.getName());
+		replacementMap.put("<<<TIMEOUT>>>", System.getProperty("atoml."+this.algorithmUnderTest.getFramework()+".timeout"));
 		replacementMap.put("<<<ITERATIONS>>>", Integer.toString(iterations));
 		replacementMap.put("<<<IDENTIFIER>>>", this.algorithmUnderTest.getName());
 		for( String key : replacementMap.keySet()) {
@@ -183,6 +184,7 @@ public class TestcaseGenerator {
 		
 		Map<String,String> replacementMap = templateEngine.getMorphtestReplacements(metamorphicTest);
 		replacementMap.put("<<<NAME>>>", metamorphicTest.getName());
+		replacementMap.put("<<<TIMEOUT>>>", System.getProperty("atoml."+this.algorithmUnderTest.getFramework()+".timeout"));
 		replacementMap.put("<<<DATASET>>>", morphtestDataDescription.getName());
 		replacementMap.put("<<<ITERATIONS>>>", Integer.toString(iterations));
 		for( String key : replacementMap.keySet()) {

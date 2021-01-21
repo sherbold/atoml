@@ -87,6 +87,12 @@ public class CmdParameters {
 		numFeatures.setRequired(false);
 		options.addOption(numFeatures);
 		defaults.put("features", "10");
+
+		Option timeout = new Option("t", "timeout", true,
+				"timeout parameter for the created tests in seconds (default: 21600)");
+		timeout.setRequired(false);
+		options.addOption(timeout);
+		defaults.put("timeout", "21600");
 		
 		Option mysql = new Option("mysql", false,
 				"the results are stored in a local MySQL database if this flag is used");
