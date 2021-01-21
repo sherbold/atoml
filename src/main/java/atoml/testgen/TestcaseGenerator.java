@@ -31,7 +31,9 @@ public class TestcaseGenerator {
 	
 	private final boolean generateSmokeTests;
 	
-	private final boolean generateMorphTests; 
+	private final boolean generateMorphTests;
+
+	private final boolean savePredictions;
 	
 	private final TemplateEngine templateEngine;
 	
@@ -41,13 +43,14 @@ public class TestcaseGenerator {
 	 * @param morphtestDataDescriptions descriptions of the data sets used by morph tests
 	 * @param iterations number of iterations for the test (must match with generated data)
 	 */
-	public TestcaseGenerator(Algorithm algorithmUnderTest, List<DataDescription> morphtestDataDescriptions, int iterations, boolean useMysql, boolean generateSmokeTests, boolean generateMorphTests) {
+	public TestcaseGenerator(Algorithm algorithmUnderTest, List<DataDescription> morphtestDataDescriptions, int iterations, boolean useMysql, boolean generateSmokeTests, boolean generateMorphTests, boolean savePredictions) {
 		this.algorithmUnderTest = algorithmUnderTest;
 		this.morphtestDataDescriptions = morphtestDataDescriptions;
 		this.iterations = iterations; 
 		this.useMysql = useMysql;
 		this.generateSmokeTests = generateSmokeTests;
 		this.generateMorphTests = generateMorphTests;
+		this.savePredictions = savePredictions;
 		switch(algorithmUnderTest.getFramework()) {
 		case "weka":
 			templateEngine = new WekaTemplate(algorithmUnderTest);
@@ -147,13 +150,22 @@ public class TestcaseGenerator {
 		} else {
 			iterations = 1;
 		}
-		
+
+		String smokeResourceEnding = new String();
+		if( this.savePredictions && this.algorithmUnderTest.getAlgorithmType().equals("classification") ) {
+			smokeResourceEnding = "-smoketest-csv.template";
+		} else {
+			smokeResourceEnding = "-smoketest.template";
+		}
 		@SuppressWarnings("resource")
-		String methodBody = new Scanner(this.getClass().getResourceAsStream(getResourcePrefix()+"-smoketest.template"), "UTF-8").useDelimiter("\\A").next();
-		
+		String methodBody = new Scanner(this.getClass().getResourceAsStream(getResourcePrefix()+smokeResourceEnding), "UTF-8").useDelimiter("\\A").next();
+
+
+
 		Map<String, String> replacementMap = templateEngine.getSmoketestReplacements(smokeTest);
 		replacementMap.put("<<<NAME>>>", smokeTest.getName());
 		replacementMap.put("<<<ITERATIONS>>>", Integer.toString(iterations));
+		replacementMap.put("<<<IDENTIFIER>>>", this.algorithmUnderTest.getName());
 		for( String key : replacementMap.keySet()) {
 			methodBody = methodBody.replaceAll(key, replacementMap.get(key));
 		}

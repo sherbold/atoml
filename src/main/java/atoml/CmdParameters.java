@@ -99,9 +99,14 @@ public class CmdParameters {
 		options.addOption(nosmoke);
 		
 		Option nomorph = new Option("nomorph", false,
-				"no metamorphic testa are generated if this flag is used");
+				"no metamorphic tests are generated if this flag is used");
 		nomorph.setRequired(false);
 		options.addOption(nomorph);
+
+		Option savePredictions = new Option("predictions", false,
+				"predictions of smoke tests are saved in csv files if this flag is used");
+		savePredictions.setRequired(false);
+		options.addOption(savePredictions);
 	}
 
 	/**

@@ -1,0 +1,47 @@
+    @Test
+    public void test_<<<NAME>>>() throws Exception {
+        for(int iter=1; iter<=<<<ITERATIONS>>>; iter++) {
+        	<<<MYSQLEVALSMOKE_START>>>Dataset<Row> dataframe = arffToDataset("/smokedata/<<<NAME>>>_" + iter + "_training.arff");
+            Dataset<Row> testdata = arffToDataset("/smokedata/<<<NAME>>>_" + iter + "_test.arff");
+
+            <<<CLASSIFIER>>> classifier = new <<<CLASSIFIER>>>();
+            classifier.setLabelCol("classAtt");
+            try {
+            	Method setSeedMethod = classifier.getClass().getMethod("setSeed", long.class);
+            	setSeedMethod.invoke(classifier, 42);
+            } catch (NoSuchMethodException | SecurityException e) {
+            	// not randomized
+            }
+            setParameters(classifier, parameters);
+
+            ClassificationModel<?, ?> model = classifier.fit(dataframe);
+            Dataset<Row> pred = model.transform(testdata);<<<MYSQLEVALSMOKE_END>>>
+            // create a csv file
+            String filePath = "predictions/pred_<<<IDENTIFIER>>>_<<<NAME>>>_" + iter + ".csv";
+            try {
+                File outFile = new File(filePath);
+                outFile.createNewFile();
+            } catch (IOException e) {
+                System.out.println( "Creating the csv file failed." );
+                e.printStackTrace();
+            }
+            // write in csv
+            try {
+                FileWriter outWriter = new FileWriter(filePath);
+                // write header
+                outWriter.write("actual,prediction,prob_0,prob_1\\n");
+                // write predictions
+                Dataset<Row> predSelect = pred.select("classAtt", "prediction", "probability");
+                List<String> predString = predSelect.map((MapFunction<Row, String>) row -> row.mkString(","), Encoders.STRING()).collectAsList();
+                for (String s : predString) {
+                    outWriter.write(s.replace("[", "").replace("]", "") + '\\n');
+                };
+                outWriter.close();
+                System.out.println( "Predictions saved at: " + filePath );
+            } catch (IOException e) {
+                System.out.println( "Writing the predictions to csv file failed." );
+                e.printStackTrace();
+            }
+        }
+    }
+
