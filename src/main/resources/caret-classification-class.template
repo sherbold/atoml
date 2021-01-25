@@ -1,0 +1,21 @@
+library(caret)
+library(foreign)
+library(patrick)
+library(R.utils)
+library(testthat)
+
+install.packages("<<<PACKAGENAME>>>")
+
+<<<MYSQLIMPORTS>>><<<MYSQLHANDLER>>>
+
+<<<HYPERPARAMETERS>>>
+
+
+<<<METHODS>>>
+
+#if __name__ == '__main__':
+#    unittest.main()
+#    with open('results.xml', 'wb') as output:
+#        unittest.main(
+#            testRunner=xmlrunner.XMLTestRunner(output=output),
+#            failfast=False, buffer=False, catchbreak=False)

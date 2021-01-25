@@ -58,6 +58,9 @@ public class TestcaseGenerator {
 		case "spark":
 			templateEngine = new SparkTemplate(algorithmUnderTest);
 			break;
+		case "caret":
+			templateEngine = new CaretTemplate(algorithmUnderTest);
+			break;
 		default:
 			// TODO
 			templateEngine = null;
