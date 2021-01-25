@@ -157,8 +157,6 @@ public class TestcaseGenerator {
 		@SuppressWarnings("resource")
 		String methodBody = new Scanner(this.getClass().getResourceAsStream(getResourcePrefix()+smokeResourceEnding), "UTF-8").useDelimiter("\\A").next();
 
-
-
 		Map<String, String> replacementMap = templateEngine.getSmoketestReplacements(smokeTest);
 		replacementMap.put("<<<NAME>>>", smokeTest.getName());
 		replacementMap.put("<<<TIMEOUT>>>", System.getProperty("atoml."+this.algorithmUnderTest.getFramework()+".timeout"));
