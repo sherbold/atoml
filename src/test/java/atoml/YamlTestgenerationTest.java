@@ -25,6 +25,9 @@ public class YamlTestgenerationTest {
 	
 	@Test
 	public void test() throws Exception {
+		System.setProperty("atoml.weka.timeout", String.valueOf(1000000));
+		System.setProperty("atoml.sklearn.timeout", String.valueOf(1000000));
+		System.setProperty("atoml.spark.timeout", String.valueOf(1000000));
 		List<Algorithm> algorithms = YamlClassifierGenerator.parseFile("testdata/descriptions.yml");
 		int numFeatures = 10;
 		int numInstances = 100;

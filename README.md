@@ -20,6 +20,8 @@ atoml is a command line tool that can be used with the following options.
                         if this flag is used
 -n,--instances <arg>    number of instances generated for each test set
                         (default: 100)
+-t,--timeout <arg>      timeout parameter for the created tests in seconds
+                        (default: 21600)
 -nomorph                no metamorphic tests are generated if this flag
                         is used
 -nosmoke                no smoke tests are generated if this flag is used

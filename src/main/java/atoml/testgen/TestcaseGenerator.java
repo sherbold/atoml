@@ -31,8 +31,8 @@ public class TestcaseGenerator {
 	
 	private final boolean generateSmokeTests;
 	
-	private final boolean generateMorphTests; 
-	
+	private final boolean generateMorphTests;
+
 	private final TemplateEngine templateEngine;
 	
 	/**
@@ -147,13 +147,21 @@ public class TestcaseGenerator {
 		} else {
 			iterations = 1;
 		}
-		
+
+		String smokeResourceEnding = new String();
+		if( Boolean.getBoolean("atoml.savepredictions") && this.algorithmUnderTest.getAlgorithmType().equals("classification") ) {
+			smokeResourceEnding = "-smoketest-csv.template";
+		} else {
+			smokeResourceEnding = "-smoketest.template";
+		}
 		@SuppressWarnings("resource")
-		String methodBody = new Scanner(this.getClass().getResourceAsStream(getResourcePrefix()+"-smoketest.template"), "UTF-8").useDelimiter("\\A").next();
-		
+		String methodBody = new Scanner(this.getClass().getResourceAsStream(getResourcePrefix()+smokeResourceEnding), "UTF-8").useDelimiter("\\A").next();
+
 		Map<String, String> replacementMap = templateEngine.getSmoketestReplacements(smokeTest);
 		replacementMap.put("<<<NAME>>>", smokeTest.getName());
+		replacementMap.put("<<<TIMEOUT>>>", System.getProperty("atoml."+this.algorithmUnderTest.getFramework()+".timeout"));
 		replacementMap.put("<<<ITERATIONS>>>", Integer.toString(iterations));
+		replacementMap.put("<<<IDENTIFIER>>>", this.algorithmUnderTest.getName());
 		for( String key : replacementMap.keySet()) {
 			methodBody = methodBody.replaceAll(key, replacementMap.get(key));
 		}
@@ -174,6 +182,7 @@ public class TestcaseGenerator {
 		
 		Map<String,String> replacementMap = templateEngine.getMorphtestReplacements(metamorphicTest);
 		replacementMap.put("<<<NAME>>>", metamorphicTest.getName());
+		replacementMap.put("<<<TIMEOUT>>>", System.getProperty("atoml."+this.algorithmUnderTest.getFramework()+".timeout"));
 		replacementMap.put("<<<DATASET>>>", morphtestDataDescription.getName());
 		replacementMap.put("<<<ITERATIONS>>>", Integer.toString(iterations));
 		for( String key : replacementMap.keySet()) {

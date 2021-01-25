@@ -21,6 +21,18 @@
             <<<MYSQLINDENT>>>classifier = <<<CLASSIFIER>>>
             <<<MYSQLINDENT>>>np.random.seed(42)
             <<<MYSQLINDENT>>>classifier.fit(np.delete(data_df.values, classIndex, axis=1),data_df.values[:,classIndex])
-            <<<MYSQLINDENT>>>classifier.predict(np.delete(testdata_df.values, classIndex, axis=1))
-            <<<MYSQLEVALSMOKE_END>>>
+            <<<MYSQLINDENT>>>predictedLabel = classifier.predict(np.delete(testdata_df.values, classIndex, axis=1))<<<MYSQLEVALSMOKE_END>>>
+            try:
+                predProb = np.array(classifier.predict_proba(np.delete(testdata_df.values, classIndex, axis=1)))
+                main_dir = Path(__file__).resolve().parents[2]
+                predictionFile = os.path.join(main_dir, "predictions", "pred_" + "<<<IDENTIFIER>>>" + "_<<<NAME>>>_" + str(iter) + ".csv")
+                pred_df = pd.DataFrame()
+                pred_df['actual'] = testdata_df.classAtt
+                pred_df['prediction'] = predictedLabel
+                pred_df['prob_0'] = predProb[:,0]
+                pred_df['prob_1'] = predProb[:,1]
+                pred_df.to_csv(predictionFile, header=True, index=False)
+                print("Predictions saved at: " + predictionFile)
+            except Exception as e:
+                print("Saving the predictions of <<<NAME>>> for <<<IDENTIFIER>>> failed: ", e)
 

@@ -34,7 +34,12 @@ public class Runner {
 	    final boolean useMysql = cmdParameters.hasOption("mysql");
 	    final boolean generateSmokeTests = !cmdParameters.hasOption("nosmoke");
 	    final boolean generateMorphTests = !cmdParameters.hasOption("nomorph");
-	    
+	    System.setProperty("atoml.savepredictions", String.valueOf(cmdParameters.hasOption("predictions")));
+
+		System.setProperty("atoml.weka.timeout", String.valueOf(1000 * cmdParameters.getIntegerValue("timeout")));
+		System.setProperty("atoml.sklearn.timeout", String.valueOf(1000 * cmdParameters.getIntegerValue("timeout")));
+		System.setProperty("atoml.spark.timeout", String.valueOf(1000 * cmdParameters.getIntegerValue("timeout")));
+
 		List<Algorithm> algorithms = YamlClassifierGenerator.parseFile(yamlFileStr);
 		TestsuiteGenerator testsuiteGenerator = new TestsuiteGenerator(numFeatures, numInstances);
 		System.setProperty("atoml.weka.datapath", "generated-tests/weka/src/test/resources/");
