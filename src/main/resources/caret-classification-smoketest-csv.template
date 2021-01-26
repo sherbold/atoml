@@ -30,7 +30,7 @@ withTimeout(timeout=<<<TIMEOUT>>>, onTimeout="error", expr={
                           prob_0 = probabilities[,1],
                           prob_1 = probabilities[,2])
             write.csv(x = csv_df,
-                    file = file.path(dirname(dirname(getwd())),"predictions","pred_<<<IDENTIFIER>>>_<<<NAME>>>.csv"),
+                    file = file.path(dirname(dirname(getwd())),"predictions",paste0("pred_<<<IDENTIFIER>>>_<<<NAME>>>_",iter,".csv")),
                     row.names = FALSE)
         }
     expect_true(TRUE)
