@@ -24,9 +24,10 @@ withTimeout(timeout=<<<TIMEOUT>>>, onTimeout="error", expr={
             predictions <- predict(model, test_x)
             <<<MYSQLEVALSMOKE_END>>>
             probabilities <- predict(model, test_x, type = "prob")
-            pred_class_numbers <- as.integer(predictions) - 1
-            csv_df <- cbind(actual = test_y,
-                          prediction = pred_class_numbers,
+            actual_classes <- as.integer(test_y) - 1
+            pred_classes <- as.integer(predictions) - 1
+            csv_df <- cbind(actual = actual_classes,
+                          prediction = pred_classes,
                           prob_0 = probabilities[,1],
                           prob_1 = probabilities[,2])
             write.csv(x = csv_df,
