@@ -143,6 +143,12 @@ python main.py
 
 In case of SQL errors regarding Public Key Retrieval it might be required to add the client option "allowPublicKeyRetrieval=true" to the mysql-connector to allow the client to automatically request the public key from the server (do not use this, if the database is not a local database, since it can be used for a Man-In-The-Middle-Attack).
 
+# Experimental Features
+
+Caret support: The test generation for the R-based Caret framework is currently only available for the generation of smoke tests for classification algorithms.
+
+Predictions output: By adding the flag '-predictions' to the function call, the generated smoke tests save the predictions on the test data in a csv file. This is currently only available for classification algorithms.   
+
 # License
 
 atoml is licensed under the Apache License, Version 2.0.
