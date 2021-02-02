@@ -61,35 +61,6 @@
 #  - values     list of values that will be tested with the default values of the other parameters
 
 ####################
-# Caret Classifiers #
-####################
-
-name: CARET_plr
-type: classification
-framework: caret
-package: stepPlr
-class: plr
-features: [double,categorical]
-properties:
-  same: score_exact
-  scramble: score_exact
-  reorder: score_exact
-  const: score_exact
-  opposite: score_exact
-parameters:
-  lambda:
-    type: double
-    min: 0.1
-    max: 1.9
-    stepsize: 0.9
-    default: 1.0
-  cp:
-    type: values
-    values: ["bic", "aic"]
-    default: "bic"
----
-
-####################
 # Weka Classifiers #
 #################### 
 
@@ -4496,4 +4467,57 @@ parameters:
     max: 1.5
     stepsize: 0.5
     default: 1.0
+---
+
+#####################
+# Caret Classifiers #
+#####################
+
+name: CARET_plr
+type: classification
+framework: caret
+package: stepPlr
+class: plr
+features: [double,categorical]
+properties:
+  same: score_exact
+  scramble: score_exact
+  reorder: score_exact
+  const: score_exact
+  opposite: score_exact
+parameters:
+  lambda: # L2 Penalty
+    type: double
+    min: 0.1
+    max: 1.9
+    stepsize: 0.9
+    default: 1.0
+  cp: # Complexity Parameter
+    type: values
+    values: ["bic", "aic"]
+    default: "bic"
+---
+
+name: CARET_knn
+type: classification
+framework: caret
+package: caret
+class: knn
+features: [double,categorical]
+properties:
+  same: score_exact
+  scramble: score_exact
+  reorder: score_exact
+  const: score_exact
+  opposite: score_exact
+  rotate: class_exact
+  rescale: class_exact
+  clone: class_exact
+parameters:
+  k: # number of neighbors
+    type: integer
+    min: 1
+    max: 9
+    stepsize: 4
+    default: 5
 ---
