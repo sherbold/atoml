@@ -55,9 +55,7 @@ public class CaretTemplate implements TemplateEngine {
 				parameterString.append("              " + getParameterString(parameterCombination) + ",\n");
 			}
 			parameterString.replace(parameterString.length()-2, parameterString.length(), "");
-		}// else {
-		//	parameterString = parameterString.append(" ");
-		//}
+		}
 		parameterString.append(")");
 		
 		Map<String, String> replacements = new HashMap<>();
@@ -76,47 +74,13 @@ public class CaretTemplate implements TemplateEngine {
 		replacements.put("<<<CLASSIFIER>>>", algorithmUnderTest.getClassName());
 		return replacements;
 	}
-	
+
 	/* (non-Javadoc)
 	 * @see atoml.testgen.TemplateEngine#getMorphtestReplacements(atoml.metamorphic.MetamorphicTest)
 	 */
 	@Override
 	public Map<String, String> getMorphtestReplacements(MetamorphicTest metamorphicTest) {
-		String testdata;
-		switch(metamorphicTest.getPredictionType()) {
-		case ORDERED_DATA:
-			testdata = "morphedData";
-			break;
-		case SAME_CLASSIFIER:
-			testdata = "data";
-			break;
-		default:
-			throw new RuntimeException("could not generate unit tests, unknown morph test class");
-		}
-		
-		String morphRelation;
-		switch(metamorphicTest.getPredictionRelation()) {
-		case EQUAL:
-			morphRelation = "expectedMorphedClass = originalClass;";
-			break;
-		case INVERTED:
-			morphRelation = "expectedMorphedClass = Double.compare(originalClass, 0.0)==0 ? 1.0 : 0.0;";
-			break;
-		default:
-			throw new RuntimeException("could not generate tests, unknown morph prediction relation type");
-		}
-		
-		String evaluationType = algorithmUnderTest.getProperties().get(metamorphicTest.getClass().getSimpleName().toUpperCase()).toString().toLowerCase();
-		evaluationType = "\"" + evaluationType + "\"";
-		
-		Map<String, String> replacements = new HashMap<>();
-		
-		replacements.put("<<<PACKAGENAME>>>", algorithmUnderTest.getPackage());
-		replacements.put("<<<CLASSIFIER>>>", algorithmUnderTest.getClassName());
-		replacements.put("<<<TESTDATA>>>", testdata);
-		replacements.put("<<<EXPECTEDMORPHEDCLASS>>>", morphRelation);
-		replacements.put("<<<EVALUATIONTYPE>>>", evaluationType);
-		return replacements;
+		throw new RuntimeException("Metamorphic tests are not implemented for Caret. Run with '-nomorph' to avoid this exception.");
 	}
 	
 	/**
