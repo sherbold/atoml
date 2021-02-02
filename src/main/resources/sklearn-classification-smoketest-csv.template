@@ -25,7 +25,7 @@
             try:
                 predProb = np.array(classifier.predict_proba(np.delete(testdata_df.values, classIndex, axis=1)))
                 main_dir = Path(__file__).resolve().parents[2]
-                predictionFile = os.path.join(main_dir, "predictions", "pred_" + "<<<IDENTIFIER>>>" + "_<<<NAME>>>_" + str(iter) + ".csv")
+                predictionFile = os.path.join(main_dir, "predictions", "pred_<<<IDENTIFIER>>>_<<<NAME>>>_" + str(iter) + ".csv")
                 pred_df = pd.DataFrame()
                 pred_df['actual'] = testdata_df.classAtt
                 pred_df['prediction'] = predictedLabel

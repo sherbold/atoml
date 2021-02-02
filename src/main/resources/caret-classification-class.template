@@ -1,0 +1,13 @@
+library(caret)
+library(foreign)
+library(patrick)
+library(R.utils)
+library(testthat)
+
+if(!require("<<<PACKAGENAME>>>", character.only = TRUE )){
+  install.packages("<<<PACKAGENAME>>>", dependencies = TRUE)
+  library("<<<PACKAGENAME>>>", character.only = TRUE)}
+
+<<<HYPERPARAMETERS>>>
+
+<<<METHODS>>>
