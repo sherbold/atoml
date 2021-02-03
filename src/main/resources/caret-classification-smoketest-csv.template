@@ -2,8 +2,8 @@ withTimeout(timeout=<<<TIMEOUT>>>, onTimeout="error", expr={
     with_parameters_test_that("<<<NAME>>>", test_name=paramGrid, test_params=paramGrid, code={
         for (iter in 1:<<<ITERATIONS>>>){
             set.seed(42)
-            testdata <- read.arff(paste0("smokedata/Uniform_",iter,"_test.arff"))
-            traindata <- read.arff(paste0("smokedata/Uniform_",iter,"_training.arff"))
+            testdata <- read.arff(paste0("smokedata/<<<NAME>>>_",iter,"_test.arff"))
+            traindata <- read.arff(paste0("smokedata/<<<NAME>>>_",iter,"_training.arff"))
             target_index <- ncol(traindata)
             train_x <- traindata[,-target_index]
             train_y <- traindata[,target_index]
