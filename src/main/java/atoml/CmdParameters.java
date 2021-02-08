@@ -87,6 +87,12 @@ public class CmdParameters {
 		numFeatures.setRequired(false);
 		options.addOption(numFeatures);
 		defaults.put("features", "10");
+
+		Option timeout = new Option("t", "timeout", true,
+				"timeout parameter for the created tests in seconds (default: 21600)");
+		timeout.setRequired(false);
+		options.addOption(timeout);
+		defaults.put("timeout", "21600");
 		
 		Option mysql = new Option("mysql", false,
 				"the results are stored in a local MySQL database if this flag is used");
@@ -99,9 +105,14 @@ public class CmdParameters {
 		options.addOption(nosmoke);
 		
 		Option nomorph = new Option("nomorph", false,
-				"no metamorphic testa are generated if this flag is used");
+				"no metamorphic tests are generated if this flag is used");
 		nomorph.setRequired(false);
 		options.addOption(nomorph);
+
+		Option savePredictions = new Option("predictions", false,
+				"predictions of smoke tests are saved in csv files if this flag is used");
+		savePredictions.setRequired(false);
+		options.addOption(savePredictions);
 	}
 
 	/**

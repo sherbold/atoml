@@ -31,8 +31,8 @@ public class TestcaseGenerator {
 	
 	private final boolean generateSmokeTests;
 	
-	private final boolean generateMorphTests; 
-	
+	private final boolean generateMorphTests;
+
 	private final TemplateEngine templateEngine;
 	
 	/**
@@ -57,6 +57,9 @@ public class TestcaseGenerator {
 			break;
 		case "spark":
 			templateEngine = new SparkTemplate(algorithmUnderTest);
+			break;
+		case "caret":
+			templateEngine = new CaretTemplate(algorithmUnderTest);
 			break;
 		default:
 			// TODO
@@ -118,12 +121,16 @@ public class TestcaseGenerator {
 		String mysqlEvalSmokeEnd = "";
 		String mysqlIndent = "";
 		if( useMysql ) {
-			mysqlImports = new Scanner(this.getClass().getResourceAsStream(getResourcePrefix()+"-mysql-imports.template"), "UTF-8").useDelimiter("\\A").next();
-			mysqlHandler = new Scanner(this.getClass().getResourceAsStream(getResourcePrefix()+"-mysql-handler.template"), "UTF-8").useDelimiter("\\A").next();
-			mysqlEvalMorph = new Scanner(this.getClass().getResourceAsStream(getResourcePrefix()+"-mysql-morph.template"), "UTF-8").useDelimiter("\\A").next();
-			mysqlEvalSmokeStart = new Scanner(this.getClass().getResourceAsStream(getResourcePrefix()+"-mysql-smoke-start.template"), "UTF-8").useDelimiter("\\A").next();
-			mysqlEvalSmokeEnd = new Scanner(this.getClass().getResourceAsStream(getResourcePrefix()+"-mysql-smoke-end.template"), "UTF-8").useDelimiter("\\A").next();
-			mysqlIndent = "    ";
+			try {
+				mysqlImports = new Scanner(this.getClass().getResourceAsStream(getResourcePrefix() + "-mysql-imports.template"), "UTF-8").useDelimiter("\\A").next();
+				mysqlHandler = new Scanner(this.getClass().getResourceAsStream(getResourcePrefix() + "-mysql-handler.template"), "UTF-8").useDelimiter("\\A").next();
+				mysqlEvalMorph = new Scanner(this.getClass().getResourceAsStream(getResourcePrefix() + "-mysql-morph.template"), "UTF-8").useDelimiter("\\A").next();
+				mysqlEvalSmokeStart = new Scanner(this.getClass().getResourceAsStream(getResourcePrefix() + "-mysql-smoke-start.template"), "UTF-8").useDelimiter("\\A").next();
+				mysqlEvalSmokeEnd = new Scanner(this.getClass().getResourceAsStream(getResourcePrefix() + "-mysql-smoke-end.template"), "UTF-8").useDelimiter("\\A").next();
+				mysqlIndent = "    ";
+			} catch (NullPointerException e){
+				throw new RuntimeException("could not access mysql templates: ", e);
+			}
 		}
 		replacementMap.put("<<<MYSQLIMPORTS>>>", mysqlImports);
 		replacementMap.put("<<<MYSQLHANDLER>>>", mysqlHandler);
@@ -147,13 +154,21 @@ public class TestcaseGenerator {
 		} else {
 			iterations = 1;
 		}
-		
+
+		String smokeResourceEnding = new String();
+		if( Boolean.getBoolean("atoml.savepredictions") && this.algorithmUnderTest.getAlgorithmType().equals("classification") ) {
+			smokeResourceEnding = "-smoketest-csv.template";
+		} else {
+			smokeResourceEnding = "-smoketest.template";
+		}
 		@SuppressWarnings("resource")
-		String methodBody = new Scanner(this.getClass().getResourceAsStream(getResourcePrefix()+"-smoketest.template"), "UTF-8").useDelimiter("\\A").next();
-		
+		String methodBody = new Scanner(this.getClass().getResourceAsStream(getResourcePrefix()+smokeResourceEnding), "UTF-8").useDelimiter("\\A").next();
+
 		Map<String, String> replacementMap = templateEngine.getSmoketestReplacements(smokeTest);
 		replacementMap.put("<<<NAME>>>", smokeTest.getName());
+		replacementMap.put("<<<TIMEOUT>>>", System.getProperty("atoml."+this.algorithmUnderTest.getFramework()+".timeout"));
 		replacementMap.put("<<<ITERATIONS>>>", Integer.toString(iterations));
+		replacementMap.put("<<<IDENTIFIER>>>", this.algorithmUnderTest.getName());
 		for( String key : replacementMap.keySet()) {
 			methodBody = methodBody.replaceAll(key, replacementMap.get(key));
 		}
@@ -168,19 +183,22 @@ public class TestcaseGenerator {
 		} else {
 			iterations = 1;
 		}
-		
-		@SuppressWarnings("resource")
-		String methodBody = new Scanner(this.getClass().getResourceAsStream(getResourcePrefix()+"-morphtest.template"), "UTF-8").useDelimiter("\\A").next();
-		
-		Map<String,String> replacementMap = templateEngine.getMorphtestReplacements(metamorphicTest);
-		replacementMap.put("<<<NAME>>>", metamorphicTest.getName());
-		replacementMap.put("<<<DATASET>>>", morphtestDataDescription.getName());
-		replacementMap.put("<<<ITERATIONS>>>", Integer.toString(iterations));
-		for( String key : replacementMap.keySet()) {
-			methodBody = methodBody.replaceAll(key, replacementMap.get(key));
+		try {
+			@SuppressWarnings("resource")
+			String methodBody = new Scanner(this.getClass().getResourceAsStream(getResourcePrefix() + "-morphtest.template"), "UTF-8").useDelimiter("\\A").next();
+
+			Map<String, String> replacementMap = templateEngine.getMorphtestReplacements(metamorphicTest);
+			replacementMap.put("<<<NAME>>>", metamorphicTest.getName());
+			replacementMap.put("<<<TIMEOUT>>>", System.getProperty("atoml." + this.algorithmUnderTest.getFramework() + ".timeout"));
+			replacementMap.put("<<<DATASET>>>", morphtestDataDescription.getName());
+			replacementMap.put("<<<ITERATIONS>>>", Integer.toString(iterations));
+			for (String key : replacementMap.keySet()) {
+				methodBody = methodBody.replaceAll(key, replacementMap.get(key));
+			}
+			return methodBody;
+		} catch (NullPointerException e){
+			throw new RuntimeException("could not access morphtest.template: ", e);
 		}
-		
-		return methodBody;
 	}
 
 	

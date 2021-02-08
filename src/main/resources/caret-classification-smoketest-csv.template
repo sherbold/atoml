@@ -1,0 +1,39 @@
+withTimeout(timeout=<<<TIMEOUT>>>, onTimeout="error", expr={
+    with_parameters_test_that("<<<NAME>>>", test_name=paramGrid, test_params=paramGrid, code={
+        for (iter in 1:<<<ITERATIONS>>>){
+            set.seed(42)
+            testdata <- read.arff(paste0("smokedata/<<<NAME>>>_",iter,"_test.arff"))
+            traindata <- read.arff(paste0("smokedata/<<<NAME>>>_",iter,"_training.arff"))
+            target_index <- ncol(traindata)
+            train_x <- traindata[,-target_index]
+            train_y <- traindata[,target_index]
+            test_x  <- testdata[,-target_index]
+            test_y  <- testdata[,target_index]
+
+            paramSplit <- strsplit(test_params, ": ")
+            paramNames <- unlist(strsplit(paramSplit[[1]][1], ","))
+            paramSet <- read.table(text=paramSplit[[1]][2], sep=",")
+            colnames(paramSet) <- paramNames
+
+            control <- trainControl(method = "none")
+            model <- train(x = train_x,
+                           y = train_y,
+                           method = "<<<CLASSIFIER>>>",
+                           tuneGrid = paramSet,
+                           trControl = control)
+            predictions <- predict(model, test_x)
+            probabilities <- predict(model, test_x, type = "prob")
+            actual_classes <- as.integer(test_y) - 1
+            pred_classes <- as.integer(predictions) - 1
+            csv_df <- cbind(actual = actual_classes,
+                          prediction = pred_classes,
+                          prob_0 = probabilities[,1],
+                          prob_1 = probabilities[,2])
+            write.csv(x = csv_df,
+                    file = file.path(dirname(dirname(getwd())),"predictions",paste0("pred_<<<IDENTIFIER>>>_<<<NAME>>>_",iter,".csv")),
+                    row.names = FALSE)
+        }
+    expect_true(TRUE)
+    })
+})
+

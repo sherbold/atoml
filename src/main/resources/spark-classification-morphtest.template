@@ -1,4 +1,4 @@
-    @Test(timeout=600000)
+    @Test(timeout=<<<TIMEOUT>>>)
     public void test_<<<NAME>>>_<<<DATASET>>>() throws Exception {
         for(int iter=1; iter<=<<<ITERATIONS>>>; iter++) {
             boolean passed = true;
