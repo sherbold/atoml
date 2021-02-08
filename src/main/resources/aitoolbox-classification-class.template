@@ -1,0 +1,149 @@
+import XCTest
+@testable import AIToolBox
+
+
+private extension String {
+    func appendLine(to url: URL) throws {
+        try self.appending("\n").append(to: url)
+    }
+    func append(to url: URL) throws {
+        let data = self.data(using: String.Encoding.utf8)
+        try data?.append(to: url)
+    }
+}
+
+private extension Data {
+    func append(to url: URL) throws {
+        if let fileHandle = try? FileHandle(forWritingTo: url) {
+            defer {
+                fileHandle.closeFile()
+            }
+            fileHandle.seekToEndOfFile()
+            fileHandle.write(self)
+        } else {
+            try write(to: url)
+        }
+    }
+}
+
+
+final class <<<CLASSNAME>>>: XCTestCase {
+    let params: [<<<CLASSIFIER>>>] = [
+<<<HYPERPARAMETERS>>>
+    ]
+
+    enum FileError: Error {
+        case fileNotFound
+        case unknownFileType
+    }
+
+    func loadArff(fileURL: String) throws -> [[Double]] {
+        print("getting file from \(fileURL)")
+        let fileContent = try? String(contentsOfFile: fileURL)
+        var data = [[String]]()
+        var formatCheck: [Bool] = [false, false, false]
+        if let lines = fileContent {
+            var featureDict = [String: Int]()
+            for line in lines.components(separatedBy: "\n") {
+                let tag = line.components(separatedBy: " ")[0]
+                switch tag {
+                case "":
+                    break
+                case "@relation":
+                    formatCheck[0] = true
+                case "@attribute":
+                    formatCheck[1] = true
+                    var attributeType = line.components(separatedBy: " ")[2]
+                    if attributeType.hasPrefix("{") {
+                        attributeType = String(attributeType.prefix(attributeType.count - 1))
+                        attributeType = String(attributeType.suffix(attributeType.count - 1))
+                        for (index, element) in attributeType.components(separatedBy: ",").enumerated() {
+                            featureDict[element] = index
+                        }
+                    }
+                case "@data":
+                    formatCheck[2] = true
+                default:
+                    data.append(line.components(separatedBy: ","))
+                }
+            }
+
+            if formatCheck.allSatisfy({$0}) {
+                var numData = [[Double]]()
+                for instance in data {
+                    var newInstance = [Double]()
+                    for feature in instance {
+                        if let val = featureDict[feature] {
+                            newInstance.append(Double(val))
+                        } else {
+                            newInstance.append(feature.doubleValue)
+                        }
+                    }
+
+                    numData.append(newInstance)
+                }
+
+                return numData
+                
+            } else {
+                throw FileError.unknownFileType
+            }
+
+        } else {
+            throw FileError.fileNotFound
+        }
+    }
+
+    func toDataSet(data: [[Double]], withoutClass: Bool = false) throws -> DataSet {
+        let numFeatures = data[0].count-1
+        let dataSet = DataSet(dataType: .classification, inputDimension: numFeatures, outputDimension: 1)
+        
+        if withoutClass {
+            for instance in data {
+                do {
+                    try dataSet.addTestDataPoint(input: Array(instance[0..<numFeatures]))
+                } catch let e {
+                    print("error creating test data: \(e)")
+                }
+            }
+        } else {
+            for instance in data {
+                do {
+                    try dataSet.addDataPoint(input: Array(instance[0..<numFeatures]), dataClass: Int(instance[numFeatures]))
+                } catch let e {
+                    print("error creating training data: \(e)")
+                }
+            }
+        }
+        return dataSet
+    }
+
+    func writeResults(to path: URL, results: [Int]) throws {
+        var resultString = ""
+        for val in results {
+            resultString.append(String(val) + ", ")
+        }
+
+        do {
+            try resultString.appendLine(to: path as URL)
+        } catch {
+            throw FileError.fileNotFound
+        }
+    }
+
+    func assertMorphTest(type: String, testsize: Int, deviationsCounts: Int) {
+        switch type {
+            case "exact_class":
+                XCTAssertEqual(deviationsCounts, 0, "Classification different: \(deviationsCounts) deviations out of \(testsize)")
+            case "stat_class":
+                XCTAssertEqual(deviationsCounts, 0, "Classification different: \(deviationsCounts) deviations out of \(testsize)")
+            default:
+                print("wrong evaluation type selected: \(type)")
+        }
+    }
+
+<<<METHODS>>>
+
+    static var allTests = [
+<<<ALLTESTS>>>    ]
+}
