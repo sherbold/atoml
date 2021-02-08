@@ -43,6 +43,8 @@ public class Runner {
 
 		List<Algorithm> algorithms = YamlClassifierGenerator.parseFile(yamlFileStr);
 		TestsuiteGenerator testsuiteGenerator = new TestsuiteGenerator(numFeatures, numInstances);
+		System.setProperty("atoml.AIToolBox.datapath", "generated-tests/AIToolBox/Tests/AIToolBoxTests/");
+		System.setProperty("atoml.AIToolBox.testcasepath", "generated-tests/AIToolBox/Tests/AIToolBoxTests/");
 		System.setProperty("atoml.weka.datapath", "generated-tests/weka/src/test/resources/");
 		System.setProperty("atoml.weka.testcasepath", "generated-tests/weka/src/test/java/");
 		System.setProperty("atoml.sklearn.datapath", "generated-tests/sklearn/");

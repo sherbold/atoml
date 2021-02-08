@@ -4468,3 +4468,66 @@ parameters:
     stepsize: 0.5
     default: 1.0
 ---
+
+# AIToolBox classifiers and clusterers available under Linux
+
+name: AITOOLBOX_SVM
+type: classification
+framework: AIToolBox
+package: AIToolBox
+class: SVMModel
+features: [double]
+properties:
+  same: class_exact
+  scramble: class_exact
+  reorder: class_exact
+  const: class_exact
+  opposite: class_exact
+  rotate: class_exact
+  clone: class_exact
+  rescale: class_exact
+parameters:
+  problemType:
+    type: values
+    values: ["SVMType.c_SVM_Classification"]
+    default: "SVMType.c_SVM_Classification"
+  kernelSettings:
+    type: values
+    values: ["KernelParameters(type: .radialBasisFunction, degree: 0, gamma: 0.5, coef0: 0.0)",
+             "KernelParameters(type: .radialBasisFunction, degree: 0, gamma: 1.0, coef0: 0.0)",
+             "KernelParameters(type: .radialBasisFunction, degree: 0, gamma: 1.5, coef0: 0.0)",
+             "KernelParameters(type: .polynomial, degree: 0, gamma: 0.5, coef0: 0.0)",
+             "KernelParameters(type: .polynomial, degree: 1, gamma: 0.5, coef0: 0.0)",
+             "KernelParameters(type: .polynomial, degree: 2, gamma: 0.5, coef0: 0.0)",
+             "KernelParameters(type: .polynomial, degree: 1, gamma: 1.0, coef0: 0.0)",
+             "KernelParameters(type: .polynomial, degree: 1, gamma: 1.5, coef0: 0.0)",
+             "KernelParameters(type: .polynomial, degree: 1, gamma: 0.5, coef0: 1.0)",
+             "KernelParameters(type: .polynomial, degree: 1, gamma: 0.5, coef0: 2.0)",
+             "KernelParameters(type: .polynomial, degree: 1, gamma: 0.5, coef0: 3.0)",
+             "KernelParameters(type: .linear, degree: 0, gamma: 0.5, coef0: 0.0)"]
+    default: "KernelParameters(type: .radialBasisFunction, degree: 0, gamma: 1.0, coef0: 0.0)"
+---
+
+name: AITOOLBOX_KMeans
+type: clustering
+framework: AIToolBox
+package: AIToolBox
+class: KMeans
+features: [double]
+properties:
+  same: class_exact
+  scramble: class_exact
+  reorder: class_exact
+  const: class_exact
+  opposite: class_exact
+  rotate: class_exact
+  clone: class_exact
+  rescale: class_exact
+parameters:
+  classes:
+    type: integer
+    min: 2
+    max: 4
+    stepsize: 1
+    default: 2
+---
