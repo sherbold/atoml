@@ -29,7 +29,7 @@ public class DataGenerator {
 				dataDescription.getNumInformative(),
 				dataDescription.getNumInstances(),
 				dataDescription.getDistribution(),
-				dataDescription.getDistribution2(),
+				dataDescription.getDistribution_separable(),
 				dataDescription.getNoiseRate(),
 				seed,
 				dataDescription.getFeatureTypes());
@@ -159,13 +159,13 @@ public class DataGenerator {
 	 * @param numInformative number of informative features, i.e., that is not random with respect to the class
 	 * @param numInstances number of instances
 	 * @param distribution distribution from which the instances are drawn. If this is null, all values are generated as 0 and the classification will be random
-	 * @param distribution2 distribution to draw instances for second class from. If this is null, all values are generated as 0 and the classification will be random   
+	 * @param distribution_separable distribution to draw instances for second class from. If this is null, all values are generated as 0 and the classification will be random   
 	 * @param noiseRate white noise that is applied to the classification
 	 * @param seed seed that is used all random numbers drawn by this generator
 	 * @return generated data
 	 */
-	public static Instances generateData(int numFeatures, int numInformative, int numInstances, AbstractRealDistribution distribution, AbstractRealDistribution distribution2, double noiseRate, long seed) {
-		return generateData(numFeatures, numInformative, numInstances, distribution, distribution2, noiseRate, seed, IntStream.generate(() -> 0).limit(numFeatures).toArray());
+	public static Instances generateData(int numFeatures, int numInformative, int numInstances, AbstractRealDistribution distribution, AbstractRealDistribution distribution_separable, double noiseRate, long seed) {
+		return generateData(numFeatures, numInformative, numInstances, distribution, distribution_separable, noiseRate, seed, IntStream.generate(() -> 0).limit(numFeatures).toArray());
 	}
 	
 	/**
@@ -179,14 +179,14 @@ public class DataGenerator {
 	 * @param numInformative number of informative features, i.e., that is not random with respect to the class
 	 * @param numInstances number of instances
 	 * @param distribution distribution from which the instances are drawn. If this is null, all values are generated as 0 and the classification will be random
-	 * @param distribution2 distribution to draw instances for second class from. If this is null, all values are generated as 0 and the classification will be random
+	 * @param distribution_separable distribution to draw instances for second class from. If this is null, all values are generated as 0 and the classification will be random
 	 * @param noiseRate white noise that is applied to the classification
 	 * @param seed seed that is used all random numbers drawn by this generator
 	 * @param featureType Can be used to define categorical features. The length of the array must be equal to numFeatures, values greater than 0 indicate that the feature should be categorical with n categories. All categorical features are assumed to be ordinal in terms of generated labels. The number of values for each category should be roughly uniformly distributed. 
 	 * @return generated data
 	 */
-	public static Instances generateData(int numFeatures, int numInformative, int numInstances, AbstractRealDistribution distribution, AbstractRealDistribution distribution2, double noiseRate, long seed, int[] featureType) {
-		if (distribution2 == null) {
+	public static Instances generateData(int numFeatures, int numInformative, int numInstances, AbstractRealDistribution distribution, AbstractRealDistribution distribution_separable, double noiseRate, long seed, int[] featureType) {
+		if (distribution_separable == null) {
 			return generateData(numFeatures, numInformative, numInstances, distribution, noiseRate, seed, featureType);
 		}
 		if (numFeatures<1 || numFeatures>100) {
@@ -212,8 +212,8 @@ public class DataGenerator {
 		if (numInformative != numFeatures) {
 			throw new RuntimeException("number of informative features must be equal to number of features for separable data creation: numInformative=" + numInformative + "; numFeatures=" + numFeatures);
 		}
-		if (Math.abs(distribution.getNumericalMean() - distribution2.getNumericalMean()) < (4 * distribution.getNumericalVariance() + 4 * distribution2.getNumericalVariance())) {
-			throw new RuntimeException("distributions are overlapping, adjust variance or mean: mean1="+distribution.getNumericalMean()+"; " + "mean2="+distribution2.getNumericalMean() + "; " + "variance1="+distribution.getNumericalVariance() + "; " + "variance2="+distribution2.getNumericalVariance());
+		if (Math.abs(distribution.getNumericalMean() - distribution_separable.getNumericalMean()) < (4 * distribution.getNumericalVariance() + 4 * distribution_separable.getNumericalVariance())) {
+			throw new RuntimeException("distributions are overlapping, adjust variance or mean: mean1="+distribution.getNumericalMean()+"; " + "mean2="+distribution_separable.getNumericalMean() + "; " + "variance1="+distribution.getNumericalVariance() + "; " + "variance2="+distribution_separable.getNumericalVariance());
 		}
 
 		// init empty data set
@@ -222,14 +222,14 @@ public class DataGenerator {
 		data.setRelationName(generateDatasetName(numFeatures, numInformative, numInstances, distribution, noiseRate, seed, featureType));
 		
 		distribution.reseedRandomGenerator(seed);
-		distribution2.reseedRandomGenerator(seed);
+		distribution_separable.reseedRandomGenerator(seed);
 		RandomDataGenerator noiseGenerator = new RandomDataGenerator();
 		noiseGenerator.reSeed(seed);
 		
 		//draw instances from both distributions and label them
 		for (int i= 0; i < numInstances/2; i++) {
 			double[] class0Instance = distribution.sample(numFeatures +1);
-			double[] class1Instance = distribution2.sample(numFeatures +1);
+			double[] class1Instance = distribution_separable.sample(numFeatures +1);
 
 			//flip random labels according to noiseRate
 			if (noiseGenerator.nextUniform(0, 1)<noiseRate) {
