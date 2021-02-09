@@ -191,7 +191,6 @@ public class TestcaseGenerator {
 		} else {
 			iterations = 1;
 		}
-		
 		try {
 			@SuppressWarnings("resource")
 			String methodBody = new Scanner(this.getClass().getResourceAsStream(getResourcePrefix() + "-morphtest.template"), "UTF-8").useDelimiter("\\A").next();
@@ -205,9 +204,7 @@ public class TestcaseGenerator {
 			for (String key : replacementMap.keySet()) {
 				methodBody = methodBody.replaceAll(key, replacementMap.get(key));
 			}
-			
 			return methodBody;
-			
 		} catch (NullPointerException e){
 			throw new RuntimeException("could not access morphtest.template: ", e);
 		}
