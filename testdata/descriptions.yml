@@ -2441,7 +2441,7 @@ parameters:
     default: 15000
 ---
 
-name: SKLEARN_LinearSVCNoDual
+name: SKLEARN_LinearSVC_NoDual
 framework: sklearn
 type: classification
 package:  sklearn.svm
@@ -2502,7 +2502,7 @@ parameters:
 # ignored multi_class
 ---
 
-name: SKLEARN_LinearSVCDual
+name: SKLEARN_LinearSVC_Dual
 framework: sklearn
 type: classification
 package:  sklearn.svm
@@ -2879,7 +2879,7 @@ parameters:
 # decision_function_shape, break_ties ignored because we only have binary problems so far    
 ---
 
-name: SKLEARN_LinearDiscriminantAnalysisSVD
+name: SKLEARN_LinearDiscriminantAnalysis_SVD
 framework: sklearn
 type: classification
 package:  sklearn.discriminant_analysis
@@ -2920,7 +2920,7 @@ parameters:
 # priors ignored
 ---
 
-name: SKLEARN_LinearDiscriminantAnalysisLsqrEigen
+name: SKLEARN_LinearDiscriminantAnalysis_LsqrEigen
 framework: sklearn
 type: classification
 package:  sklearn.discriminant_analysis
@@ -3237,17 +3237,17 @@ parameters:
 #    type: values
 #    values: [euclidean, precomputed]
 #    default: euclidean
-  random_state: # seed for starting state None=random
-    type: values
-    values: [0, None]
-    default: 0
+#  random_state: # seed for starting state None=random
+#    type: values
+#    values: [0, None]
+#    default: 0
   verbose: # be verbose or not
     type: values
     values: [True, False]
     default: False
 ---
 
-name: SKLEARN_AgglomerativeClusteringWardNClusters # Ward only works with default parameters therefore not much specified here
+name: SKLEARN_AgglomerativeClustering_WardNClusters # Ward only works with default parameters therefore not much specified here
 framework: sklearn
 type: clustering
 package:  sklearn.cluster
@@ -3273,7 +3273,7 @@ parameters:
     default: auto
 ---
 
-name: SKLEARN_AgglomerativeClusteringWardDistThresh # Ward only works with default parameters therefore not much specified here
+name: SKLEARN_AgglomerativeClustering_WardDistThresh # Ward only works with default parameters therefore not much specified here
 framework: sklearn
 type: clustering
 package:  sklearn.cluster
@@ -3298,7 +3298,7 @@ parameters:
     default: 2.0
 ---
 
-name: SKLEARN_AgglomerativeClusteringNoWardNClusters
+name: SKLEARN_AgglomerativeClustering_NoWardNClusters
 framework: sklearn
 type: clustering
 package:  sklearn.cluster
@@ -3332,7 +3332,7 @@ parameters:
     default: average
 ---
 
-name: SKLEARN_AgglomerativeClusteringNoWardDistThresh
+name: SKLEARN_AgglomerativeClustering_NoWardDistThresh
 framework: sklearn
 type: clustering
 package:  sklearn.cluster
@@ -3698,7 +3698,7 @@ parameters:
     default: None
 ---
 
-name: SKLEARN_SpectralClusteringNClusters
+name: SKLEARN_SpectralClustering_NClusters
 framework: sklearn
 type: clustering
 package:  sklearn.cluster
@@ -3782,7 +3782,7 @@ parameters:
     default: None
 ---
 
-name: SKLEARN_SpectralClusteringNoNClusters
+name: SKLEARN_SpectralClustering_NoNClusters
 framework: sklearn
 type: clustering
 package:  sklearn.cluster
