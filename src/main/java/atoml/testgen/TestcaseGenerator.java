@@ -67,7 +67,7 @@ public class TestcaseGenerator {
 		default:
 			// TODO
 			templateEngine = null;
-			System.err.format("unknown framework: %s ", algorithmUnderTest.getFramework());
+			System.err.format("Unknown framework: %s%n", algorithmUnderTest.getFramework());
 			break;
 		}
 	}
