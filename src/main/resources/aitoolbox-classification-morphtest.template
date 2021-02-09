@@ -1,0 +1,64 @@
+    func test_<<<NAME>>>_<<<DATASET>>>() {
+        for iter in 1...<<<ITERATIONS>>> {
+            for param in params {
+            
+                let classifierOriginal = param
+                let classifierMorphed = param
+    
+                let file = "Tests/morphdata/<<<DATASET>>>_\\(iter).arff"
+                let morphFile = "Tests/morphdata/<<<DATASET>>>_\\(iter)_<<<NAME>>>.arff"
+    
+                var deviationsCounts = 0
+                var deviationVec = [Int]()
+                do {
+                    //load training and test data and convert to DataSet
+                    let data = try loadArff(fileURL: file)
+                    let dataMorph = try loadArff(fileURL: morphFile)
+                    let trainData = try toDataSet(data: data)
+                    let trainDataMorph = try toDataSet(data: dataMorph)
+                    let testData = try toDataSet(data: data, withoutClass: true)
+                    let testDataMorph = try toDataSet(data: dataMorph, withoutClass: true)
+    
+                    //train and classify
+                    try classifierOriginal.trainClassifier(trainData)
+                    try classifierMorphed.trainClassifier(trainDataMorph)
+                    classifierOriginal.predictValues(testData)
+                    classifierMorphed.predictValues(testDataMorph)
+    
+                    //calculate differences in classification
+                    for i in 0..<data.count {
+                        let originalClass = try testData.getClass(i)
+                        let expectedMorphedClass = <<<EXPECTEDMORPHEDCLASS>>>
+                        let morphedClass = try testDataMorph.getClass(i)
+                        if expectedMorphedClass != morphedClass {
+                            deviationsCounts += 1
+                            deviationVec.append(1)
+                        } else {
+                            deviationVec.append(0)
+                        }
+                    }
+    
+                } catch FileError.fileNotFound {
+                    print("Input file \(file) not found")
+                } catch FileError.unknownFileType {
+                    print("Input file \(file) has the wrong format")
+                } catch let e {
+                    print(e)
+                }
+    
+                // write results to file for statistical analysis
+                let path = URL(fileURLWithPath: "./Tests/<<<CLASSNAME>>>_output.txt")
+    
+                do {
+                    try writeResults(to: path, results: deviationVec)
+                } catch FileError.fileNotFound {
+                    print("Output file \(file) not found")
+                } catch let e {
+                    print(e)
+                }
+    
+                assertMorphTest(type: "exact_class", testsize: deviationVec.count, deviationsCounts: deviationsCounts)
+            }
+        }
+    }
+    

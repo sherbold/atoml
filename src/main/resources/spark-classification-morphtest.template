@@ -41,9 +41,16 @@
                 ClassificationModel<?, ?> morphedModel = morphedClassifier.fit(morphedData);
 
                 List<Row> predictionOriginal = model.transform(data).select("prediction").collectAsList();
-                List<Row> scoresOriginal = model.transform(data).select("probability").collectAsList();
                 List<Row> predictionMorphed = morphedModel.transform(morphedData).select("prediction").collectAsList();
-                List<Row> scoresMorphed = morphedModel.transform(morphedData).select("probability").collectAsList();
+                List<Row> scoresOriginal = new ArrayList<Row>();
+                List<Row> scoresMorphed = new ArrayList<Row>();
+                if (model.transform(data).schema().toString().contains("probability")) {
+                    scoresOriginal = model.transform(data).select("probability").collectAsList();
+                    scoresMorphed = morphedModel.transform(morphedData).select("probability").collectAsList();
+                } else {
+                    scoresOriginal = model.transform(data).select("rawPrediction").collectAsList();
+                    scoresMorphed = morphedModel.transform(morphedData).select("rawPrediction").collectAsList();
+                }
 
                 for (int i = 0; i < predictionOriginal.size(); i++) {
                     double originalClass = predictionOriginal.get(i).getDouble(0);

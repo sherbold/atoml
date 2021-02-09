@@ -16,7 +16,7 @@ public class DataDescription {
 
 	public enum DescriptionType {
 		GENERATED, FILE
-	};
+	}
 
 	/**
 	 * number of features
@@ -37,6 +37,11 @@ public class DataDescription {
 	 * distribution used to generate numeric data
 	 */
 	private final AbstractRealDistribution distribution;
+	
+	/**
+	 * distribution used to generate numeric data for second class for separable data
+	 */
+	private final AbstractRealDistribution distribution_separable;
 
 	/**
 	 * white noise applied to class labels
@@ -104,6 +109,7 @@ public class DataDescription {
 		this.numInformative = 0;
 		this.numInstances = 0;
 		this.distribution = null;
+		this.distribution_separable = null;
 		this.noiseRate = 0.0;
 		this.featureTypes = null;
 
@@ -138,19 +144,46 @@ public class DataDescription {
 	 */
 	public DataDescription(String name, int numFeatures, int numInformative, int numInstances,
 			AbstractRealDistribution distribution, double noiseRate, int[] featureTypes, List<FeatureType> requiredFeatureTypes) {
+		this(name, numFeatures, numInformative, numInstances, distribution, null, noiseRate, featureTypes, requiredFeatureTypes);
+	}
+	
+	/**
+	 * Creates a new data description for data that is generated
+	 *
+	 * @param name
+	 *            name of the data
+	 * @param numFeatures
+	 *            number of features
+	 * @param numInformative
+	 *            number of informative features, i.e., that are used to define the
+	 *            class
+	 * @param numInstances
+	 *            number of instances
+	 * @param distribution
+	 *            distribution of the numeric features
+	 * @param noiseRate
+	 *            noise rate
+	 * @param featureTypes
+	 *            types of the features; values>0 mean categorical features, the
+	 *            value defines the number of categories
+	 */
+	public DataDescription(String name, int numFeatures, int numInformative, int numInstances,
+						   AbstractRealDistribution distribution, AbstractRealDistribution distribution_separable, 
+						   double noiseRate, int[] featureTypes, List<FeatureType> requiredFeatureTypes) {
 		this.name = name;
 		this.numFeatures = numFeatures;
 		this.numInformative = numInformative;
 		this.numInstances = numInstances;
 		this.distribution = distribution;
+		this.distribution_separable = distribution_separable;
 		this.noiseRate = noiseRate;
-
+		
 		if (featureTypes == null) {
 			this.featureTypes = IntStream.generate(() -> 0).limit(numFeatures).toArray();
 		} else {
 			this.featureTypes = featureTypes;
 		}
-
+		
 		if (featureTypes == null) {
 			this.hasNumericFeatures = true;
 			this.hasCategoricalFeatures = false;
@@ -236,6 +269,15 @@ public class DataDescription {
 	 */
 	public AbstractRealDistribution getDistribution() {
 		return distribution;
+	}
+	
+	/**
+	 * the distribution of the numeric data
+	 *
+	 * @return the distribution
+	 */
+	public AbstractRealDistribution getDistribution_separable() {
+		return distribution_separable;
 	}
 
 	/**

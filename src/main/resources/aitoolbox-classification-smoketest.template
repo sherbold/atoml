@@ -1,0 +1,20 @@
+    func test_<<<NAME>>>() {
+        for iter in 1...<<<ITERATIONS>>> {
+            for param in params {
+                let classifier = param
+                let file = "Tests/smokedata/<<<NAME>>>_\\(iter)_training.arff"
+    
+                do {
+                    //load training data and convert to DataSet
+                    let data = try loadArff(fileURL: file)
+                    let trainData = try toDataSet(data: data)
+    
+                    try classifier.trainClassifier(trainData)
+    
+                } catch let e {
+                    print("Smoketest failed: \\(e)")
+                }
+            }
+        }
+    }
+

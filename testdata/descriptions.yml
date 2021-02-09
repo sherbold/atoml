@@ -2441,7 +2441,7 @@ parameters:
     default: 15000
 ---
 
-name: SKLEARN_LinearSVCNoDual
+name: SKLEARN_LinearSVC_NoDual
 framework: sklearn
 type: classification
 package:  sklearn.svm
@@ -2502,7 +2502,7 @@ parameters:
 # ignored multi_class
 ---
 
-name: SKLEARN_LinearSVCDual
+name: SKLEARN_LinearSVC_Dual
 framework: sklearn
 type: classification
 package:  sklearn.svm
@@ -3232,18 +3232,22 @@ parameters:
   preference: # preferences for each point, points with larger preference values are more likely to be chosen as exemplars
     type: values
     values: [1.0, None]
-    default: None
+    default: 1.0
 #  affinity: # which affinity to use
 #    type: values
 #    values: [euclidean, precomputed]
 #    default: euclidean
+#  random_state: # seed for starting state None=random
+#    type: values
+#    values: [0, None]
+#    default: 0
   verbose: # be verbose or not
     type: values
     values: [True, False]
     default: False
 ---
 
-name: SKLEARN_AgglomerativeClusteringWardNClusters # Ward only works with default parameters therefore not much specified here
+name: SKLEARN_AgglomerativeClustering_WardNClusters # Ward only works with default parameters therefore not much specified here
 framework: sklearn
 type: clustering
 package:  sklearn.cluster
@@ -3269,7 +3273,7 @@ parameters:
     default: auto
 ---
 
-name: SKLEARN_AgglomerativeClusteringWardDistThresh # Ward only works with default parameters therefore not much specified here
+name: SKLEARN_AgglomerativeClustering_WardDistThresh # Ward only works with default parameters therefore not much specified here
 framework: sklearn
 type: clustering
 package:  sklearn.cluster
@@ -3294,7 +3298,7 @@ parameters:
     default: 2.0
 ---
 
-name: SKLEARN_AgglomerativeClusteringNoWardNClusters
+name: SKLEARN_AgglomerativeClustering_NoWardNClusters
 framework: sklearn
 type: clustering
 package:  sklearn.cluster
@@ -3316,7 +3320,7 @@ parameters:
     default: 2
   affinity: # metric used to compute linkage
     type: values
-    values: [euclidean, l1, l2, manhattan, cosine, precomputed]
+    values: [euclidean, l1, l2, manhattan, cosine]
     default: euclidean
   compute_full_tree: # early stop of construction of tree to decrease computation time
     type: values
@@ -3328,7 +3332,7 @@ parameters:
     default: average
 ---
 
-name: SKLEARN_AgglomerativeClusteringNoWardDistThresh
+name: SKLEARN_AgglomerativeClustering_NoWardDistThresh
 framework: sklearn
 type: clustering
 package:  sklearn.cluster
@@ -3496,10 +3500,6 @@ parameters:
     type: values
     values: [0.000001, 0.00001, 0.0001, 0.001, 0.01]
     default: 0.0001
-  precompute_distances: # precompute distances for speedup, but takes more memory
-    type: values
-    values: [auto, True, False]
-    default: auto
   verbose: # be verbose or not
     type: values
     values: [0, 1]
@@ -3650,9 +3650,9 @@ parameters:
     default: 5
   max_eps: # maximum distance between two samples for one to be considered as in the neighborhood of the other, optional
     type: values
-    values: [0.1, 1.0, 10.0]
-    default: 1.0
-  metric: # metric used for distance computation, only sklearn's metrices used
+    values: [1.0, 5.0, 10.0]
+    default: 5.0
+  metric: # metric used for distance computation, only sklearn metrics used
     type: values
     values: [cityblock, cosine, euclidean, l1, l2, manhattan, minkowski]
     default: minkowski
@@ -3668,7 +3668,7 @@ parameters:
     default: xi
   eps: # maximum distance between two samples for one to be considered as in the neighborhood of the other
     type: values
-    values: [None, 0.1, 1.0, 10.0]
+    values: [None, 1.0, 5.0, 10.0]
     default: None
   xi: # determines minimum steepness on the reachability plot that constitues a cluster boundary
     type: values
@@ -3698,7 +3698,7 @@ parameters:
     default: None
 ---
 
-name: SKLEARN_SpectralClusteringNClusters
+name: SKLEARN_SpectralClustering_NClusters
 framework: sklearn
 type: clustering
 package:  sklearn.cluster
@@ -3782,7 +3782,7 @@ parameters:
     default: None
 ---
 
-name: SKLEARN_SpectralClusteringNoNClusters
+name: SKLEARN_SpectralClustering_NoNClusters
 framework: sklearn
 type: clustering
 package:  sklearn.cluster
@@ -4467,4 +4467,67 @@ parameters:
     max: 1.5
     stepsize: 0.5
     default: 1.0
+---
+
+# AIToolBox classifiers and clusterers available under Linux
+
+name: AITOOLBOX_SVM
+type: classification
+framework: AIToolBox
+package: AIToolBox
+class: SVMModel
+features: [double]
+properties:
+  same: class_exact
+  scramble: class_exact
+  reorder: class_exact
+  const: class_exact
+  opposite: class_exact
+  rotate: class_exact
+  clone: class_exact
+  rescale: class_exact
+parameters:
+  problemType:
+    type: values
+    values: ["SVMType.c_SVM_Classification"]
+    default: "SVMType.c_SVM_Classification"
+  kernelSettings:
+    type: values
+    values: ["KernelParameters(type: .radialBasisFunction, degree: 0, gamma: 0.5, coef0: 0.0)",
+             "KernelParameters(type: .radialBasisFunction, degree: 0, gamma: 1.0, coef0: 0.0)",
+             "KernelParameters(type: .radialBasisFunction, degree: 0, gamma: 1.5, coef0: 0.0)",
+             "KernelParameters(type: .polynomial, degree: 0, gamma: 0.5, coef0: 0.0)",
+             "KernelParameters(type: .polynomial, degree: 1, gamma: 0.5, coef0: 0.0)",
+             "KernelParameters(type: .polynomial, degree: 2, gamma: 0.5, coef0: 0.0)",
+             "KernelParameters(type: .polynomial, degree: 1, gamma: 1.0, coef0: 0.0)",
+             "KernelParameters(type: .polynomial, degree: 1, gamma: 1.5, coef0: 0.0)",
+             "KernelParameters(type: .polynomial, degree: 1, gamma: 0.5, coef0: 1.0)",
+             "KernelParameters(type: .polynomial, degree: 1, gamma: 0.5, coef0: 2.0)",
+             "KernelParameters(type: .polynomial, degree: 1, gamma: 0.5, coef0: 3.0)",
+             "KernelParameters(type: .linear, degree: 0, gamma: 0.5, coef0: 0.0)"]
+    default: "KernelParameters(type: .radialBasisFunction, degree: 0, gamma: 1.0, coef0: 0.0)"
+---
+
+name: AITOOLBOX_KMeans
+type: clustering
+framework: AIToolBox
+package: AIToolBox
+class: KMeans
+features: [double]
+properties:
+  same: class_exact
+  scramble: class_exact
+  reorder: class_exact
+  const: class_exact
+  opposite: class_exact
+  rotate: class_exact
+  clone: class_exact
+  rescale: class_exact
+parameters:
+  classes:
+    type: integer
+    min: 2
+    max: 4
+    stepsize: 1
+    default: 2
 ---

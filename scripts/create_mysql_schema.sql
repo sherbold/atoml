@@ -38,8 +38,8 @@ CREATE TABLE `results_smoketests` (
 
 CREATE VIEW `morphtest_view` AS select
   `results_morphtests`.`id` AS `id`,
-  case when `results_morphtests`.`algorithm` like 'test%' then substr(`results_morphtests`.`algorithm`,locate('_',`results_morphtests`.`algorithm`) + 1,char_length(`results_morphtests`.`algorithm`) - locate('_',reverse(`results_morphtests`.`algorithm`)) - locate('_',`results_morphtests`.`algorithm`)) else substring_index(`results_morphtests`.`algorithm`,'_',1) end AS `framework`,
-  case when `results_morphtests`.`algorithm` like 'test%' then right(`results_morphtests`.`algorithm`,locate('_',reverse(`results_morphtests`.`algorithm`)) - 1) else substr(`results_morphtests`.`algorithm`,locate('_',`results_morphtests`.`algorithm`) + 1,char_length(`results_morphtests`.`algorithm`) - locate('_',reverse(`results_morphtests`.`algorithm`)) - locate('_',`results_morphtests`.`algorithm`)) end AS `algorithm`,
+  case when `results_morphtests`.`algorithm` like 'test%' then substring_index(substr(`results_morphtests`.`algorithm`, locate('_',`results_morphtests`.`algorithm`) + 1), '_', 1) else substring_index(`results_morphtests`.`algorithm`,'_',1) end AS `framework`,
+  case when `results_morphtests`.`algorithm` like 'test%' then substr(`results_morphtests`.`algorithm`, length(substring_index(`results_morphtests`.`algorithm`, '_', 2)) + 2) else substr(`results_morphtests`.`algorithm`,locate('_',`results_morphtests`.`algorithm`) + 1,char_length(`results_morphtests`.`algorithm`) - locate('_',reverse(`results_morphtests`.`algorithm`)) - locate('_',`results_morphtests`.`algorithm`)) end AS `algorithm`,
   `results_morphtests`.`parameters` AS `parameters`,
   substring_index(substring_index(`results_morphtests`.`testcase`,'_',-2),'_',1) AS `testcase`,
   substring_index(`results_morphtests`.`testcase`,'_',-1) AS `dataset`,`results_morphtests`.`iteration` AS `iteration`,
@@ -60,8 +60,8 @@ from `results_morphtests`;
 
 CREATE VIEW `smoketest_view` AS select
 `results_smoketests`.`id` AS `id`,
-  case when `results_smoketests`.`algorithm` like 'test%' then substr(`results_smoketests`.`algorithm`,locate('_',`results_smoketests`.`algorithm`) + 1,char_length(`results_smoketests`.`algorithm`) - locate('_',reverse(`results_smoketests`.`algorithm`)) - locate('_',`results_smoketests`.`algorithm`)) else substring_index(`results_smoketests`.`algorithm`,'_',1) end AS `framework`,
-  case when `results_smoketests`.`algorithm` like 'test%' then right(`results_smoketests`.`algorithm`,locate('_',reverse(`results_smoketests`.`algorithm`)) - 1) else substr(`results_smoketests`.`algorithm`,locate('_',`results_smoketests`.`algorithm`) + 1,char_length(`results_smoketests`.`algorithm`) - locate('_',reverse(`results_smoketests`.`algorithm`)) - locate('_',`results_smoketests`.`algorithm`)) end AS `algorithm`,
+  case when `results_smoketests`.`algorithm` like 'test%' then substring_index(substr(`results_smoketests`.`algorithm`, locate('_',`results_smoketests`.`algorithm`) + 1), '_', 1) else substring_index(`results_smoketests`.`algorithm`,'_',1) end AS `framework`,
+  case when `results_smoketests`.`algorithm` like 'test%' then substr(`results_smoketests`.`algorithm`, length(substring_index(`results_smoketests`.`algorithm`, '_', 2)) + 2) else substr(`results_smoketests`.`algorithm`,locate('_',`results_smoketests`.`algorithm`) + 1,char_length(`results_smoketests`.`algorithm`) - locate('_',reverse(`results_smoketests`.`algorithm`)) - locate('_',`results_smoketests`.`algorithm`)) end AS `algorithm`,
   `results_smoketests`.`parameters` AS `parameters`,
   substring_index(`results_smoketests`.`testcase`,'_',-1) AS `testcase`,
   `results_smoketests`.`iteration` AS `iteration`,

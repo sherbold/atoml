@@ -99,6 +99,9 @@ public class <<<CLASSNAME>>> {
                 double pValueKS;
                 if( deviationsScores>0 ) {
                     pValueKS = KSTest.test(expectedMorphedDistributions, morphedDistributions).pvalue;
+                    if (Double.isNaN(pValueKS)) {
+                        pValueKS = 1.0;
+                    }
                 } else {
                     pValueKS = 1.0;
                 }

@@ -49,6 +49,9 @@ public class TestcaseGenerator {
 		this.generateSmokeTests = generateSmokeTests;
 		this.generateMorphTests = generateMorphTests;
 		switch(algorithmUnderTest.getFramework()) {
+		case "AIToolBox":
+			templateEngine = new AIToolBoxTemplate(algorithmUnderTest);
+			break;
 		case "weka":
 			templateEngine = new WekaTemplate(algorithmUnderTest);
 			break;
@@ -64,7 +67,7 @@ public class TestcaseGenerator {
 		default:
 			// TODO
 			templateEngine = null;
-			System.err.format("unknown framework: %s", algorithmUnderTest.getFramework());
+			System.err.format("Unknown framework: %s%n", algorithmUnderTest.getFramework());
 			break;
 		}
 	}
@@ -78,6 +81,7 @@ public class TestcaseGenerator {
 		String classBody = new Scanner(this.getClass().getResourceAsStream(getResourcePrefix()+"-class.template"), "UTF-8").useDelimiter("\\A").next();
 
 		StringBuilder testmethods = new StringBuilder();
+		StringBuilder allTests = new StringBuilder();
 		
 		if( generateMorphTests ) {
 			List<MetamorphicTest> metamorphicTests = getMorptests(algorithmUnderTest.getProperties());
@@ -98,6 +102,7 @@ public class TestcaseGenerator {
 					// only generate test if both data and test case are compatible
 					if( allSupported && metamorphicTest.isCompatibleWithData(morphtestDataDescription) ) {
 						testmethods.append(metamorphictestBody(metamorphicTest, morphtestDataDescription));
+						allTests.append("        (\"test_" + metamorphicTest.getName() + "_" + morphtestDataDescription.getName() + "\", test_" + metamorphicTest.getName() + "_" + morphtestDataDescription.getName() + "), \n");
 					}
 				}
 			}
@@ -107,12 +112,15 @@ public class TestcaseGenerator {
 			List<SmokeTest> smokeTests = getSmoketests(algorithmUnderTest.getFeatures());
 			for( SmokeTest smokeTest : smokeTests ) {
 				testmethods.append(smoketestBody(smokeTest));
+				allTests.append("        (\"test_" + smokeTest.getName() + "\", test_" + smokeTest.getName() + "), \n");
 			}
 		}
 		
 		Map<String, String> replacementMap = templateEngine.getClassReplacements();
 		replacementMap.put("<<<CLASSNAME>>>", templateEngine.getClassName());
 		replacementMap.put("<<<METHODS>>>", testmethods.toString());
+		replacementMap.put("<<<ALLTESTS>>>", allTests.toString());
+		replacementMap.put("<<<CLASSIFIER>>>", algorithmUnderTest.getClassName());
 		
 		String mysqlImports = "";
 		String mysqlHandler = "";
@@ -191,6 +199,7 @@ public class TestcaseGenerator {
 			replacementMap.put("<<<NAME>>>", metamorphicTest.getName());
 			replacementMap.put("<<<TIMEOUT>>>", System.getProperty("atoml." + this.algorithmUnderTest.getFramework() + ".timeout"));
 			replacementMap.put("<<<DATASET>>>", morphtestDataDescription.getName());
+			replacementMap.put("<<<CLASSNAME>>>", templateEngine.getClassName());
 			replacementMap.put("<<<ITERATIONS>>>", Integer.toString(iterations));
 			for (String key : replacementMap.keySet()) {
 				methodBody = methodBody.replaceAll(key, replacementMap.get(key));
@@ -215,7 +224,7 @@ public class TestcaseGenerator {
 	}
 	
 	private List<SmokeTest> getSmoketests(List<FeatureType> features) {
-			List<SmokeTest> supportedSmokeTests = new LinkedList<>();
+		List<SmokeTest> supportedSmokeTests = new LinkedList<>();
 		for( SmokeTest smokeTest : TestCatalog.SMOKETESTS ) {
 			for( FeatureType featureType : features ) {
 				if(FeatureType.isSupported(featureType, smokeTest.getFeatureType())) {

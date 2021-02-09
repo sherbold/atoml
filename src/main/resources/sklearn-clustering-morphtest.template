@@ -52,6 +52,7 @@
                 if math.isnan(pval_ttest) and deviations_clust==0:
                     pval_ttest = 1.0
 
+                # score matching for soft clustering
                 if hasattr(clusterer_original, 'score_samples') and hasattr(clusterer_morph, 'score_samples'):
                     deviations_score = 0
                     deviations_pvals = 0
@@ -78,6 +79,12 @@
                 else:
                     deviations_score = -1
                     deviations_pvals = -1
+                
+                # set placeholder score pvalue for clustering
+                if deviations_pvals == len(expected_clusters):  
+                    pval_kstest = 0
+                else:
+                    pval_kstest = 1
 
             except Exception as e:
                 no_exception = False
