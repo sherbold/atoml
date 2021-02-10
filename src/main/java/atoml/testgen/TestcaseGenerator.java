@@ -220,7 +220,7 @@ public class TestcaseGenerator {
 	}
 	
 	private String getResourcePrefix() {
-		return "/"+algorithmUnderTest.getFramework()+"-"+algorithmUnderTest.getAlgorithmType();
+		return "/"+algorithmUnderTest.getFramework().toLowerCase()+"-"+algorithmUnderTest.getAlgorithmType();
 	}
 	
 	private List<SmokeTest> getSmoketests(List<FeatureType> features) {
