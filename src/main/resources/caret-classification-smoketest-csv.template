@@ -29,9 +29,11 @@ withTimeout(timeout=<<<TIMEOUT>>>, onTimeout="error", expr={
                           prediction = pred_classes,
                           prob_0 = probabilities[,1],
                           prob_1 = probabilities[,2])
+            csv_file <- file.path(dirname(dirname(getwd())),"predictions",paste0("pred_<<<IDENTIFIER>>>_<<<NAME>>>_",iter,".csv"))
             write.csv(x = csv_df,
-                    file = file.path(dirname(dirname(getwd())),"predictions",paste0("pred_<<<IDENTIFIER>>>_<<<NAME>>>_",iter,".csv")),
+                    file = csv_file,
                     row.names = FALSE)
+            print(paste0("Predictions saved at: ", csv_file))
         }
     expect_true(TRUE)
     })
