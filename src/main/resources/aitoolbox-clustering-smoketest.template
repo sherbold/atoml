@@ -1,16 +1,19 @@
     func test_<<<NAME>>>() {
         for iter in 1...<<<ITERATIONS>>> {
             for param in params {
-                let classifier = param
+                let clusterer = <<<CLASSIFIER>>>(copyFrom: param)
                 let file = "Tests/smokedata/<<<NAME>>>_\\(iter)_training.arff"
     
                 do {
                     //load data and convert to DataSet
-                    let data = try loadArff(fileURL: file)
+                    let data = try loadArff(atPath: file)
                     let trainData = try toDataSet(data: data, withoutClass: true)
     
-                    try classifier.train(trainData)
-    
+                    try clusterer.train(trainData)
+                    
+                    for i in 0..<data.count {
+                        XCTAssertFalse(try trainData.getClass(i) < 0, "No prediction for instance \\(i)")
+                    }
                 } catch let e {
                     print("Smoketest failed: \\(e)")
                 }
