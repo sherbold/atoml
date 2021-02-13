@@ -2,8 +2,8 @@
         for iter in 1...<<<ITERATIONS>>> {
             for param in params {
             
-                let classifierOriginal = param
-                let classifierMorphed = param
+                let classifierOriginal = <<<CLASSIFIER>>>(copyFrom: param)
+                let classifierMorphed = <<<CLASSIFIER>>>(copyFrom: param)
     
                 let file = "Tests/morphdata/<<<DATASET>>>_\\(iter).arff"
                 let morphFile = "Tests/morphdata/<<<DATASET>>>_\\(iter)_<<<NAME>>>.arff"
@@ -12,8 +12,8 @@
                 var deviationVec = [Int]()
                 do {
                     //load training and test data and convert to DataSet
-                    let data = try loadArff(fileURL: file)
-                    let dataMorph = try loadArff(fileURL: morphFile)
+                    let data = try loadArff(atPath: file)
+                    let dataMorph = try loadArff(atPath: morphFile)
                     let trainData = try toDataSet(data: data)
                     let trainDataMorph = try toDataSet(data: dataMorph)
                     let testData = try toDataSet(data: data, withoutClass: true)
@@ -37,26 +37,23 @@
                             deviationVec.append(0)
                         }
                     }
-    
                 } catch FileError.fileNotFound {
-                    print("Input file \(file) not found")
+                    print("Input file \\(file) not found")
                 } catch FileError.unknownFileType {
-                    print("Input file \(file) has the wrong format")
+                    print("Input file \\(file) has the wrong format")
                 } catch let e {
                     print(e)
                 }
     
                 // write results to file for statistical analysis
                 let path = URL(fileURLWithPath: "./Tests/<<<CLASSNAME>>>_output.txt")
-    
                 do {
                     try writeResults(to: path, results: deviationVec)
                 } catch FileError.fileNotFound {
-                    print("Output file \(file) not found")
+                    print("Output file \\(file) not found")
                 } catch let e {
                     print(e)
                 }
-    
                 assertMorphTest(type: "exact_class", testsize: deviationVec.count, deviationsCounts: deviationsCounts)
             }
         }

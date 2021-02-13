@@ -36,10 +36,22 @@ final class <<<CLASSNAME>>>: XCTestCase {
         case fileNotFound
         case unknownFileType
     }
+    
+    override class func setUp() {
+        let outPath = "./Tests/<<<CLASSNAME>>>_output.txt"
+        do {
+            let fileManager = FileManager.default
+            if fileManager.fileExists(atPath: outPath) {
+                try fileManager.removeItem(at: URL(fileURLWithPath: outPath))
+            }
+        } catch let e {
+            print("Error setting up tests: \(e)")
+        }
+    }
 
-    func loadArff(fileURL: String) throws -> [[Double]] {
-        print("getting file from \(fileURL)")
-        let fileContent = try? String(contentsOfFile: fileURL)
+    func loadArff(atPath: String) throws -> [[Double]] {
+        print("getting file from \(atPath)")
+        let fileContent = try? String(contentsOfFile: atPath)
         var data = [[String]]()
         var formatCheck: [Bool] = [false, false, false]
         if let lines = fileContent {
@@ -79,16 +91,12 @@ final class <<<CLASSNAME>>>: XCTestCase {
                             newInstance.append(feature.doubleValue)
                         }
                     }
-
                     numData.append(newInstance)
                 }
-
                 return numData
-                
             } else {
                 throw FileError.unknownFileType
             }
-
         } else {
             throw FileError.fileNotFound
         }
@@ -104,6 +112,7 @@ final class <<<CLASSNAME>>>: XCTestCase {
                     try dataSet.addTestDataPoint(input: Array(instance[0..<numFeatures]))
                 } catch let e {
                     print("error creating test data: \(e)")
+                    throw e
                 }
             }
         } else {
@@ -112,6 +121,7 @@ final class <<<CLASSNAME>>>: XCTestCase {
                     try dataSet.addDataPoint(input: Array(instance[0..<numFeatures]), dataClass: Int(instance[numFeatures]))
                 } catch let e {
                     print("error creating training data: \(e)")
+                    throw e
                 }
             }
         }
@@ -123,7 +133,6 @@ final class <<<CLASSNAME>>>: XCTestCase {
         for val in results {
             resultString.append(String(val) + ", ")
         }
-
         do {
             try resultString.appendLine(to: path as URL)
         } catch {
