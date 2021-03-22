@@ -10,11 +10,16 @@ import weka.core.Instances;
 public class SmoketestFromArff extends AbstractSmokeTest {
 
 	private final String resource;
-	
+	private final String additionalResource;
+
 	public SmoketestFromArff(String name, String resource) {
+		this(name, resource, null);
+	}
+	public SmoketestFromArff(String name, String resource, String additionalResource) {
 		super();
 		this.name = name;
 		this.resource = resource;
+		this.additionalResource = additionalResource;
 	}
 	
 	@Override
@@ -27,7 +32,18 @@ public class SmoketestFromArff extends AbstractSmokeTest {
         catch (IOException e) {
             throw new RuntimeException("error reading ARFF from resource: " + resource, e);
         }
-        testdata = data;
+        if (additionalResource == null){
+			testdata = data;
+		} else{
+			InputStreamReader additionalFile = new InputStreamReader(
+					this.getClass().getResourceAsStream(additionalResource));
+			try(BufferedReader reader = new BufferedReader(additionalFile);) {
+				testdata = new Instances(reader);
+			}
+			catch (IOException e) {
+				throw new RuntimeException("error reading ARFF from resource: " + additionalResource, e);
+			}
+		}
 	}
 	
 	/* 
