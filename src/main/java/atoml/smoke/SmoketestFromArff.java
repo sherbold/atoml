@@ -7,14 +7,32 @@ import java.io.InputStreamReader;
 import atoml.classifiers.FeatureType;
 import weka.core.Instances;
 
+/**
+ * Features: derived from ARFF
+ * Class: derived from ARFF
+ *
+ * @author sherbold
+ */
 public class SmoketestFromArff extends AbstractSmokeTest {
 
 	private final String trainingResource;
 	private final String testResource;
 
+	/**
+	 * creates a new SmoketestFromArff, where training data == test data
+	 * @param name identifier name of the test
+	 * @param trainingResource resource path of the ARFF file with the data
+	 */
 	public SmoketestFromArff(String name, String trainingResource) {
 		this(name, trainingResource, trainingResource);
 	}
+
+	/**
+	 * creates a new SmoketestFromArff
+	 * @param name identifier name of the test
+	 * @param trainingResource resource path of the ARFF file with the training data
+	 * @param testResource resource path of the ARFF file with the test data
+	 */
 	public SmoketestFromArff(String name, String trainingResource, String testResource) {
 		super();
 		this.name = name;
@@ -27,61 +45,46 @@ public class SmoketestFromArff extends AbstractSmokeTest {
 			throw new RuntimeException("error test data ARFF resource for smoke test generation is null");
 		}
 	}
-	
+
+	/*
+	 * (non-Javadoc)
+	 * @see atoml.smoke.SmokeTest#generateData(int, int, long)
+	 */
 	@Override
 	public void generateData(int numFeatures, int numInstances, long seed) {
-		InputStreamReader trainingFile = null;
-		BufferedReader trainingReader = null;
+		data = readDataFromArff(trainingResource);
+		testdata = readDataFromArff(testResource);
+	}
+
+	private Instances readDataFromArff(String resource){
+		InputStreamReader dataFile = null;
+		BufferedReader reader = null;
+		Instances dataset;
 		try{
-			trainingFile = new InputStreamReader(this.getClass().getResourceAsStream(trainingResource));
-			trainingReader = new BufferedReader(trainingFile);
-			data = new Instances(trainingReader);
+			dataFile = new InputStreamReader(this.getClass().getResourceAsStream(resource));
+			reader = new BufferedReader(dataFile);
+			dataset = new Instances(reader);
 		}
 		catch (IOException e) {
-			throw new RuntimeException("error reading ARFF from resource: " + trainingResource, e);
+			throw new RuntimeException("error reading ARFF from resource: " + resource, e);
 		}
 		finally {
-			if (trainingReader != null) {
+			if (reader != null) {
 				try {
-					trainingReader.close();
+					reader.close();
 				} catch (IOException e) {
-					throw new RuntimeException("error closing BufferedReader for resource: " + trainingResource, e);
+					throw new RuntimeException("error closing BufferedReader for resource: " + resource, e);
 				}
 			}
-			if (trainingFile != null){
+			if (dataFile != null){
 				try {
-					trainingFile.close();
+					dataFile.close();
 				} catch (IOException e) {
-					throw new RuntimeException("error closing InputStreamReader for resource: " + trainingResource, e);
-				}
-			}
-		}
-		InputStreamReader testFile = null;
-		BufferedReader testReader = null;
-		try{
-			testFile = new InputStreamReader(this.getClass().getResourceAsStream(testResource));
-			testReader = new BufferedReader(testFile);
-			testdata = new Instances(testReader);
-		}
-		catch (IOException e) {
-			throw new RuntimeException("error reading ARFF from resource: " + testResource, e);
-		}
-		finally {
-			if (testReader != null) {
-				try {
-					testReader.close();
-				} catch (IOException e) {
-					throw new RuntimeException("error closing BufferedReader for resource: " + testResource, e);
-				}
-			}
-			if (testFile != null){
-				try {
-					testFile.close();
-				} catch (IOException e) {
-					throw new RuntimeException("error closing InputStreamReader for resource: " + testResource, e);
+					throw new RuntimeException("error closing InputStreamReader for resource: " + resource, e);
 				}
 			}
 		}
+		return dataset;
 	}
 	
 	/* 
