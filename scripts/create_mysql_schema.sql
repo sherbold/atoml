@@ -16,6 +16,7 @@ CREATE TABLE `results_morphtests` (
   `passed_stat_class` tinyint(1) DEFAULT NULL,
   `passed_stat_score` tinyint(1) DEFAULT NULL,
   `passed` tinyint(1) DEFAULT NULL,
+  `time` int(11) DEFAULT NULL,
   `exception` varchar(200) DEFAULT NULL,
   `message` varchar(1000) DEFAULT NULL,
   `stacktrace` longtext DEFAULT NULL,
@@ -29,6 +30,7 @@ CREATE TABLE `results_smoketests` (
   `testcase` varchar(200) DEFAULT NULL,
   `iteration` int(11) DEFAULT NULL,
   `passed` tinyint(1) DEFAULT NULL,
+  `time` int(11) DEFAULT NULL,
   `exception` varchar(200) DEFAULT NULL,
   `message` varchar(1000) DEFAULT NULL,
   `stacktrace` longtext DEFAULT NULL,
@@ -53,6 +55,7 @@ CREATE VIEW `morphtest_view` AS select
   `results_morphtests`.`passed_stat_class` AS `passed_stat_class`,
   `results_morphtests`.`passed_stat_score` AS `passed_stat_score`,
   `results_morphtests`.`passed` AS `passed`,
+  `results_morphtests`.`time` AS `time`,
   `results_morphtests`.`exception` AS `exception`,
   `results_morphtests`.`message` AS `message`,
   `results_morphtests`.`stacktrace` AS `stacktrace`
@@ -66,6 +69,7 @@ CREATE VIEW `smoketest_view` AS select
   substring_index(`results_smoketests`.`testcase`,'_',-1) AS `testcase`,
   `results_smoketests`.`iteration` AS `iteration`,
   `results_smoketests`.`passed` AS `passed`,
+  `results_smoketests`.`time` AS `time`,
   `results_smoketests`.`exception` AS `exception`,
   `results_smoketests`.`message` AS `message`,
   `results_smoketests`.`stacktrace` AS `stacktrace`
