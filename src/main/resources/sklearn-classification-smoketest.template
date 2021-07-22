@@ -9,7 +9,7 @@
             <<<MYSQLINDENT>>>data_df["classAtt"] = lb_make.fit_transform(data_df["classAtt"])
             <<<MYSQLINDENT>>>data_df = pd.get_dummies(data_df)
             <<<MYSQLINDENT>>>
-            <<<MYSQLINDENT>>>testdata_df = pd.DataFrame(data)
+            <<<MYSQLINDENT>>>testdata_df = pd.DataFrame(testdata)
             <<<MYSQLINDENT>>>testdata_df["classAtt"] = lb_make.fit_transform(testdata_df["classAtt"])
             <<<MYSQLINDENT>>>testdata_df = pd.get_dummies(testdata_df, sparse=True)
             <<<MYSQLINDENT>>>
