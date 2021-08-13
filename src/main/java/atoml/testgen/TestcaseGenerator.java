@@ -64,6 +64,9 @@ public class TestcaseGenerator {
 		case "caret":
 			templateEngine = new CaretTemplate(algorithmUnderTest);
 			break;
+		case "tensorflow":
+			templateEngine = new TensorFlowTemplate(algorithmUnderTest);
+			break;
 		default:
 			// TODO
 			templateEngine = null;
