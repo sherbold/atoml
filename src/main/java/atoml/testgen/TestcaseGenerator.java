@@ -137,7 +137,11 @@ public class TestcaseGenerator {
 				mysqlEvalSmokeEnd = new Scanner(this.getClass().getResourceAsStream(getResourcePrefix() + "-mysql-smoke-end.template"), "UTF-8").useDelimiter("\\A").next();
 				mysqlIndent = "    ";
 			} catch (NullPointerException e){
-				throw new RuntimeException("could not access mysql templates: ", e);
+				if (algorithmUnderTest.getFramework().equals("AIToolBox")) {
+					System.err.format("WARNING: mysql option not supported for framework %s%n", algorithmUnderTest.getFramework());
+				} else {
+					throw new RuntimeException("could not access mysql templates: ", e);
+				}
 			}
 		}
 		replacementMap.put("<<<MYSQLIMPORTS>>>", mysqlImports);
