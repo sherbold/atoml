@@ -12,7 +12,8 @@ results_dict = {
                 'passed_exact_class': int(deviations_clust<=0),
                 'passed_stat_class': int(pval_ttest>0.05),
                 'passed_stat_score': int(deviations_pvals<=0),
-                'passed': int(no_exception),
+                'passed': int(passed),
+                'time': int(exec_time),
                 'exception': exception_type,
                 'message': exception_message,
                 'stacktrace': exception_stacktrace

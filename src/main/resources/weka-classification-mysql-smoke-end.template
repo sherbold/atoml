@@ -8,5 +8,6 @@
                 e.printStackTrace(pw);
                 stacktrace = sw.toString();
             }
+            long time = (System.nanoTime() - startTime)/1000;
             String testcaseNameWithoutParams = testname.getMethodName().split("\\\\[")[0];
-            storage.addSmoketestResult(this.getClass().getSimpleName(), parameterName, testcaseNameWithoutParams, iter, passed, exception, message, stacktrace);
+            storage.addSmoketestResult(this.getClass().getSimpleName(), parameterName, testcaseNameWithoutParams, iter, passed, time, exception, message, stacktrace);
