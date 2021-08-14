@@ -1,0 +1,22 @@
+results_dict = {
+                'algorithm': self.__class__.__name__,
+                'parameters': name,
+                'testcase': testcase_name,
+                'iteration': iter,
+                'testsize': len(data_original),
+                'deviations_counts': int(deviations_class),
+                'deviations_scores': int(deviations_score),
+                'pval_counts': float(pval_chisquare),
+                'pval_scores': float(pval_kstest),
+                'passed_exact_score': int(deviations_score<=0),
+                'passed_exact_class': int(deviations_class<=0),
+                'passed_stat_class': int(pval_chisquare>0.05),
+                'passed_stat_score': int(pval_kstest>0.05),
+                'passed': int(passed),
+                'time': int(exec_time),
+                'exception': exception_type,
+                'message': exception_message,
+                'stacktrace': exception_stacktrace
+            }
+            write_morph_to_db(results_dict)
+            #

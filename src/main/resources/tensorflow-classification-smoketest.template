@@ -1,0 +1,31 @@
+    @parameterized.expand(params)
+    @timeout(<<<TIMEOUT>>>)
+    def test_<<<NAME>>>(self, name, kwargs):
+        for iter in range(1,<<<ITERATIONS>>>+1):
+            <<<MYSQLEVALSMOKE_START>>>
+            <<<MYSQLINDENT>>>data, meta = loadarff('smokedata/<<<NAME>>>_%i_training.arff' % iter)
+            <<<MYSQLINDENT>>>testdata, testmeta = loadarff('smokedata/<<<NAME>>>_%i_test.arff' % iter)
+            <<<MYSQLINDENT>>>lb_make = LabelEncoder()
+            <<<MYSQLINDENT>>>data_df = pd.DataFrame(data)
+            <<<MYSQLINDENT>>>data_df["classAtt"] = lb_make.fit_transform(data_df["classAtt"])
+            <<<MYSQLINDENT>>>data_df = pd.get_dummies(data_df)
+            <<<MYSQLINDENT>>>train_samples = data_df.loc[:, data_df.columns != 'classAtt'].to_numpy()
+            <<<MYSQLINDENT>>>train_labels = data_df['classAtt'].to_numpy()
+            <<<MYSQLINDENT>>>
+            <<<MYSQLINDENT>>>testdata_df = pd.DataFrame(testdata)
+            <<<MYSQLINDENT>>>testdata_df["classAtt"] = lb_make.fit_transform(testdata_df["classAtt"])
+            <<<MYSQLINDENT>>>testdata_df = pd.get_dummies(testdata_df, sparse=True)
+            <<<MYSQLINDENT>>>test_samples = testdata_df.loc[:, data_df.columns != 'classAtt'].to_numpy()
+            <<<MYSQLINDENT>>>
+            <<<MYSQLINDENT>>>classifier = <<<CLASSIFIER>>>([
+            <<<MYSQLINDENT>>>                 Dense(units=100, input_shape=(train_samples.shape[1],), activation='relu'),
+            <<<MYSQLINDENT>>>                 Dense(units=2, activation='sigmoid')
+            <<<MYSQLINDENT>>>             ])
+            <<<MYSQLINDENT>>>
+            <<<MYSQLINDENT>>>tf.random.set_seed(42)
+            <<<MYSQLINDENT>>>classifier.compile(**kwargs)
+            <<<MYSQLINDENT>>>classifier.fit(x=train_samples, y=train_labels, epochs=30)
+            <<<MYSQLINDENT>>>classifier.predict(x=test_samples)
+            <<<MYSQLINDENT>>>
+            <<<MYSQLEVALSMOKE_END>>>
+
