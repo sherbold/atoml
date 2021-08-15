@@ -1,0 +1,19 @@
+except Exception as e:
+                passed = False
+                exception_type = type(e).__name__
+                exception_message = str(e)
+                exception_stacktrace = traceback.format_exc()
+
+            exec_time = (time.time_ns() - start_time)/1000
+            results_dict = {
+                'algorithm': self.__class__.__name__,
+                'parameters': name,
+                'testcase': inspect.stack()[0][3],
+                'iteration': iter,
+                'passed': int(passed),
+                'time': int(exec_time),
+                'exception': exception_type,
+                'message': exception_message,
+                'stacktrace': exception_stacktrace,
+            }
+            write_smoke_to_db(results_dict)

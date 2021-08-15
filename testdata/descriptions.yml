@@ -4531,3 +4531,33 @@ parameters:
     stepsize: 1
     default: 2
 ---
+
+name: TENSORFLOW_Sequential
+type: classification
+framework: tensorflow
+package: tensorflow.keras.models
+class: Sequential
+features: [double, categorical]
+properties:
+  same: class_exact
+  scramble: class_exact
+  reorder: class_exact
+  const: class_exact
+  opposite: class_exact
+  rotate: class_exact
+  clone: class_exact
+  rescale: class_exact
+parameters:
+  optimizer:
+    type: values # only optimizers usable in sklearn's MLPClassifier used here
+    values: [Adam(learning_rate=0.01), Adam(learning_rate=0.0001), SGD(learning_rate=0.01), SGD(learning_rate=0.001), SGD(learning_rate=0.0001)]
+    default: Adam(learning_rate=0.001)
+  loss:
+    type: values # only loss function used in sklearn's MLPClassifier used here
+    values: ['mean_squared_logarithmic_error']
+    default: 'mean_squared_error'
+  metrics:
+    type: values
+    values: ["['accuracy']"]
+    default: "['mse']"
+---
