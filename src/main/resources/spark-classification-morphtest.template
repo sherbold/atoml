@@ -1,6 +1,7 @@
     @Test(timeout=<<<TIMEOUT>>>)
     public void test_<<<NAME>>>_<<<DATASET>>>() throws Exception {
         for(int iter=1; iter<=<<<ITERATIONS>>>; iter++) {
+            long startTime = System.nanoTime();
             boolean passed = true;
             String message = null;
             String exception = null;
@@ -81,7 +82,7 @@
                 deviationsCounts = -1;
                 deviationsScores = -1;
             }
-            
+            long time = (System.nanoTime() - startTime)/1000;
             String nameWithoutParams = testname.getMethodName().split("\\\\[")[0]; 
             <<<MYSQLEVALMORPH>>>assertMorphTest(<<<EVALUATIONTYPE>>>, nameWithoutParams, iter, deviationsCounts, deviationsScores, (int) data.count(), expectedMorphCounts, morphedCounts, expectedMorphDistributions, morphedDistributions, passed, message, exception, stacktrace);
         }

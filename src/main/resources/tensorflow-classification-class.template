@@ -1,17 +1,24 @@
 import unittest
+import xmlrunner
 import pandas as pd
 import numpy as np
 import threading
 import functools
 import inspect
 import math
-import warnings
 import traceback
+import warnings
+import os
 import time
 
 from parameterized import parameterized
+from pathlib import Path
 from scipy.io.arff import loadarff
-from scipy.stats import ttest_1samp, ks_2samp
+from scipy.stats import chisquare, ks_2samp
+from sklearn.preprocessing import LabelEncoder
+import tensorflow as tf
+from tensorflow.keras.layers import Dense
+from tensorflow.keras.optimizers import Adam, SGD
 <<<IMPORTCLASSIFIER>>>
 <<<MYSQLIMPORTS>>><<<MYSQLHANDLER>>>
 
@@ -56,50 +63,20 @@ class <<<CLASSNAME>>>(unittest.TestCase):
 
 <<<HYPERPARAMETERS>>>
 
-    def assert_morphtest(self, evaluation_type, testcase_name, iteration, deviations_clust, pval_ttest, deviations_pvals, no_exception, exception_type, exception_message, exception_stacktrace):
+    def assert_morphtest(self, evaluation_type, testcase_name, iteration, deviations_class, deviations_score, pval_chisquare, pval_kstest, no_exception, exception_type, exception_message, exception_stacktrace):
         if no_exception:
-            if evaluation_type=='clust_exact':
-                self.assertEqual(deviations_clust, 0)
-            elif evaluation_type=='clust_stat':
-                self.assertTrue(pval_ttest > 0.05)
+            if evaluation_type=='score_exact':
+                self.assertEqual(deviations_score, 0)
+            elif evaluation_type=='class_exact':
+                self.assertEqual(deviations_class, 0)
             elif evaluation_type=='score_stat':
-                self.assertEqual(deviations_pvals, 0)
+                self.assertTrue(pval_kstest>0.05)
+            elif evaluation_type=='class_stat':
+                self.assertTrue(pval_chisquare>0.05)
             else:
-                raise ValueError('invalid evaluation_type: %s (allowed: clust_exact, clust_stat, score_stat)' % evaluation_type)
+                raise ValueError('invalid evaluation_type: %s (allowed: score_exact, class_exact, score_stat, class_stat' % evaluation_type)
         else:
             raise RuntimeError('%s encountered: %s %s' % exception_type, exception_message, exception_stacktrace)
-
-    def flip_same_clusters(self, morph_clusters, expected_clusters):
-        flipped_clusters = {}
-        for morph_cluster in morph_clusters:
-            flipped = False
-            for exp_cluster in expected_clusters:
-                if morph_clusters[morph_cluster] == expected_clusters[exp_cluster]:
-                    flipped_clusters[exp_cluster] = expected_clusters[exp_cluster]
-                    flipped = True
-                    break
-            if not flipped:
-                flipped_clusters[morph_cluster] = morph_clusters[morph_cluster]
-        return flipped_clusters
-
-    def create_cluster_map(self, data):
-        cluster_map = {}
-        for i, c in enumerate(data):
-            if c not in cluster_map:
-                cluster_map[c] = [i]
-            else:
-                cluster_map[c].append(i)
-        return cluster_map
-
-    def create_scores_map(self, cluster_map, scores):
-        scores_map = {}
-        for c in cluster_map:
-            for i in cluster_map[c]:
-                if c not in scores_map:
-                    scores_map[c] = [scores[i]]
-                else:
-                    scores_map[c].append(scores[i])
-        return scores_map
 
 <<<METHODS>>>
 

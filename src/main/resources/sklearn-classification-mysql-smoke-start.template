@@ -1,4 +1,5 @@
-no_exception = True
+start_time = time.time_ns()
+            passed = True
             exception_type = None
             exception_message = None
             exception_stacktrace = None

@@ -4,4 +4,3 @@ start_time = time.time_ns()
             exception_message = None
             exception_stacktrace = None
             try:
-<<<MYSQLINDENT>>><<<MYSQLINDENT>>><<<MYSQLINDENT>>>

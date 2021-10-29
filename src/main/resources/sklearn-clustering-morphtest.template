@@ -2,7 +2,8 @@
     @timeout(<<<TIMEOUT>>>)
     def test_<<<NAME>>>_<<<DATASET>>>(self, name, kwargs):
         for iter in range(1,<<<ITERATIONS>>>+1):
-            no_exception = True
+            start_time = time.time_ns()
+            passed = True
             exception_type = None
             exception_message = None
             exception_stacktrace = None
@@ -87,7 +88,7 @@
                     pval_kstest = 1
 
             except Exception as e:
-                no_exception = False
+                passed = False
                 exception_type = type(e).__name__
                 exception_message = str(e)
                 exception_stacktrace = traceback.format_exc()
@@ -97,5 +98,6 @@
                 pval_ttest = 1
                 pval_kstest = 1
 
+            exec_time = (time.time_ns() - start_time)/1000
             <<<MYSQLEVALMORPH>>>self.assert_morphtest(<<<EVALUATIONTYPE>>>, testcase_name, iter, deviations_clust, pval_ttest, deviations_pvals, no_exception, exception_type, exception_message, exception_stacktrace)
 

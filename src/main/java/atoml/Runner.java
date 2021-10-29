@@ -37,9 +37,10 @@ public class Runner {
 	    System.setProperty("atoml.savepredictions", String.valueOf(cmdParameters.hasOption("predictions")));
 
 		System.setProperty("atoml.weka.timeout", String.valueOf(1000 * cmdParameters.getIntegerValue("timeout")));
-		System.setProperty("atoml.sklearn.timeout", String.valueOf(1 * cmdParameters.getIntegerValue("timeout")));
+		System.setProperty("atoml.sklearn.timeout", String.valueOf(cmdParameters.getIntegerValue("timeout")));
 		System.setProperty("atoml.spark.timeout", String.valueOf(1000 * cmdParameters.getIntegerValue("timeout")));
-		System.setProperty("atoml.caret.timeout", String.valueOf(1 * cmdParameters.getIntegerValue("timeout")));
+		System.setProperty("atoml.caret.timeout", String.valueOf(cmdParameters.getIntegerValue("timeout")));
+		System.setProperty("atoml.tensorflow.timeout", String.valueOf(cmdParameters.getIntegerValue("timeout")));
 
 		List<Algorithm> algorithms = YamlClassifierGenerator.parseFile(yamlFileStr);
 		TestsuiteGenerator testsuiteGenerator = new TestsuiteGenerator(numFeatures, numInstances);
@@ -51,6 +52,8 @@ public class Runner {
 		System.setProperty("atoml.sklearn.testcasepath", "generated-tests/sklearn/");
 		System.setProperty("atoml.spark.datapath", "generated-tests/spark/src/test/resources/");
 		System.setProperty("atoml.spark.testcasepath", "generated-tests/spark/src/test/java/");
+		System.setProperty("atoml.tensorflow.datapath", "generated-tests/tensorflow/");
+		System.setProperty("atoml.tensorflow.testcasepath", "generated-tests/tensorflow/");
 		System.setProperty("atoml.caret.datapath", "generated-tests/caret/");
 		System.setProperty("atoml.caret.testcasepath", "generated-tests/caret/");
 		testsuiteGenerator.generateTests(algorithms, iterations, useMysql, generateSmokeTests, generateMorphTests);

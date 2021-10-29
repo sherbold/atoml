@@ -1,0 +1,83 @@
+    @parameterized.expand(params)
+    @timeout(<<<TIMEOUT>>>)
+    def test_<<<NAME>>>_<<<DATASET>>>(self, name, kwargs):
+        for iter in range(1,<<<ITERATIONS>>>+1):
+            start_time = time.time_ns()
+            passed = True
+            exception_type = None
+            exception_message = None
+            exception_stacktrace = None
+            testcase_name = inspect.stack()[0][3]
+
+            data_original, meta_original = loadarff('morphdata/<<<DATASET>>>_%i.arff' % iter)
+            data_morphed, meta_morphed = loadarff('morphdata/<<<DATASET>>>_%i_<<<NAME>>>.arff' % iter)
+            lb_make = LabelEncoder()
+
+            data_original_df = pd.DataFrame(data_original)
+            data_original_df["classAtt"] = lb_make.fit_transform(data_original_df["classAtt"])
+            data_original_df = pd.get_dummies(data_original_df)
+            data_original_train_samples = data_original_df.loc[:, data_original_df.columns != 'classAtt'].to_numpy()
+            data_original_train_labels = data_original_df['classAtt'].to_numpy()
+
+            data_morph_df = pd.DataFrame(data_morphed)
+            data_morph_df["classAtt"] = lb_make.fit_transform(data_morph_df["classAtt"])
+            data_morph_df = pd.get_dummies(data_morph_df)
+            data_morph_train_samples = data_morph_df.loc[:, data_morph_df.columns != 'classAtt'].to_numpy()
+            data_morph_train_labels = data_morph_df['classAtt'].to_numpy()
+
+            try:
+                classifier_original = <<<CLASSIFIER>>>([
+                                          Dense(units=100, input_shape=(data_original_train_samples.shape[1],), activation='relu'),
+                                          Dense(units=2, activation='sigmoid')
+                                      ])
+                tf.random.set_seed(42)
+                classifier_original.compile(**kwargs)
+                classifier_original.fit(x=data_original_train_samples, y=data_original_train_labels, epochs=30)
+
+                classifier_morph = <<<CLASSIFIER>>>([
+                                       Dense(units=100, input_shape=(data_morph_train_samples.shape[1],), activation='relu'),
+                                       Dense(units=2, activation='sigmoid')
+                                   ])
+                tf.random.set_seed(42)
+                classifier_morph.compile(**kwargs)
+                classifier_morph.fit(x=data_morph_train_samples, y=data_morph_train_labels, epochs=30)
+
+                scores_original = classifier_original.predict(x=data_original_train_samples)
+                scores_morph = classifier_morph.predict(x=data_morph_train_samples)
+
+                prediction_original = scores_original.argmax(axis=-1)
+                prediction_morph = scores_morph.argmax(axis=-1)
+
+                <<<EXPECTEDMORPHEDCLASS>>>
+
+                deviations_class = sum(prediction_morph[:len(prediction_expected)] != prediction_expected)
+                deviations_score = sum(scores_morph[:len(scores_expected), 0] != scores_expected)
+                count_expected_1 = prediction_expected.sum()
+                count_expected_0 = len(prediction_expected) - count_expected_1
+                count_morph_1 = prediction_morph.sum()
+                count_morph_0 = len(prediction_morph) - count_morph_1
+
+                with warnings.catch_warnings():
+                    warnings.simplefilter("ignore")
+                    pval_chisquare = chisquare([count_morph_0, count_morph_1],
+                                               [count_expected_0, count_expected_1]).pvalue
+                    pval_kstest = ks_2samp(scores_morph[:, 0], scores_expected).pvalue
+
+                # handles situation if all data is in one class
+                if math.isnan(pval_chisquare) and deviations_class == 0:
+                    pval_chisquare = 1.0
+
+            except Exception as e:
+                passed = False
+                print(passed)
+                exception_type = type(e).__name__
+                exception_message = str(e)
+                exception_stacktrace = traceback.format_exc()
+                deviations_score = -1 #TODO: placeholder values to store in db if test crashes
+                deviations_class = -1
+                pval_chisquare = 1
+                pval_kstest = 1
+
+            exec_time = (time.time_ns() - start_time)/1000
+            <<<MYSQLEVALMORPH>>>self.assert_morphtest(<<<EVALUATIONTYPE>>>, testcase_name, iter, deviations_class, deviations_score, pval_chisquare, pval_kstest, passed, exception_type, exception_message, exception_stacktrace)
+
