@@ -48,27 +48,27 @@
                 evalTrainingAsTest.evaluateModel(classifier, data);
             } catch (Exception ex) {
             }
-            ArrayList pred = evalTrainingAsTest.predictions();
+            ArrayList predTrainingAsTest = evalTrainingAsTest.predictions();
             // create a csv file
-            String filePath = "predictions/pred_<<<IDENTIFIER>>>_<<<NAME>>>_TrainingAsTest_" + iter + ".csv";
+            String filePathTrainingAsTest = "predictions/pred_<<<IDENTIFIER>>>_<<<NAME>>>_TrainingAsTest_" + iter + ".csv";
             try {
-                File outFile = new File(filePath);
-                outFile.createNewFile();
+                File outFileTrainingAsTest = new File(filePathTrainingAsTest);
+                outFileTrainingAsTest.createNewFile();
             } catch (IOException e) {
                 System.out.println( "Creating the csv file failed." );
                 e.printStackTrace();
             }
             // write in csv
             try {
-                FileWriter outWriter = new FileWriter(filePath);
+                FileWriter outWriterTrainingAsTest = new FileWriter(filePathTrainingAsTest);
                 // write header
-                outWriter.write("type,actual,prediction,weigth,prob_0,prob_1\\n");
+                outWriterTrainingAsTest.write("type,actual,prediction,weigth,prob_0,prob_1\\n");
                 // write predictions
-                for (Object i : pred) {
-                    outWriter.write(i.toString().replace(" ", ",") + '\\n');
+                for (Object i : predTrainingAsTest) {
+                    outWriterTrainingAsTest.write(i.toString().replace(" ", ",") + '\\n');
                 };
-                outWriter.close();
-                System.out.println( "Predictions saved at: " + filePath );
+                outWriterTrainingAsTest.close();
+                System.out.println( "Predictions saved at: " + filePathTrainingAsTest );
             } catch (IOException e) {
                 System.out.println( "Writing the predictions to csv file failed." );
                 e.printStackTrace();
