@@ -21,18 +21,31 @@
             <<<MYSQLINDENT>>>classifier = <<<CLASSIFIER>>>
             <<<MYSQLINDENT>>>np.random.seed(42)
             <<<MYSQLINDENT>>>classifier.fit(np.delete(data_df.values, classIndex, axis=1),data_df.values[:,classIndex])
-            <<<MYSQLINDENT>>>predictedLabel = classifier.predict(np.delete(testdata_df.values, classIndex, axis=1))<<<MYSQLEVALSMOKE_END>>>
+            <<<MYSQLINDENT>>>predicted_label = classifier.predict(np.delete(testdata_df.values, classIndex, axis=1))<<<MYSQLEVALSMOKE_END>>>
             try:
-                predProb = np.array(classifier.predict_proba(np.delete(testdata_df.values, classIndex, axis=1)))
+                pred_prob = np.array(classifier.predict_proba(np.delete(testdata_df.values, classIndex, axis=1)))
                 main_dir = Path(__file__).resolve().parents[2]
-                predictionFile = os.path.join(main_dir, "predictions", "pred_<<<IDENTIFIER>>>_<<<NAME>>>_" + str(iter) + ".csv")
+                prediction_file = os.path.join(main_dir, "predictions", "pred_<<<IDENTIFIER>>>_<<<NAME>>>_" + str(iter) + ".csv")
                 pred_df = pd.DataFrame()
                 pred_df['actual'] = testdata_df.classAtt
-                pred_df['prediction'] = predictedLabel
-                pred_df['prob_0'] = predProb[:,0]
-                pred_df['prob_1'] = predProb[:,1]
-                pred_df.to_csv(predictionFile, header=True, index=False)
-                print("Predictions saved at: " + predictionFile)
+                pred_df['prediction'] = predicted_label
+                pred_df['prob_0'] = pred_prob[:,0]
+                pred_df['prob_1'] = pred_prob[:,1]
+                pred_df.to_csv(prediction_file, header=True, index=False)
+                print("Predictions saved at: " + prediction_file)
             except Exception as e:
                 print("Saving the predictions of <<<NAME>>> for <<<IDENTIFIER>>> failed: ", e)
-
+            try:
+              predicted_label_training_as_test = classifier.predict(np.delete(data_df.values, classIndex, axis=1))
+              pred_prob_training_as_test = np.array(classifier.predict_proba(np.delete(data_df.values, classIndex, axis=1)))
+              main_dir = Path(__file__).resolve().parents[2]
+              prediction_file_training_as_test = os.path.join(main_dir, "predictions", "pred_<<<IDENTIFIER>>>_<<<NAME>>>_TrainingAsTest_" + str(iter) + ".csv")
+              pred_df = pd.DataFrame()
+              pred_df['actual'] = data_df.classAtt
+              pred_df['prediction'] = predicted_label_training_as_test
+              pred_df['prob_0'] = pred_prob_training_as_test[:,0]
+              pred_df['prob_1'] = pred_prob_training_as_test[:,1]
+              pred_df.to_csv(prediction_file_training_as_test, header=True, index=False)
+              print("Predictions saved at: " + prediction_file_training_as_test)
+            except Exception as e:
+              print("Saving the predictions of <<<NAME>>> with TrainingAsTest for <<<IDENTIFIER>>> failed: ", e)

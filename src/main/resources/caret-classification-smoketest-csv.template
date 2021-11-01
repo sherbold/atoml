@@ -34,6 +34,20 @@ withTimeout(timeout=<<<TIMEOUT>>>, onTimeout="error", expr={
                     file = csv_file,
                     row.names = FALSE)
             print(paste0("Predictions saved at: ", csv_file))
+            # training data as test data
+            predictions_training_as_test <- predict(model, train_x)
+            probabilities_training_as_test <- predict(model, train_x, type = "prob")
+            actual_classes_training_as_test <- as.integer(train_y) - 1
+            pred_classes_training_as_test <- as.integer(predictions_training_as_test) - 1
+            csv_df <- cbind(actual = actual_classes_training_as_test,
+                          prediction = pred_classes_training_as_test,
+                          prob_0 = probabilities_training_as_test[,1],
+                          prob_1 = probabilities_training_as_test[,2])
+            csv_file <- file.path(dirname(dirname(getwd())),"predictions",paste0("pred_<<<IDENTIFIER>>>_<<<NAME>>>_TrainingAsTest_",iter,".csv"))
+            write.csv(x = csv_df,
+                    file = csv_file,
+                    row.names = FALSE)
+            print(paste0("Predictions saved at: ", csv_file))
         }
     expect_true(TRUE)
     })

@@ -147,7 +147,7 @@ In case of SQL errors regarding Public Key Retrieval it might be required to add
 
 Caret support: The test generation for the R-based Caret framework is currently only available for the generation of smoke tests for classification algorithms.
 
-Predictions output: By adding the flag '-predictions' to the function call, the generated smoke tests save the predictions on the test data in a csv file. This is currently only available for classification algorithms.   
+Predictions output: By adding the flag '-predictions' to the function call, the generated smoke tests save the predictions on the test data, and separately the predictions on the training data itself, in two csv files. This is currently only available for classification algorithms from caret, sklearn, spark, and weka.   
 
 AIToolBox support: Test generation for classification and clustering algorithms supported on Linux is available. '-mysql' option is currently not supported.
 
