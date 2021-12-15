@@ -22,8 +22,12 @@
             <<<MYSQLINDENT>>>np.random.seed(42)
             <<<MYSQLINDENT>>>classifier.fit(np.delete(data_df.values, classIndex, axis=1),data_df.values[:,classIndex])
             <<<MYSQLINDENT>>>predicted_label = classifier.predict(np.delete(testdata_df.values, classIndex, axis=1))<<<MYSQLEVALSMOKE_END>>>
+            pred_prob = np.full((testdata_df.shape[0],2), -1)
             try:
                 pred_prob = np.array(classifier.predict_proba(np.delete(testdata_df.values, classIndex, axis=1)))
+            except AttributeError as e:
+                print('An error occured during the prediction of the probabilities, values left at default (-1):', e)
+            try:
                 main_dir = Path(__file__).resolve().parents[2]
                 prediction_file = os.path.join(main_dir, "predictions", "pred_<<<IDENTIFIER>>>_<<<NAME>>>_" + str(iter) + ".csv")
                 pred_df = pd.DataFrame()
@@ -35,9 +39,14 @@
                 print("Predictions saved at: " + prediction_file)
             except Exception as e:
                 print("Saving the predictions of <<<NAME>>> for <<<IDENTIFIER>>> failed: ", e)
+
+            predicted_label_training_as_test = classifier.predict(np.delete(data_df.values, classIndex, axis=1))
+            pred_prob_training_as_test = np.full((data_df.shape[0],2), -1)
             try:
-              predicted_label_training_as_test = classifier.predict(np.delete(data_df.values, classIndex, axis=1))
-              pred_prob_training_as_test = np.array(classifier.predict_proba(np.delete(data_df.values, classIndex, axis=1)))
+                pred_prob_training_as_test = np.array(classifier.predict_proba(np.delete(data_df.values, classIndex, axis=1)))
+            except Exception as e:
+                print('An error occured during the prediction of the probabilities, values left at default (-1):', e)
+            try:
               main_dir = Path(__file__).resolve().parents[2]
               prediction_file_training_as_test = os.path.join(main_dir, "predictions", "pred_<<<IDENTIFIER>>>_<<<NAME>>>_TrainingAsTest_" + str(iter) + ".csv")
               pred_df = pd.DataFrame()
