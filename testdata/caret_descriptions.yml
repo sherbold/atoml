@@ -59,6 +59,9 @@
 #  - flag       flag that is either enabled or disabled; both will be tested with the default values of the other parameters
 #  - fixedflag  a flag that is always used with the default value - probably only makes sense with the value enabled.
 #  - values     list of values that will be tested with the default values of the other parameters
+# Caret specific property: A parameter can carry the 'rparam.' prefix, e.g., 'rparam.num.trees'. This prefix signals
+#               that the parameter is not a hyperparameter available in caret, but a parameter only available as
+#               a keyword argument from the underlying package. These parameters do only support a default value.
 
 #####################
 # Caret Classifiers #

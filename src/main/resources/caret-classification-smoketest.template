@@ -20,7 +20,8 @@ withTimeout(timeout=<<<TIMEOUT>>>, onTimeout="error", expr={
                            y = train_y,
                            method = "<<<CLASSIFIER>>>",
                            tuneGrid = paramSet,
-                           trControl = control)
+                           trControl = control
+                           <<<RPARAMS>>>)
             predictions <- predict(model, test_x)
         }
     expect_true(TRUE)

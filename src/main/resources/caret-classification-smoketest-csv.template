@@ -20,9 +20,19 @@ withTimeout(timeout=<<<TIMEOUT>>>, onTimeout="error", expr={
                            y = train_y,
                            method = "<<<CLASSIFIER>>>",
                            tuneGrid = paramSet,
-                           trControl = control)
+                           trControl = control
+                           <<<RPARAMS>>>)
             predictions <- predict(model, test_x)
-            probabilities <- predict(model, test_x, type = "prob")
+            probabilities <- array(-1,dim = c(length(test_y),2))
+            tryCatch(
+                expr = {
+                    probabilities <- predict(model, test_x, type = "prob")
+                },
+                error = function(e){
+                    message('An error occured during the prediction of the probabilities! Values left at default (-1).')
+                    print(e)
+                }
+            )
             actual_classes <- as.integer(test_y) - 1
             pred_classes <- as.integer(predictions) - 1
             csv_df <- cbind(actual = actual_classes,
@@ -34,9 +44,19 @@ withTimeout(timeout=<<<TIMEOUT>>>, onTimeout="error", expr={
                     file = csv_file,
                     row.names = FALSE)
             print(paste0("Predictions saved at: ", csv_file))
+
             # training data as test data
             predictions_training_as_test <- predict(model, train_x)
-            probabilities_training_as_test <- predict(model, train_x, type = "prob")
+            probabilities_training_as_test <- array(-1,dim = c(length(train_y),2))
+            tryCatch(
+                expr = {
+                    probabilities_training_as_test <- predict(model, train_x, type = "prob")
+                },
+                error = function(e){
+                    message('An error occured during the prediction of the probabilities! Values left at default (-1).')
+                    print(e)
+                }
+            )
             actual_classes_training_as_test <- as.integer(train_y) - 1
             pred_classes_training_as_test <- as.integer(predictions_training_as_test) - 1
             csv_df <- cbind(actual = actual_classes_training_as_test,

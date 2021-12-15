@@ -48,11 +48,17 @@ public class CaretTemplate implements TemplateEngine {
 	 */
 	@Override
 	public Map<String, String> getClassReplacements() {
+		boolean setRparamsFlag = true;
+		StringBuilder rparamsString = new StringBuilder();
 		StringBuilder parameterString = new StringBuilder();
 		parameterString.append("paramGrid <- c(\n");
 		if( algorithmUnderTest.getParameterCombinations().size()>0 ) {
 			for( Map<String,String> parameterCombination :  algorithmUnderTest.getParameterCombinations()) {
 				parameterString.append("              " + getParameterString(parameterCombination) + ",\n");
+				if ( setRparamsFlag ){
+					rparamsString.append(getRparamsString(parameterCombination));
+					setRparamsFlag = false;
+				}
 			}
 			parameterString.replace(parameterString.length()-2, parameterString.length(), "");
 		}
@@ -61,6 +67,7 @@ public class CaretTemplate implements TemplateEngine {
 		Map<String, String> replacements = new HashMap<>();
 		replacements.put("<<<PACKAGENAME>>>", algorithmUnderTest.getPackage());
 		replacements.put("<<<HYPERPARAMETERS>>>", parameterString.toString());
+		replacements.put("<<<RPARAMS>>>", rparamsString.toString());
 		return replacements;
 	}
 	
@@ -84,7 +91,7 @@ public class CaretTemplate implements TemplateEngine {
 	}
 	
 	/**
-	 * creates a string for the test of a parameter combination
+	 * creates a string for the test of a parameter combination (excluding the rparams, which are handled with getRparamsString)
 	 * @return parameters string
 	 */
 	private static String getParameterString(Map<String, String> parameterCombination) {
@@ -92,6 +99,9 @@ public class CaretTemplate implements TemplateEngine {
 		StringBuilder parameterKeys = new StringBuilder();
 		StringBuilder parameterValues = new StringBuilder();
 		for( Entry<String, String> parameter : parameterCombination.entrySet()) {
+			if ( parameter.getKey().startsWith("rparam.") ){
+				continue;
+			}
 			parameterKeys.append(parameter.getKey() + ",");
 			if( parameter.getValue()!=null ) {
 				parameterValues.append(parameter.getValue() + ",");
@@ -105,5 +115,19 @@ public class CaretTemplate implements TemplateEngine {
 		parameters.append("\"" + parameterKeys.toString().trim() + ": " +  parameterValues.toString().trim() + "\"");
 		return parameters.toString();
 	}
-	
+
+	/**
+	 * creates a string for parameters that are not covered by caret but can be adjusted through kwargs from
+	 * the underlying package. These parameters have to be marked with the "rparam." prefix in the yaml description file.
+	 * @return parameters string
+	 */
+	private static String getRparamsString(Map<String, String> parameterCombination) {
+		StringBuilder rParams = new StringBuilder();
+		for( Entry<String, String> parameter : parameterCombination.entrySet()) {
+			if ( parameter.getKey().startsWith("rparam.") ){
+				rParams.append(", " + parameter.getKey().substring("rparam.".length()) + "=" + parameter.getValue() );
+			}
+		}
+		return rParams.toString();
+	}
 }
