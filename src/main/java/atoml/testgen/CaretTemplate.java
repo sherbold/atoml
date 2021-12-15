@@ -48,17 +48,11 @@ public class CaretTemplate implements TemplateEngine {
 	 */
 	@Override
 	public Map<String, String> getClassReplacements() {
-		boolean setRparamsFlag = true;
-		StringBuilder rparamsString = new StringBuilder();
 		StringBuilder parameterString = new StringBuilder();
 		parameterString.append("paramGrid <- c(\n");
 		if( algorithmUnderTest.getParameterCombinations().size()>0 ) {
 			for( Map<String,String> parameterCombination :  algorithmUnderTest.getParameterCombinations()) {
 				parameterString.append("              " + getParameterString(parameterCombination) + ",\n");
-				if ( setRparamsFlag ){
-					rparamsString.append(getRparamsString(parameterCombination));
-					setRparamsFlag = false;
-				}
 			}
 			parameterString.replace(parameterString.length()-2, parameterString.length(), "");
 		}
@@ -67,7 +61,6 @@ public class CaretTemplate implements TemplateEngine {
 		Map<String, String> replacements = new HashMap<>();
 		replacements.put("<<<PACKAGENAME>>>", algorithmUnderTest.getPackage());
 		replacements.put("<<<HYPERPARAMETERS>>>", parameterString.toString());
-		replacements.put("<<<RPARAMS>>>", rparamsString.toString());
 		return replacements;
 	}
 	
@@ -76,9 +69,17 @@ public class CaretTemplate implements TemplateEngine {
 	 */
 	@Override
 	public Map<String, String> getSmoketestReplacements(SmokeTest smokeTest) {
+		StringBuilder rparamsString = new StringBuilder();
+		if( algorithmUnderTest.getParameterCombinations().size()>0 ) {
+			for( Map<String,String> parameterCombination :  algorithmUnderTest.getParameterCombinations()) {
+				rparamsString.append(getRparamsString(parameterCombination));
+				break;
+			}
+		}
 		Map<String, String> replacements = new HashMap<>();
 		replacements.put("<<<PACKAGENAME>>>", algorithmUnderTest.getPackage());
 		replacements.put("<<<CLASSIFIER>>>", algorithmUnderTest.getClassName());
+		replacements.put("<<<RPARAMS>>>", rparamsString.toString());
 		return replacements;
 	}
 
