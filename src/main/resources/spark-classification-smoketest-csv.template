@@ -16,6 +16,14 @@
 
             ClassificationModel<?, ?> model = classifier.fit(dataframe);
             Dataset<Row> pred = model.transform(testdata);<<<MYSQLEVALSMOKE_END>>>
+            Dataset<Row> predSelect = pred.select("classAtt", "prediction");
+            try {
+                predSelect = pred.select("classAtt", "prediction", "probability");
+            } catch (Exception e) {
+                predSelect = predSelect.withColumn("prob_0", functions.lit(-1));
+                predSelect = predSelect.withColumn("prob_1", functions.lit(-1));
+                System.out.print("Not able to access probabilities, values are set to default (-1).");
+            }
             // create a csv file
             String filePath = "predictions/pred_<<<IDENTIFIER>>>_<<<NAME>>>_" + iter + ".csv";
             try {
@@ -31,7 +39,6 @@
                 // write header
                 outWriter.write("actual,prediction,prob_0,prob_1\\n");
                 // write predictions
-                Dataset<Row> predSelect = pred.select("classAtt", "prediction", "probability");
                 List<String> predString = predSelect.map((MapFunction<Row, String>) row -> row.mkString(","), Encoders.STRING()).collectAsList();
                 for (String s : predString) {
                     outWriter.write(s.replace("[", "").replace("]", "") + '\\n');
@@ -42,8 +49,17 @@
                 System.out.println( "Writing the predictions to csv file failed." );
                 e.printStackTrace();
             }
+
             // training data as test data
             Dataset<Row> predTrainingAsTest = model.transform(dataframe);
+            Dataset<Row> predSelectTrainingAsTest = predTrainingAsTest.select("classAtt", "prediction");
+            try {
+                predSelectTrainingAsTest = predTrainingAsTest.select("classAtt", "prediction", "probability");
+            } catch (Exception e) {
+                predSelectTrainingAsTest = predSelectTrainingAsTest.withColumn("prob_0", functions.lit(-1));
+                predSelectTrainingAsTest = predSelectTrainingAsTest.withColumn("prob_1", functions.lit(-1));
+                System.out.print("Not able to access probabilities, values are set to default (-1).");
+            }
             // create a csv file
             String filePathTrainingAsTest = "predictions/pred_<<<IDENTIFIER>>>_<<<NAME>>>_TrainingAsTest_" + iter + ".csv";
             try {
@@ -59,7 +75,6 @@
                 // write header
                 outWriterTrainingAsTest.write("actual,prediction,prob_0,prob_1\\n");
                 // write predictions
-                Dataset<Row> predSelectTrainingAsTest = predTrainingAsTest.select("classAtt", "prediction", "probability");
                 List<String> predStringTrainingAsTest = predSelectTrainingAsTest.map((MapFunction<Row, String>) row -> row.mkString(","), Encoders.STRING()).collectAsList();
                 for (String s : predStringTrainingAsTest) {
                     outWriterTrainingAsTest.write(s.replace("[", "").replace("]", "") + '\\n');
