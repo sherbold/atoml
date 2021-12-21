@@ -26,6 +26,9 @@ withTimeout(timeout=<<<TIMEOUT>>>, onTimeout="error", expr={
             probabilities <- array(-1,dim = c(length(test_y),2))
             tryCatch(
                 expr = {
+                    if (any(is.na(predict(model, test_x, type = "prob")))){
+                        stop("At least one of the predicted probability values is NaN.")
+                    }
                     probabilities <- predict(model, test_x, type = "prob")
                 },
                 error = function(e){
@@ -49,6 +52,9 @@ withTimeout(timeout=<<<TIMEOUT>>>, onTimeout="error", expr={
             probabilities_training_as_test <- array(-1,dim = c(length(train_y),2))
             tryCatch(
                 expr = {
+                    if (any(is.na(predict(model, train_x, type = "prob")))){
+                        stop("At least one of the predicted probability values is NaN.")
+                    }
                     probabilities_training_as_test <- predict(model, train_x, type = "prob")
                 },
                 error = function(e){
