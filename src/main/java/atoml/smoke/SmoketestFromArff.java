@@ -17,23 +17,35 @@ public class SmoketestFromArff extends AbstractSmokeTest {
 
 	private final String trainingResource;
 	private final String testResource;
-
+	private final FeatureType featureType;
+	
 	/**
-	 * creates a new SmoketestFromArff, where training data == test data
+	 * creates a new SmoketestFromArff with feature type DOUBLE, where training data == test data
 	 * @param name identifier name of the test
 	 * @param trainingResource resource path of the ARFF file with the data
 	 */
 	public SmoketestFromArff(String name, String trainingResource) {
-		this(name, trainingResource, trainingResource);
+		this(name, trainingResource, trainingResource, FeatureType.DOUBLE);
 	}
 
 	/**
-	 * creates a new SmoketestFromArff
+	 * creates a new SmoketestFromArff with feature type DOUBLE
 	 * @param name identifier name of the test
 	 * @param trainingResource resource path of the ARFF file with the training data
 	 * @param testResource resource path of the ARFF file with the test data
 	 */
 	public SmoketestFromArff(String name, String trainingResource, String testResource) {
+		this(name, trainingResource, testResource, FeatureType.DOUBLE);
+	}
+
+	/**
+	 * creates a new SmoketestFromArff with a defined feature type
+	 * @param name identifier name of the test
+	 * @param trainingResource resource path of the ARFF file with the training data
+	 * @param testResource resource path of the ARFF file with the test data
+	 * @param featureType feature type of the dataset (e.g. double, positivedouble, categorial...)
+	 */
+	public SmoketestFromArff(String name, String trainingResource, String testResource, FeatureType featureType) {
 		super();
 		this.name = name;
 		this.trainingResource = trainingResource;
@@ -44,6 +56,7 @@ public class SmoketestFromArff extends AbstractSmokeTest {
 		if (this.testResource == null){
 			throw new RuntimeException("error test data ARFF resource for smoke test generation is null");
 		}
+		this.featureType = featureType;
 	}
 
 	/*
@@ -101,6 +114,6 @@ public class SmoketestFromArff extends AbstractSmokeTest {
 	 */
 	@Override
 	public FeatureType getFeatureType() {
-		return FeatureType.DOUBLE;
+		return this.featureType;
 	}
 }
