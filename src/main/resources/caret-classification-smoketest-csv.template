@@ -32,7 +32,7 @@ withTimeout(timeout=<<<TIMEOUT>>>, onTimeout="error", expr={
                     probabilities <- predict(model, test_x, type = "prob")
                 },
                 error = function(e){
-                    message('The prediction of the probabilities failed. Values set to default (-1).')
+                    message("The prediction of the probabilities failed. Values set to default (-1).")
                 }
             )
             actual_classes <- as.integer(test_y) - 1
@@ -58,7 +58,7 @@ withTimeout(timeout=<<<TIMEOUT>>>, onTimeout="error", expr={
                     probabilities_training_as_test <- predict(model, train_x, type = "prob")
                 },
                 error = function(e){
-                    message('The prediction of the probabilities failed. Values set to default (-1).')
+                    message("The prediction of the probabilities failed. Values set to default (-1).")
                 }
             )
             actual_classes_training_as_test <- as.integer(train_y) - 1

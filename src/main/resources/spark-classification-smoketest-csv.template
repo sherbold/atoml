@@ -22,7 +22,7 @@
             } catch (Exception e) {
                 predSelect = predSelect.withColumn("prob_0", functions.lit(-1));
                 predSelect = predSelect.withColumn("prob_1", functions.lit(-1));
-                System.out.print('The prediction of the probabilities failed. Values set to default (-1).');
+                System.out.print("The prediction of the probabilities failed. Values set to default (-1).");
             }
             // create a csv file
             String filePath = "predictions/pred_<<<IDENTIFIER>>>_<<<NAME>>>_" + iter + ".csv";
@@ -58,7 +58,7 @@
             } catch (Exception e) {
                 predSelectTrainingAsTest = predSelectTrainingAsTest.withColumn("prob_0", functions.lit(-1));
                 predSelectTrainingAsTest = predSelectTrainingAsTest.withColumn("prob_1", functions.lit(-1));
-                System.out.print('The prediction of the probabilities failed. Values set to default (-1).');
+                System.out.print("The prediction of the probabilities failed. Values set to default (-1).");
             }
             // create a csv file
             String filePathTrainingAsTest = "predictions/pred_<<<IDENTIFIER>>>_<<<NAME>>>_TrainingAsTest_" + iter + ".csv";
