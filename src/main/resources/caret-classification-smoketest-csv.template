@@ -16,13 +16,25 @@ withTimeout(timeout=<<<TIMEOUT>>>, onTimeout="error", expr={
             colnames(paramSet) <- paramNames
 
             control <- trainControl(method = "none")
-            model <- train(x = train_x,
+            model <- caret::train(x = train_x,
                            y = train_y,
                            method = "<<<CLASSIFIER>>>",
                            tuneGrid = paramSet,
-                           trControl = control)
+                           trControl = control
+                           <<<RPARAMS>>>)
             predictions <- predict(model, test_x)
-            probabilities <- predict(model, test_x, type = "prob")
+            probabilities <- array(-1,dim = c(length(test_y),2))
+            tryCatch(
+                expr = {
+                    if (any(is.na(predict(model, test_x, type = "prob")))){
+                        stop("At least one of the predicted probability values is NaN.")
+                    }
+                    probabilities <- predict(model, test_x, type = "prob")
+                },
+                error = function(e){
+                    message("The prediction of the probabilities failed. Values set to default (-1).")
+                }
+            )
             actual_classes <- as.integer(test_y) - 1
             pred_classes <- as.integer(predictions) - 1
             csv_df <- cbind(actual = actual_classes,
@@ -34,9 +46,21 @@ withTimeout(timeout=<<<TIMEOUT>>>, onTimeout="error", expr={
                     file = csv_file,
                     row.names = FALSE)
             print(paste0("Predictions saved at: ", csv_file))
+
             # training data as test data
             predictions_training_as_test <- predict(model, train_x)
-            probabilities_training_as_test <- predict(model, train_x, type = "prob")
+            probabilities_training_as_test <- array(-1,dim = c(length(train_y),2))
+            tryCatch(
+                expr = {
+                    if (any(is.na(predict(model, train_x, type = "prob")))){
+                        stop("At least one of the predicted probability values is NaN.")
+                    }
+                    probabilities_training_as_test <- predict(model, train_x, type = "prob")
+                },
+                error = function(e){
+                    message("The prediction of the probabilities failed. Values set to default (-1).")
+                }
+            )
             actual_classes_training_as_test <- as.integer(train_y) - 1
             pred_classes_training_as_test <- as.integer(predictions_training_as_test) - 1
             csv_df <- cbind(actual = actual_classes_training_as_test,

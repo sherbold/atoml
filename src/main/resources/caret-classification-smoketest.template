@@ -16,11 +16,12 @@ withTimeout(timeout=<<<TIMEOUT>>>, onTimeout="error", expr={
             colnames(paramSet) <- paramNames
 
             control <- trainControl(method = "none")
-            model <- train(x = train_x,
+            model <- caret::train(x = train_x,
                            y = train_y,
                            method = "<<<CLASSIFIER>>>",
                            tuneGrid = paramSet,
-                           trControl = control)
+                           trControl = control
+                           <<<RPARAMS>>>)
             predictions <- predict(model, test_x)
         }
     expect_true(TRUE)
